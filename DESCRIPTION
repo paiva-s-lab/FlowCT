@@ -3,7 +3,7 @@ Type: Package
 Title: A semi-automated workflow for deconvolution of immunophenotypic data and objective reporting on large datasets
 Version: 1.0
 Authors@R: c(
-    person("Cirino", "Botta", email = "cirino.botta@gmail.com", role = "aut"),
+    person("Cirino", "Botta", email = "cirino.botta@gmail.com", role =  c("cre", "aut")),
     person("Juan José", "Garcés", email = "jgarces@unav.es", role = c("cre", "ctb")))
 Maintainer: The package maintainer <jgarces@unav.es>
 Description: FlowCT is a semi-automated pipeline for flow cytometry data analysis. 
