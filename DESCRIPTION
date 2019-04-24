@@ -3,42 +3,42 @@ Type: Package
 Title: A semi-automated workflow for deconvolution of immunophenotypic data and objective reporting on large datasets
 Version: 1.0
 Authors@R: c(
-    person("Ciro", "Botta", email = "cirino.botta@gmail.com", role = c("cre", "aut")),
-    person("Juan José", "Garcés", email = "jgarces@unav.es", role = c("cre", "ctb")))
+ person("Cirino", "Botta", email = "cirino.botta@gmail.com", role = c("cre", "aut")),
+ person("Juan José", "Garcés", email = "jgarces@unav.es", role = c("cre", "ctb")))
 Description: FlowCT is a semi-automated pipeline for flow cytometry data analysis. 
-    Starting from compensated data obtained with standardized protocols, allows simultaneous analyses of multiple files, automated cell clustering and statistical analysis. It provides results in tabular format that can be exported into other databases for integrated analysis (e.g. clinical trials). 
+ Starting from compensated data obtained with standardized protocols, allows simultaneous analyses of multiple files, automated cell clustering and statistical analysis. It provides results in tabular format that can be exported into other databases for integrated analysis (e.g. clinical trials). 
 Depends: R (>= 2.10)
 Suggests:
-    base,
-    ConsensusClusterPlus,
-    corrplot,
-    DataCombine,
-    dplyr,
-    flowAI,
-    flowCore,
-    FlowSOM,
-    flowStats,
-    flowViz,
-    ggplot2,
-    ggpubr,
-    ggrepel,
-    ggsci,
-    ggthemes,
-    ggtree,
-    gridExtra,
-    Hmisc,
-    matrixStats,
-    matrixTests,
-    fs,
-    pheatmap,
-    phytools,
-    premessa,
-    RColorBrewer,
-    readxl,
-    reshape2,
-    Rtsne.multicore,
-    data.table,
-    uwot
+ base,
+ ConsensusClusterPlus,
+ corrplot,
+ DataCombine,
+ dplyr,
+ flowAI,
+ flowCore,
+ FlowSOM,
+ flowStats,
+ flowViz,
+ ggplot2,
+ ggpubr,
+ ggrepel,
+ ggsci,
+ ggthemes,
+ ggtree,
+ gridExtra,
+ Hmisc,
+ matrixStats,
+ matrixTests,
+ fs,
+ pheatmap,
+ phytools,
+ premessa,
+ RColorBrewer,
+ readxl,
+ reshape2,
+ Rtsne.multicore,
+ data.table,
+ uwot
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
