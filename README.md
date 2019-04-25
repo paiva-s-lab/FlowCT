@@ -1,4 +1,4 @@
-# **FlowCT**: A semi-automated workflow for deconvolution of immunophenotypic data and objective reporting on large datasets
+# FlowCT: A semi-automated workflow for deconvolution of immunophenotypic data and objective reporting on large datasets
 
 _Version: 1.0_
 
