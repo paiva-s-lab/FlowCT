@@ -102,6 +102,6 @@ markers.names <- function(fcs, new_names = NULL){
                            cols = c("Florophore/Channel", "Marker (default name)", "New marker name")))
     colnames(fcs) <- new_names
     # suppressWarnings(assign(deparse(substitute(fcs)), aux_fcs))
-    return(fcs)
   }
+  return(fcs)
 }
