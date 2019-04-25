@@ -93,15 +93,24 @@ lims.FCS <- function(fcs){
 #'     "CD62L", "CXCR3", "CD8", "CCR4", "CCR6", "CD4", "CD27", "CD45RA"))}
 
 
-markers.names <- function(fcs, new_names = NULL){
+markers.names <- function (fcs, new_names = NULL){
   if(is.null(new_names)){
-    gridExtra::grid.arrange(gridExtra::tableGrob(data.frame(fcs[[1]]@parameters@data$name, fcs[[1]]@parameters@data$desc, "not defined yet!"),
-                           cols = c("Florophore/Channel", "Marker (default name)", "New marker name")))
+    if(all(fcs[[1]]@parameters@data$name == fcs@colnames)){
+      gridExtra::grid.arrange(gridExtra::tableGrob(data.frame(fcs[[1]]@parameters@data$name, 
+                                                              fcs[[1]]@parameters@data$desc, "not defined yet!"), 
+                                                   cols = c("Florophore/Channel", "Marker (default name)", 
+                                                            "New marker name")))
+    }else{
+      gridExtra::grid.arrange(gridExtra::tableGrob(data.frame(fcs[[1]]@parameters@data$name, 
+                                                              fcs[[1]]@parameters@data$desc, fcs@colnames), 
+                                                   cols = c("Florophore/Channel", "Marker (default name)", "New marker name")))
+    }
+    
   }else{
-    gridExtra::grid.arrange(gridExtra::tableGrob(data.frame(fcs[[1]]@parameters@data$name, fcs[[1]]@parameters@data$desc, new_names),
-                           cols = c("Florophore/Channel", "Marker (default name)", "New marker name")))
-    colnames(fcs) <- new_names
-    # suppressWarnings(assign(deparse(substitute(fcs)), aux_fcs))
+    gridExtra::grid.arrange(gridExtra::tableGrob(data.frame(fcs[[1]]@parameters@data$name, 
+                                                            fcs[[1]]@parameters@data$desc, new_names), 
+                                                 cols = c("Florophore/Channel", "Marker (default name)", "New marker name")))
+    fcs@colnames <- new_names
     return(fcs)
   }
 }
