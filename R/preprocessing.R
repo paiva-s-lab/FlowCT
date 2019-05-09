@@ -145,5 +145,5 @@ qc.and.removeDoublets <- function(directory = ".",  reduction_computed = TRUE, r
 
       invisible(file.remove(list.files(pattern = "_HQ.fcs$|miniQC")))},
 
-    error = function(e) {invisible(file.remove(list.files(pattern = "_HQ.fcs$|miniQC"))); print("An ERROR has occurred!")})
+    error = function(e) {invisible(file.remove(list.files(pattern = "_HQ.fcs$|miniQC"))); print("An ERROR has occurred! (try to name files according the tutorial)")})
 }
