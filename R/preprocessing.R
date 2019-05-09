@@ -123,7 +123,7 @@ qc.and.removeDoublets <- function(directory = ".",  reduction_computed = TRUE, r
 
       for(i in filelist){
         if(reduction_computed){
-          n_aux <- gsub("_red.fcs", "", i)
+          n_aux <- gsub("red.fcs", "", i)
         }else{
           n_aux <- gsub(paste0(reduction_suffix, "_red_HQ.fcs$"), "", i)
         }
