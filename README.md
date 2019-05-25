@@ -1,4 +1,4 @@
-[logo]: extra/logo_FlowCT_hex.png
+![alt text](extra/logo_FlowCT_hex.png)
 # FlowCT: A semi-automated workflow for deconvolution of immunophenotypic data and objective reporting on large datasets 
 
 _Version: 1.0_
