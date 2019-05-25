@@ -1,4 +1,4 @@
-[logo]: https://drive.google.com/open?id=1l25clr_manwRaMESZlY2H75dSnNPAfmR
+[logo]: extra/logo_FlowCT_hex.png
 # FlowCT: A semi-automated workflow for deconvolution of immunophenotypic data and objective reporting on large datasets 
 
 _Version: 1.0_
