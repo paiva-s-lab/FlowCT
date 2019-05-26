@@ -1,6 +1,5 @@
+<img src="extra/logo_FlowCT_hex.png" height="300" align="left" />
 # FlowCT: A semi-automated workflow for deconvolution of immunophenotypic data and objective reporting on large datasets 
-
-<img src="extra/logo_FlowCT_hex.png" height="200" align="right" />
 
 _Version: 1.0_
 
