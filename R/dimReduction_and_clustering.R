@@ -46,7 +46,11 @@ dim.reduction <- function(expr_data, metadata, reduction_method = c("all", "PCA"
     dr <- data.frame(metadata, expr_data, UMAP1 = umap_out[,1], UMAP2 = umap_out[,2])
     drm <- data.table::melt(dr, measure.vars = colnames(expr_data), value.name = "expression", variable.name = "antigen")
 
-  }else if(reduction_method == "all"){
+  }else if(reduction_method == "all"){ 
+    
+    ##########################################
+    #try to parallelize this part with %dopar%
+    
     print("Calculating PCA reduction...")
     PCA_out <- stats::prcomp(expr_data, center = TRUE, scale. = FALSE)
     print("Calculating tSNE reduction...")
