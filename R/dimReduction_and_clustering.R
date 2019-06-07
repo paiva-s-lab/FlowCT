@@ -48,9 +48,6 @@ dim.reduction <- function(expr_data, metadata, reduction_method = c("all", "PCA"
 
   }else if(reduction_method == "all"){ 
     
-    ##########################################
-    #try to parallelize this part with %dopar%
-    
     print("Calculating PCA reduction...")
     PCA_out <- stats::prcomp(expr_data, center = TRUE, scale. = FALSE)
     print("Calculating tSNE reduction...")
