@@ -1,3 +1,6 @@
+###Backbone for tutorial writting...
+
+```
 #################################################
 ### Environment setting #########################
 #################################################
@@ -560,3 +563,4 @@ ggboxplot(props_final_calcula[props_final_calcula$cluster %in% KWsig_final,], x 
   scale_color_manual(values = colors_palette) + scale_fill_manual(values = colors_palette) +
   scale_shape_manual(values = c(1:length(props_final_calcula$patient_id)))+
   stat_compare_means(aes(group = condition), method = "kruskal.test", label = "p.format", label.y = 2)
+```
