@@ -8,17 +8,17 @@
 ## Working directory
 setwd("G:/Mi unidad/Proyectos/FlowCT_Ciro/")
 
-  ## Load packages and functions
+## Load packages and functions
 load_packages <- c("readxl", "flowCore", "flowAI", "flowViz", "flowStats", "gridExtra", "ggsci", "matrixStats", "ggplot2", "reshape2", 
-                   "ggrepel", "dplyr", "RColorBrewer", "pheatmap", "FlowSOM", "ConsensusClusterPlus", "Rtsne.multicore", "uwot", 
-                   "premessa", "phytools", "ggtree", "ggpubr", "Hmisc", "corrplot", "ggthemes", "ggpubr", "matrixTests", "DataCombine")
-lapply(load_packages, suppressMessages(library), character.only = TRUE)
+                   "ggrepel", "dplyr", "RColorBrewer", "pheatmap", "FlowSOM", "ConsensusClusterPlus", "Rtsne", "uwot", 
+                   "premessa", "phytools", "ggtree", "Hmisc", "corrplot", "ggthemes", "ggpubr", "matrixTests", "DataCombine")
+lapply(load_packages, suppressPackageStartupMessages(library), character.only = TRUE)
 
 # source("functions_FlowCT_v2.4.R")
 # options(rsconnect.http = "internal")
 # Sys.setenv(http_proxy  = "http://proxy.unav.es:8080")
 # Sys.setenv(https_proxy = "http://proxy.unav.es:8080")
-# devtools::install_github("jgarces02/p", auth_token = "21ea9880f944d42755479e54a5b19ddd00fe17f6")
+devtools::install_github("jgarces02/p", auth_token = "21ea9880f944d42755479e54a5b19ddd00fe17f6")
 library(FlowCT)
 
 ################################################
@@ -35,7 +35,7 @@ reduce.FCS(file_or_directory = ".", keep_n_events = 10000)
 
 ## Quality control and doublet removal
 setwd("reduced/")
-qc.and.removeDoublets(directory = ".", reduction_computed = T)
+qc.and.removeDoublets(reduction_computed = T)
 
 setwd("results_HQsinglets/")
 
@@ -63,7 +63,7 @@ fcs_raw <- markers.names(fcs_raw,
 
 #read markers panel used
 # panel <- read_excel("/mnt/beegfs/cdalisvam/paper/Th_panel.xlsx") 
-panel <- read_excel("../../../Th_panel.xlsx") 
+panel <- read_excel("../../Th_panel.xlsx") 
 head(data.frame(panel))
 
 panel$Antigen <- gsub("-", "_", panel$Antigen) #replace problematic characters
@@ -173,17 +173,18 @@ cell.count.bx(data = metadata_sc, metadata = md)
 ## PCA and heatmap graphical representations
 #get the median marker expression per sample
 expr_median_sample_tbl <- data.frame(sample_id = metadata_sc$sample_id, expr) %>%
-  group_by(sample_id) %>% summarize_all(funs(median)) %>% as.data.frame()
+  group_by(sample_id) %>% summarize_all(list(median)) %>% as.data.frame()
 rownames(expr_median_sample_tbl) <- expr_median_sample_tbl$sample_id
 expr_median_sample_tbl <- expr_median_sample_tbl[,-1]
 
 #compute the PCA
 drPCA <- dim.reduction(expr_data = expr_median_sample_tbl, metadata = md, reduction_method = "PCA")
-dr.plotting(drPCA$dr_melted, dr_calculated = "PCA", color_by = "condition", size = 3, output_type = NULL, labels = "patient_id")
+dr.plotting(drPCA$dr_melted, dr_calculated = "PCA", color_by = "condition", size = 3, output_type = "png", labels = "patient_id")
 
 #prepare data and annotations for heatmap
 annotation_col <- data.frame(row.names = rownames(expr_median_sample_tbl), condition = md$condition)
 color <- colorRampPalette(brewer.pal(n = 9, name = "YlGnBu"))(100) #colors for the heatmap (expression values)
+x <- c()
 set.seed(3); for(i in unique(md$condition)) x[i] <- sample(colors_palette, 1)
 annotation_colors <- list(condition = x) #change the name (ie "condition") for according to annotation in heatmap
 
@@ -220,7 +221,7 @@ fsom <- fsom.clustering(fcs, markers_to_use = "surface_markers", markers_to_plot
 metaclusters <- fsom.metaclustering(fsom = fsom, num_clusters_metaclustering = 40, plotting = T, set.seed = 1234)
 
 #heatmap
-plot_clustering_heatmap_wrapper(expr = expr[, surface_markers], expr_saturated = expr01[, surface_markers],
+cluster_heatmap(expr = expr[, surface_markers], expr_saturated = expr01[, surface_markers],
                                 cell_clusters = metaclusters$metaclusters)
 
 #### Dimensional reduction: PCA, tSNE and UMAP ####
@@ -235,8 +236,8 @@ sel_expr <- mdsc_som[sub_idx_som,]
 dr <- dim.reduction(expr_data = sel_expr[,5:ncol(sel_expr)], metadata = sel_expr[,1:4], reduction_method = "all", set.seed = 1234)
 
 #plot PCA, tSNE or UMAP -> change "dr_calculated"
-dr.plotting(dr$dr_melted, dr_calculated = "tSNE", output_type = NULL, color_by = "SOM")
-dr.plotting(dr$dr_melted, dr_calculated = "UMAP", output_type = NULL, color_by = "CD62L")
+dr.plotting(dr$dr_melted, dr_calculated = "tSNE", output_type = "png", color_by = "SOM")
+dr.plotting(dr$dr, dr_calculated = "UMAP", output_type = "png", color_by = "CD62L")
 
 for(facet in c("patient_id", "condition", "sample_id")){
   dr.plotting(dr$dr_melted, dr_calculated = "PCA", output_type = "png", color_by = "SOM", facet_by = facet, 
@@ -260,7 +261,7 @@ write.FCS(as_flowFrame(as.matrix(to_export), source.frame = NULL), outFile)
 
 #### Merge clusters according external analysis ####
 # cluster_merging1_filename <- "/mnt/beegfs/cdalisvam/paper/Th_new_clustering.xlsx"
-cluster_merging1 <- read_excel("../../../Th_new_clustering.xlsx", col_types = "text")
+cluster_merging1 <- read_excel("../../Th_new_clustering.xlsx", col_types = "text")
 head(cluster_merging1)
 
 #add new cluster names to the original metadata matrix 
@@ -282,7 +283,7 @@ dr.plotting(dr$dr_melted, dr_calculated = "UMAP", color_by = "cell_clustering1m"
 PlotStars(fsom, backgroundValues = cell_clustering1m_plotStars,  
   backgroundColor = alpha(colors_palette, alpha = 0.4))
 
-plot_clustering_heatmap_wrapper(expr = expr[, surface_markers],
+cluster_heatmap(expr = expr[, surface_markers],
                                 expr_saturated = expr01[, surface_markers], cell_clusters = cell_clustering1m)
 
 
@@ -321,13 +322,13 @@ expr_median_sampleL <- expr_median_sampleL[,-1]
 
 #compute PCA and visualization
 PCA_outL <- dim.reduction(expr_data = expr_median_sampleL, metadata = md, reduction_method = "PCA")
-dr.plotting(PCA_outL$dr_melted, dr_calculated = "PCA", color_by = "condition", output_type = NULL, size = 6)
+dr.plotting(PCA_outL$dr_melted, dr_calculated = "PCA", color_by = "condition", output_type = "png", size = 6)
 
 ## FlowSOM
 fsomL <- fsom.clustering(data = metadata_scL[,surface_markers], markers_to_use = "surface_markers", set.seed = 1234)
 metaclustersL <- fsom.metaclustering(fsom = fsomL, num_clusters_metaclustering = 40, plotting = T, set.seed = 1234)
 
-plot_clustering_heatmap_wrapper(expr = metadata_scL[,surface_markers], expr_saturated = matrix_clusters01[,surface_markers], 
+cluster_heatmap(expr = metadata_scL[,surface_markers], expr_saturated = matrix_clusters01[,surface_markers], 
                                 cell_clusters = metaclustersL$metaclusters)
 
 metadata_scL$FlowSOM_L <- metaclustersL$metaclusters
@@ -385,7 +386,7 @@ PlotStars(fsomL, backgroundValues = cell_clustering1mL_plotStars,  backgroundCol
 #Dimensional reduction plotting -> change to PCA, tSNE or UMAP
 dr.plotting(drL$dr_melted, dr_calculated = "tSNE", color_by = "cell_clustering1mL", output_type = NULL, facet_by = "patient_id")
 
-plot_clustering_heatmap_wrapper(expr = matrix_clusters[,surface_markers], 
+cluster_heatmap(expr = matrix_clusters[,surface_markers], 
                                 expr_saturated = matrix_clusters01[,surface_markers],
                                 cell_clusters = cell_clustering1mL)
 
@@ -446,7 +447,7 @@ ggdensity(dataset, x = "CD8_EM_CD27p",
 
 ## Correlation between condittions
 cor.plot.conditions(dataset, colname_condition = "condition", colname_patientID = "patient_id", 
-                    conditions = c("PB", "BM"), metadata = md)
+                    conditions = c("SP", "MO"), metadata = md)
 
 
 ## Boxplot visualization
