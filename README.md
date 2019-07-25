@@ -3,7 +3,7 @@
 # FlowCT: A semi-automated workflow for deconvolution of immunophenotypic data and objective reporting on large datasets 
 
 ![](https://img.shields.io/badge/devel%20version-1.0-orange.svg)
-[![Last-changedate](https://img.shields.io/badge/last%20change-2019--05--26-green.svg)](https://github.com/jgarces02/FlowCT/commits/master)
+[![Last-changedate](https://img.shields.io/badge/last%20change-2019--07--27-green.svg)](https://github.com/jgarces02/FlowCT/commits/master)
 
 FlowCT is a semi-automated pipeline for flow cytometry data analysis. 
 Starting from compensated data obtained with standardized protocols, allows simultaneous analyses of multiple files, automated cell clustering and statistical analysis. It provides results in tabular format that can be exported into other databases for integrated analysis (e.g. clinical trials).
