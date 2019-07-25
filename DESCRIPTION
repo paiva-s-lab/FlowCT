@@ -8,38 +8,40 @@ Authors@R: c(
 Description: FlowCT is a semi-automated pipeline for flow cytometry data analysis. 
     Starting from compensated data obtained with standardized protocols, allows simultaneous analyses of multiple files, automated cell clustering and statistical analysis. It provides results in tabular format that can be exported into other databases for integrated analysis (e.g. clinical trials). 
 Depends: R (>= 2.10)
-Suggests:
-    base,
-    ConsensusClusterPlus,
-    corrplot,
-    DataCombine,
-    dplyr,
-    flowAI,
-    flowCore,
-    FlowSOM,
-    flowStats,
-    flowViz,
-    ggplot2,
-    ggpubr,
-    ggrepel,
-    ggsci,
-    ggthemes,
-    ggtree,
-    gridExtra,
-    Hmisc,
-    matrixStats,
-    matrixTests,
-    fs,
-    pheatmap,
-    phytools,
-    premessa,
-    RColorBrewer,
-    readxl,
-    reshape2,
-    Rtsne.multicore,
-    data.table,
-    uwot
-License: What license is it under?
+License: CC0
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
+Imports:
+	ConsensusClusterPlus,
+    FlowSOM,
+    Hmisc,
+    Rtsne,
+    ape,
+    corrplot,
+    data.table,
+    dplyr,
+    flowAI,
+    flowCore,
+    fs,
+    ggplot2,
+    ggrepel,
+    ggtree,
+    gridExtra,
+    pheatmap,
+    premessa,
+    uwot
+Suggests: 
+    base,
+    DataCombine,
+    flowStats,
+    flowViz,
+    ggpubr,
+    ggsci,
+    ggthemes,
+    matrixStats,
+    matrixTests,
+    phytools,
+    RColorBrewer,
+    readxl,
+    reshape2
