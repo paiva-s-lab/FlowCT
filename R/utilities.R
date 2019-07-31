@@ -95,44 +95,28 @@ lims.FCS <- function(fcs){
 #' fcs_raw <- markers.names(fcs_raw, new_names = c("FSC_A", "FSC_H", "SSC_A", "SSC_H",
 #'     "CD62L", "CXCR3", "CD8", "CCR4", "CCR6", "CD4", "CD27", "CD45RA"))} #it shows and changes marker names according supplied ones
 
-
 markers.names <- function (fcs, new_names = NULL){
+  # require(gridExtra)
   lapply(c("grid", "gridExtra", "ggplot2"), require, character.only = TRUE)
-  
+
   if(is.null(new_names)){
     if(all(fcs[[1]]@parameters@data$name == fcs@colnames)){
-      y <- arrangeGrob(tableGrob(data.frame(fcs[[1]]@parameters@data$name, 
-                                            fcs[[1]]@parameters@data$desc, "not defined yet!"), 
-                                 cols = c("Florophore/Channel", "Marker (default name)", 
-                                          "New marker name")))
+      print(knitr::kable(data.frame(fcs[[1]]@parameters@data$name, 
+                                                  fcs[[1]]@parameters@data$desc, "not defined yet!"), 
+                                       col.names = c("Florophore/Channel", "Marker (default name)", 
+                                                "New marker name")))
     }else{
-      y <- arrangeGrob(tableGrob(data.frame(fcs[[1]]@parameters@data$name, 
-                                            fcs[[1]]@parameters@data$desc, fcs@colnames), 
-                                 cols = c("Florophore/Channel", "Marker (default name)", "New marker name")))
+      print(knitr::kable(data.frame(fcs[[1]]@parameters@data$name, 
+                                  fcs[[1]]@parameters@data$desc, fcs@colnames), 
+                                       col.names = c("Florophore/Channel", "Marker (default name)", "New marker name")))
     }
-    
-    ## check X11 active to redirect output
-    if("try-error" %in% class(suppressWarnings(try(x11(), silent = T)))){
-      cat("X11 is not active, markers table is saved in -> markers_table_NULL.jpg\n")
-      suppressMessages(ggsave("markers_table_NULL.jpg", device = "jpeg", plot = y))
-    }else{
-      grid.draw(y)
-    }
-    
-    ## add new markers names
+
+  ## add new markers names
   }else{
-    y <- arrangeGrob(tableGrob(data.frame(fcs[[1]]@parameters@data$name, 
-                                          fcs[[1]]@parameters@data$desc, new_names), 
-                               cols = c("Florophore/Channel", "Marker (default name)", "New marker name")))
-    
-    ## check X11 active to redirect output
-    if("try-error" %in% class(suppressWarnings(try(x11(), silent = T)))){
-      cat("X11 is not active, markers table is saved in -> markers_table_NEW.jpg\n")
-      suppressMessages(ggsave("markers_table_NEW.jpg", device = "jpeg", plot = y))
-    }else{
-      grid.draw(y)
-    }
-    
+    print(knitr::kable(data.frame(fcs[[1]]@parameters@data$name, 
+                                                fcs[[1]]@parameters@data$desc, new_names), 
+                                     col.names = c("Florophore/Channel", "Marker (default name)", "New marker name")))
+
     fcs@colnames <- new_names
     return(fcs)
   }
