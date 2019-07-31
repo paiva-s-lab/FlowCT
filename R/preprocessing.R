@@ -103,6 +103,8 @@ qc.and.removeDoublets <- function(directory = ".", reduction_suffix = ".red",
     if(red/orig < 0.7){
       cat("WARNING! >", i, "has lost some much cells (more that 30%) in the QC and doublets removal steps, consider to review it!", )
     }
+    
+    write.FCS(file_d, paste0(output_folder, "/", gsub(".fcs$", "", file), output_suffix, ".fcs"))
   }
     
   cat("------------------------------\nFinal QC and remove doublets result:")  
@@ -111,8 +113,7 @@ qc.and.removeDoublets <- function(directory = ".", reduction_suffix = ".red",
   qct$warning <- ifelse(qct$X..anomalies >= 30, "(!)", "")
   print(knitr::kable(qct, col.names = c("filenames", "# initial events", "% deleted events", "Warning!")))
   cat("\n")
-
-  write.FCS(file_d, paste0(output_folder, "/", gsub(".fcs$", "", file), output_suffix, ".fcs"))
+  
   setwd(output_folder)
   invisible(file.remove(list.files(pattern = "miniQC")))
 }
