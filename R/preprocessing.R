@@ -109,7 +109,7 @@ qc.and.removeDoublets <- function(directory = ".", reduction_suffix = ".red",
   qct <- read.table("miniQC.txt", header = T, sep = "\t", 
                     colClasses = c("character", rep("numeric", 2), rep("NULL", 4)))
   qct$warning <- ifelse(qct$X..anomalies >= 30, "(!)", "")
-  print(kable(qct, col.names = c("filenames", "# initial events", "% deleted events", "Warning!")))
+  print(knitr::kable(qct, col.names = c("filenames", "# initial events", "% deleted events", "Warning!")))
   cat("\n")
 
   write.FCS(file_d, paste0(output_folder, "/", gsub(".fcs$", "", file), output_suffix, ".fcs"))
