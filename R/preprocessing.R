@@ -105,7 +105,7 @@ qc.and.removeDoublets <- function(directory = ".", reduction_suffix = ".red",
     }
   }
     
-  cat("------------------------------\nFinal QC and remove doubles result:")  
+  cat("------------------------------\nFinal QC and remove doublets result:")  
   qct <- read.table("miniQC.txt", header = T, sep = "\t", 
                     colClasses = c("character", rep("numeric", 2), rep("NULL", 4)))
   qct$warning <- ifelse(qct$X..anomalies >= 30, "(!)", "")
