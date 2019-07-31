@@ -165,8 +165,8 @@ qc.and.removeDoublets <- function(directory = ".",  reduction_computed = TRUE, r
         grid.arrange(tableGrob(qct, cols = c("# initial events", "% deleted events")))
       }
       
-      invisible(file.remove(list.files(pattern = "miniQC")))},
+     setwd(output_folder)
+     invisible(file.remove(list.files(pattern = "miniQC")))},
     
     error = function(e) {invisible(file.remove(list.files(pattern = "_HQ.fcs$|miniQC|tmp"))); print("An ERROR has occurred!")})
-  setwd(output_folder)
 }
