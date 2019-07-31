@@ -1,0 +1,79 @@
+#!/bin/Rscript
+library(flowCore)
+library(optparse)
+
+## command line setting
+option_list = list(
+  make_option(c("-d", "--directory"), type = "character", default = ".", 
+              help = "path to FCS folder (default = current directory)", metavar = "character"),
+  make_option(c("-r", "--reduction"), type = "logical", default = TRUE, 
+              help = "logical indicating whether perform reduction (default = TRUE)", metavar = "logical"),
+  make_option(c("-k", "--keep_n_events"), type = "integer", default = 10000, 
+              help = "events to keep from original file (default = 10000)", metavar = "integer"),
+  make_option(c("-s", "--output_suffix"), type = "character", default = ".ren.red", 
+              help = "output suffix for new FCS files (default = '.ren')", metavar = "character"),
+  make_option(c("-o", "--output_folder"), type = "character", default = ".", 
+              help = "output folder for storing new FCS files (default = current directory)", metavar = "character")
+)
+opt_parser <- OptionParser(option_list = option_list)
+opt <- parse_args(opt_parser)
+
+directory <- opt$directory
+reduction <- opt$reduction
+keep_n_events <- opt$keep_n_events
+output_suffix <- opt$output_suffix
+output_folder <- opt$output_folder
+
+
+## script
+if(output_folder != ".") dir.create(output_folder)
+
+for(i in list.files(pattern = ".fcs$", path = directory)){
+  cat("\nProcessing file:", i)
+  aux <- read.FCS(i)
+  
+  if(reduction){
+    # cat("\t - Reducing number of events to >", keep_n_events, "\n")
+    #events reduction
+    if(dim(aux@exprs)[1] < keep_n_events){
+      cat("Attention!", file, "has a lower number of events that specified so won't be computed for this file.\n")
+    }else{
+      cat(" (keeping >", keep_n_events, "events)")
+      tmp_exprs <- aux@exprs[sample(nrow(aux@exprs), keep_n_events),] #reduce events number
+      
+      aux@parameters@data$desc <- ifelse(is.na(aux@parameters@data$desc), aux@parameters@data$name, aux@parameters@data$desc) #replace NA values with CD names
+      aux@parameters@data$desc <- sapply(aux@parameters@data$desc, function(x) strsplit(x, ":")[[1]][1]) #separe maker:antibody (eg. CCR4:PE-Cy7-A)
+      
+      #re-generate FCS
+      aux <- new("flowFrame", exprs  = tmp_exprs, parameters = aux@parameters, description = aux@description)
+    }
+  }else{
+    cat(" (no reduction option selected)")
+    output_suffix <- ".ren"
+  }
+  
+  # cat("\t - Adjusting fluorofore names\n")
+  #delete non-interesting markers (Time)
+  aux@parameters@data <- aux@parameters@data[!grepl("Time", aux@parameters@data$name),]
+  aux@exprs <- aux@exprs[,!grepl("Time", colnames(aux@exprs))]
+  
+  #unify fluorofore names
+  fnames <- colnames(aux)
+  fnames <- gsub(".*:", "", fnames) #tunne those markers:channel to only channel
+  fnames[grepl("Pacific Blue-A", fnames)] <- "V450-A"
+  fnames[grepl("Pacific Orange-A|AmCyan-A", fnames)] <- "V500-A"
+  fnames[grepl("PerCP-A", fnames)] <- "PerCP-Cy5-5-A"
+  fnames[grepl("APC-Cy7-A", fnames)] <- "APC-H7-A"
+  
+  aux@parameters@data$name <- fnames
+  colnames(aux@exprs) <- fnames  
+  
+  #adjust order
+  o <- c("FSC-A", "FSC-H", "SSC-A", "SSC-H", "FITC-A", "PE-A", "PerCP-Cy5-5-A", "PE-Cy7-A","APC-A", "APC-H7-A", "V500-A", "V450-A")
+  aux@exprs <- aux@exprs[,o]
+  aux@parameters@data <- aux@parameters@data[match(aux@parameters@data$name, o),]
+  
+  #create new FCS file
+  write.FCS(aux, filename = paste0(output_folder, "/", gsub(".fcs", "", i), output_suffix, ".fcs"))
+}
+cat("\n\n>>> Final markers order: FSC-A, FSC-H, SSC-A, SSC-H, FITC-A, PE-A, PerCP-Cy5-5-A, PE-Cy7-A, APC-A, APC-H7-A, V500-A, V450-A\n")
