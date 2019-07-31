@@ -103,7 +103,7 @@ qc.and.removeDoublets <- function(directory = ".",  reduction_computed = TRUE, r
       sink("tmp") #to turn off stdout (other options don't work)
       suppressWarnings(flow_auto_qc(filelist, ChExcludeFS = c("FSC-H", "SSC-H","FSC-A", "SSC-A"), fcs_highQ = "_HQ", 
                                     fcs_QC = FALSE, output = 0, html_report = F, folder_results = F, mini_report = "miniQC"))
-      sink(NULL)
+      sink()
       
       ## doublet removal
       if(reduction_computed){
