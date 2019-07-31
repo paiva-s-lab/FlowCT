@@ -46,25 +46,7 @@ reduce.FCS <- function(file_or_directory = ".", keep_n_events = 100000, output_s
   setwd(output_folder)
 }
 
-
-remove.doublets <- function(flowFrame, d1="FSC-A", d2="FSC-H", w=NULL,silent=TRUE){
-  #calculate the ratios
-  ratio <- exprs(flowFrame)[,d1] / (1+ exprs(flowFrame)[,d2])
-  
-  #define the region that is accepted
-  r <- median(ratio)
-  if(is.null(w)){ w <- 2*sd(ratio) }
-  if(!silent){
-    print(r)
-    print(w)
-  }
-  
-  #make selection
-  selection <- which(ratio < r+w)
-  return(flowFrame[selection,])
-}
-
-
+                                         
 #' qc.and.removeDoublets
 #'
 #' This function performs a double-step procedure in all FCS files cointained within a folder:\enumerate{
@@ -90,83 +72,47 @@ remove.doublets <- function(flowFrame, d1="FSC-A", d2="FSC-H", w=NULL,silent=TRU
 qc.and.removeDoublets <- function(directory = ".",  reduction_computed = TRUE, reduction_suffix = "_red",
                                   output_suffix = "_preprocessed", output_folder = "results_HQsinglets"){
   
+  lapply(c("flowAI", "flowCore", "gridExtra", "ggplot2"), require, character.only = TRUE)
+  
   setwd(directory)
   dir.create(output_folder) #create the output folder
   
-  tryCatch( #handle errors
-    {if(reduction_computed){
-      filelist <- list.files(pattern = paste0(reduction_suffix, ".fcs$"))
-    }else{
-      filelist <- list.files(pattern = ".fcs$")
-    }
-      
-      sink("tmp") #to turn off stdout (other options don't work)
-      suppressWarnings(flow_auto_qc(filelist, ChExcludeFS = c("FSC-H", "SSC-H","FSC-A", "SSC-A"), fcs_highQ = "_HQ", 
-                                    fcs_QC = FALSE, output = 0, html_report = F, folder_results = F, mini_report = "miniQC"))
-      sink()
-      
-      ## doublet removal
-      if(reduction_computed){
-        filelist <- list.files(pattern = paste0(reduction_suffix, "_HQ.fcs$"))
-      }else{
-        filelist <- list.files(pattern = "_HQ.fcs$") 
-      }
-      
-      
-      for(file in filelist){
-        cat(paste0("Processing: ", file, "\n")) 
-        
-        flowFrame <- read.FCS(paste(file,sep="/"))
-        flowFrame_d <- remove.doublets(flowFrame, d1 = "FSC-A", d2 = "FSC-H")
-        
-        if(reduction_computed){
-          write.FCS(flowFrame_d, paste0(output_folder, "/", gsub(paste0(reduction_suffix, "_HQ.fcs$"), "", file), output_suffix, ".fcs"))
-        }else{
-          write.FCS(flowFrame_d, paste0(output_folder, "/", gsub("_HQ.fcs", "", file), output_suffix, ".fcs"))
-        }
-      }
-      
-      invisible(file.remove(list.files(pattern = "_HQ.fcs$|tmp")))
-      
-      ## calculate ratios for corrected samples
-      if(reduction_computed){
-        filelist <- list.files(pattern = paste0(reduction_suffix, ".fcs$"))
-      }else{
-        filelist <- list.files(pattern = ".fcs$")
-      }
-      
-      for(i in filelist){
-        if(reduction_computed){
-          n_aux <- gsub("_red.fcs", "", i)  
-        }else{
-          n_aux <- gsub(".fcs", "", i)
-        }
-        
-        r_aux <- read.FCS(i)
-        red <- as.numeric(dim(r_aux@exprs)[1])
-        
-        f_aux <- read.FCS(paste0(output_folder, "/", list.files(path = output_folder))[grep(n_aux, list.files(path = output_folder), fixed = T)])
-        final <- as.numeric(dim(f_aux@exprs)[1])
-        
-        if(final/red < 0.7){
-          print(paste0("WARNING! > ", i, " has lost some much cells (more that 30%) in the QC and doublets removal steps, consider to review it!"))
-        }
-      }
-      
-      qct <- read.table("miniQC.txt", header = T, sep = "\t", row.names = 1, 
-                        colClasses = c(rep("character", 2), rep("NULL", 4)))
-      
-      ## check X11 active to redirect output
-      if("try-error" %in% class(suppressWarnings(try(x11(), silent = T)))){
-        cat("X11 is not active, QC table is saved as -> ", output_folder, "/QC_table.jpg\n", sep = "")
-        suppressMessages(ggsave(paste0(output_folder, "/QC_table.jpg"), device = "jpeg",
-                                plot = grid.arrange(tableGrob(qct, cols = c("# initial events", "% deleted events")))))
-      }else{
-        grid.arrange(tableGrob(qct, cols = c("# initial events", "% deleted events")))
-      }
-      
-     setwd(output_folder)
-     invisible(file.remove(list.files(pattern = "miniQC")))},
+  if(reduction_computed){
+    (filelist <- list.files(pattern = paste0(reduction_suffix, ".fcs$")))
+  }else{
+    filelist <- list.files(pattern = ".fcs$")
+  }
     
-    error = function(e) {invisible(file.remove(list.files(pattern = "_HQ.fcs$|miniQC|tmp"))); print("An ERROR has occurred!")})
+  for(file in filelist){
+    cat(paste0("Processing: ", file, "\n")) 
+    sink("tmp") #to turn off stdout (other options don't work)
+    file_q <- suppressWarnings(flow_auto_qc(file, ChExcludeFS = c("FSC-H", "SSC-H","FSC-A", "SSC-A"),
+                                  fcs_QC = FALSE, output = 1, html_report = F, folder_results = F, mini_report = "miniQC"))
+    sink();invisible(file.remove(list.files(pattern = "tmp")))
+    
+    ## doublet removal
+    ratio <- exprs(file_q)[,"FSC-A"]/(1+ exprs(file_q)[,"FSC-H"]) #calculate the ratios
+    r <- median(ratio)
+    w <- 2*sd(ratio) 
+    file_d <- file_q[which(ratio < r+w),] #define the region that is accepted
+
+    ## calculate ratios for corrected samples
+    orig <- read.FCS(file)
+    orig <- as.numeric(dim(orig@exprs)[1])
+    red <- as.numeric(dim(file_d@exprs)[1])
+      
+    if(red/orig < 0.7){
+      cat("WARNING! >", i, "has lost some much cells (more that 30%) in the QC and doublets removal steps, consider to review it!", )
+    }
+  }
+    
+  cat("------------------------------\nFinal QC and remove doubles result:")  
+  qct <- read.table("miniQC.txt", header = T, sep = "\t", 
+                    colClasses = c("character", rep("numeric", 2), rep("NULL", 4)))
+  qct$warning <- ifelse(qct$X..anomalies >= 30, "(!)", "")
+  print(kable(qct, col.names = c("filenames", "# initial events", "% deleted events", "Warning!")))
+  cat("\n")
+
+  setwd(output_folder)
+  invisible(file.remove(list.files(pattern = "miniQC")))
 }
