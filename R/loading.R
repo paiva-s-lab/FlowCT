@@ -1,6 +1,6 @@
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage("Please, if you use FlowCT package you can cite it as:\n
-                            Botta, xxxxxx\n\nAnd for any issue you have, go to our GitHub page: xxx")
+                            Botta, xxxxxx\n\nAnd for any issue you have, go to our GitHub page: xxx\n")
 }
 
 # automatically load required packages when library(FlowCT)
