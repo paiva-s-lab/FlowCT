@@ -113,6 +113,7 @@ qc.and.removeDoublets <- function(directory = ".",  reduction_computed = TRUE, r
   print(kable(qct, col.names = c("filenames", "# initial events", "% deleted events", "Warning!")))
   cat("\n")
 
+  write.FCS(file_d, paste0(output_folder, "/", gsub(".fcs$", "", file), output_suffix, ".fcs"))
   setwd(output_folder)
   invisible(file.remove(list.files(pattern = "miniQC")))
 }
