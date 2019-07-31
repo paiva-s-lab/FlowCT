@@ -43,6 +43,7 @@ reduce.FCS <- function(file_or_directory = ".", keep_n_events = 100000, output_s
     }
   }
   rm(aux, tmp_exprs)
+  setwd(output_folder)
 }
 
 
@@ -167,4 +168,5 @@ qc.and.removeDoublets <- function(directory = ".",  reduction_computed = TRUE, r
       invisible(file.remove(list.files(pattern = "miniQC")))},
     
     error = function(e) {invisible(file.remove(list.files(pattern = "_HQ.fcs$|miniQC|tmp"))); print("An ERROR has occurred!")})
+  setwd(output_folder)
 }
