@@ -53,10 +53,9 @@ reduce.FCS <- function(file_or_directory = ".", keep_n_events = 100000, output_s
 #'    \item It executes a quality control based in \href{http://bioconductor.org/packages/release/bioc/vignettes/flowAI/inst/doc/flowAI.html}{\code{flowAI::flow_auto_qc()}}},
 #'    \item Remove doublets according criteria described \href{https://github.com/LennonLab/flow-cytometry/blob/fcf09fc7b4943a386864de9b8ee43ce4e1c8d34d/bin/support_functions.R}{here}}.
 #' @param directory Directory with FCS files to process. Default = "." (current directory)
-#' @param reduction_computed Logical indicating wheter previuous reduction has been computed (through \code{\link[FlowCT:reduce.FCS]{FlowCT::reduce.FCS()}}). Default = \code{TRUE}
-#' @param reduction_suffix Suffix added previously to reduced files trough \code{\link[FlowCT:reduce.FCS]{FlowCT::reduce.FCS()}}.
-#' @param output_suffix Suffix to be added to final FCS files. Default = "_preprocessed"
-#' @param output_folder Folder name for storing final FCS files. Default = "results_HQsinglets"
+#' @param reduction_suffix Suffix added previously to reduced files trough \emph{Rscript consolidate_and_reduction.rscript} or \code{\link[FlowCT:reduce.FCS]{FlowCT::reduce.FCS()}}. If \code{NULL}, you're indicating previous reduction has not been performed. Default = ".red"
+#' @param output_suffix Suffix to be added to final FCS files. Default = ".preprocessed"
+#' @param output_folder Folder name for storing final FCS files. Default = "results_preprocessing"
 #' @keywords quality control
 #' @keywords doublets
 #' @keywords remove
@@ -69,16 +68,16 @@ reduce.FCS <- function(file_or_directory = ".", keep_n_events = 100000, output_s
 #' @examples
 #' \dontrun{qc.and.removeDoublets()}
 
-qc.and.removeDoublets <- function(directory = ".",  reduction_computed = TRUE, reduction_suffix = "_red",
-                                  output_suffix = "_preprocessed", output_folder = "results_preprocessing"){
+qc.and.removeDoublets <- function(directory = ".", reduction_suffix = ".red",
+                                  output_suffix = ".preprocessed", output_folder = "results_preprocessing"){
   
   lapply(c("flowAI", "flowCore", "gridExtra", "ggplot2"), require, character.only = TRUE)
   
   setwd(directory)
   dir.create(output_folder) #create the output folder
   
-  if(reduction_computed){
-    (filelist <- list.files(pattern = paste0(reduction_suffix, ".fcs$")))
+  if(!is.null(reduction_suffix)){
+    filelist <- list.files(pattern = paste0(reduction_suffix, ".fcs$"))
   }else{
     filelist <- list.files(pattern = ".fcs$")
   }
