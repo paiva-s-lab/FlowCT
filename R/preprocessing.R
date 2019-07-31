@@ -70,7 +70,7 @@ reduce.FCS <- function(file_or_directory = ".", keep_n_events = 100000, output_s
 #' \dontrun{qc.and.removeDoublets()}
 
 qc.and.removeDoublets <- function(directory = ".",  reduction_computed = TRUE, reduction_suffix = "_red",
-                                  output_suffix = "_preprocessed", output_folder = "results_HQsinglets"){
+                                  output_suffix = "_preprocessed", output_folder = "results_preprocessing"){
   
   lapply(c("flowAI", "flowCore", "gridExtra", "ggplot2"), require, character.only = TRUE)
   
