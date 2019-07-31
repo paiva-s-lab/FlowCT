@@ -1,9 +1,9 @@
 #' reduce.FCS
 #'
-#' This function reduce the number of events for a single FCS file or multiple FCS files contained in a given folder.
+#' This function reduce the number of events for a single FCS file or multiple FCS files contained in a given folder. It creates a new folder and changes \code{setwd()} inside it.
 #' @param file_or_directory FCS filename or directory where to search for FCS files. Default = "." (current directory)
 #' @param keep_n_events Number of events to keep in each FCS files. Default = 100000
-#' @param output_suffix Suffix to be added to reduced FCS files. Default = "_red"
+#' @param output_suffix Suffix to be added to reduced FCS files. Default = ".red"
 #' @param output_folder Folder name for storing new reduced FCS files. Default = "reduced"
 #' @keywords reduce
 #' @keywords events
@@ -12,7 +12,7 @@
 #' @examples
 #' \dontrun{reduce.FCS()}
 
-reduce.FCS <- function(file_or_directory = ".", keep_n_events = 100000, output_suffix = "_red",
+reduce.FCS <- function(file_or_directory = ".", keep_n_events = 100000, output_suffix = ".red",
                        output_folder = "reduced"){
   if(is_file(file_or_directory)){
     filelist <- file_or_directory
