@@ -122,6 +122,7 @@ dr.plotting <- function(data, dr_calculated, color_by = "expression", facet_by =
   cat(paste0(dr_calculated, " reduction colored by ", color_by, 
              ifelse(is.null(facet_by), "", paste0(" and faceted by ", facet_by)), 
              ifelse(is.null(output_type), "", paste0(". Saved as -> ", paste0(output_name, "dr.", dr_calculated, "_col.", color_by, ".", output_type)))), "\n")
+  return(g)
 }
 
 
