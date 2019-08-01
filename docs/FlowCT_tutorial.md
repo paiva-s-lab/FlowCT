@@ -14,7 +14,7 @@ So let's go! Pipeline is structurated in multiple parts, some internals and othe
 4. Descriptive analysis through heatmaps, boxplots, PCA... at general and single-cell level.
 5. Cell clustering using SOM (Self-Organizing Map), PCA, tSNE and UMAP and respective visualizations.
 6. New global FCS generation and manually identification of generated clusters in the previous step. Later, assign and merge of identified cell populations.
-7. (Optional) Subclustering and repeeat the analysis on a desired specific population.
+7. (Optional) Subclustering and repeat the analysis on a desired specific population.
 8. Exporting table for statistical analysis, either inside R or another statistic software.
 
 # Add references and URLs for used packages (?)
@@ -411,11 +411,9 @@ Once all the process of clustering and dimensional reduction have been completed
 ```
 ..... external tutorial? ......
 
-The final step for external analysis is to create an excel file (or a text file and modify consequently code below) assigning a new name for each cluster, some like that: 
+The final step for external analysis is to create an excel file (or a text file and modify consequently code below) assigning a new name for each cluster, some like that...
 
-<center>
-
-|original_cluster | new_name        |
+|original_cluster | new_cluster     |
 |----------------:|:----------------|
 |1                | debris          |
 |2                | lymphocytes     |
@@ -423,5 +421,120 @@ The final step for external analysis is to create an excel file (or a text file 
 |4                | eosinophils     |
 |5                | erythroblasts   |
 |...              | ...             |
-    
-</center>
+
+...read it in R and replace previuous clusters with new ones, drawing again dimensional reduction plots:
+```
+> cluster_merging1 <- read_excel("../Th_new_clustering.xlsx", col_types = "text")
+
+> cell_clustering1m <- FindReplace(data.frame(cell_clustering1m = as.factor(metaclusters$metaclusters)), Var = "cell_clustering1m", replaceData = cluster_merging1, from = "original_cluster", to = "new_cluster", vector = T) %>% as.factor()
+Only exact matches will be replaced.
+
+> cell_clustering1m_plotStars <- FindReplace(data.frame(cell_clustering1m = as.factor(metaclusters$plotStars_value)), Var = "cell_clustering1m", replaceData = cluster_merging1, from = "original_cluster", to = "new_cluster", vector = T) %>% as.factor()
+Only exact matches will be replaced.
+
+> dr$dr_melted$cell_clustering1m <- FindReplace(data.frame(cell_clustering1m = as.factor(dr$dr$SOM)), 
+                                    Var = "cell_clustering1m", replaceData = cluster_merging1, from = "original_cluster", to = "new_cluster", vector = T) %>% as.factor()
+Only exact matches will be replaced.
+
+> dr.plotting(dr$dr_melted, dr_calculated = "tSNE", color_by = "cell_clustering1m", output_type = "png")
+tSNE reduction colored by cell_clustering1m. Saved as -> dr.tSNE_col.cell_clustering1m.png
+> dr.plotting(dr$dr_melted, dr_calculated = "UMAP", color_by = "cell_clustering1m", output_type = "png")
+UMAP reduction colored by cell_clustering1m. Saved as -> dr.UMAP_col.cell_clustering1m.png
+
+> PlotStars(fsom, backgroundValues = cell_clustering1m_plotStars, backgroundColor = alpha(colors_palette, alpha = 0.4))
+
+> cluster_heatmap(expr = expr[, surface_markers], expr_saturated = expr01[, surface_markers], cell_clusters = cell_clustering1m)
+```
+<p float="left"> 
+  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/dr.tSNE_col.cell_clustering1m.png" width="200" /> 
+  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/dr.UMAP_col.cell_clustering1m.png" width="200" />  
+  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/MST_newClust.png" width="200" />  
+  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/heatmap......" width="200" />  
+</p> 
+
+#### 7) Subclustering analysis 
+At this point, the next step is to perform a deeper analysis on specific subpopulation identified with the FlowSom clustering followed by cluster merging... so, let's go to repeat the above analysis (very quickly)!.
+```
+#generation of a new matrix for subclustering
+> metadata_sc <- cbind(mdsc, FlowSOM = cell_clustering1m)
+
+#keep only desired cell population
+> matrix_clusters <- as.matrix(metadata_sc[metadata_sc$FlowSOM == "lymphocytes", surface_markers])
+
+> rngL <- colQuantiles(matrix_clusters, probs = c(0.01, 0.99))
+> matrix_clusters01 <- t((t(matrix_clusters) - rngL[, 1]) / (rngL[, 2] - rngL[, 1]))
+> matrix_clusters01[matrix_clusters01 < 0] <- 0
+> matrix_clusters01[matrix_clusters01 > 1] <- 1
+
+> metadata_scL <- metadata_sc[metadata_sc$FlowSOM == "lymphocytes",]
+> rownames(metadata_scL) <- NULL #reset rownames after cell selection (for later subsampling)
+
+> expr_no_transfL <- expr_no_transf[metadata_sc$FlowSOM == "lymphocytes",]
+
+#lymphocytes subclustering
+> cell.count.bx(metadata_scL, counts_by = "sample_id", metadata = md)
+```
+![boxplot_subclust](https://github.com/jgarces02/FlowCT/blob/master/docs/MST_metaclustering.fsom.jpg "Boxplot specific subclustering")
+```
+#FlowSOM
+> fsomL <- fsom.clustering(data = metadata_scL[,surface_markers], markers_to_use = "surface_markers", set.seed = 1234)
+> metaclustersL <- fsom.metaclustering(fsom = fsomL, num_clusters_metaclustering = 40, plotting = T, set.seed = 1234)
+
+> cluster_heatmap(expr = metadata_scL[,surface_markers], expr_saturated = matrix_clusters01[,surface_markers], cell_clusters = metaclustersL$metaclusters)
+
+> metadata_scL$FlowSOM_L <- metaclustersL$metaclusters
+```
+imagen...
+```
+#dim reduction
+> sub_idxL <- sub.samples.idx(metadata_scL, colname_samples = "sample_id", samples_names = md$sample_id, subsampling = 1000, set.seed = 1234)
+> sel_exprL <- metadata_scL[sub_idxL,]
+
+> drL <- dim.reduction(sel_exprL[,surface_markers], metadata = sel_exprL[,!(colnames(sel_exprL) %in% surface_markers)], reduction_method = "all", set.seed = 1234)
+
+> gg_list <- list() #list to store plots
+> for(marker in surface_markers) gg_list[[marker]] <- dr.plotting(drL$dr, dr_calculated = "PCA", color_by = marker, output_type = NULL)
+> do.call("grid.arrange", c(gg_list, nrow = 2)) #show all plots
+```
+![dr_markers_subclust](https://github.com/jgarces02/FlowCT/blob/master/docs/marker_expression_sublust.png "Multimarker ploting dr subclustering")
+# Algo está petando en la sustitución en el DR...
+```
+#exporting
+> to_export <- data.frame(sample_id = as.numeric(sel_exprL$sample_id), patient_id = as.numeric(sel_exprL$patient_id), condition = as.numeric(sel_exprL$condition), cluster_somL = as.numeric(sel_exprL$FlowSOM_L), expr_no_transfL[sub_idxL,], drL$dr[,grepl("PCA|tSNE|UMAP", colnames(drL$dr))])
+> outFileL <- file.path(getwd(), "alltubeThclustL.fcs")
+> write.FCS(as_flowFrame(as.matrix(to_export), source.frame = NULL), outFileL)
+
+# ++++++++++++++++++++++++++++
+# external step >>> manual analysis in a flow cytometry software to identify clusters
+# ++++++++++++++++++++++++++++
+
+#merge clusters
+> cluster_merging1L <- read_excel("../../../Th_new_clusteringL.xlsx", col_types = "text")
+
+> cell_clustering1mL <- FindReplace(data.frame(cell_clustering1m = as.factor(metaclustersL$metaclusters)), Var = "cell_clustering1m", replaceData = cluster_merging1L, from = "original_cluster", to = "new_cluster", vector = T) %>% as.factor()
+> cell_clustering1mL_plotStars <- FindReplace(data.frame(cell_clustering1m = as.factor(metaclustersL$plotStars_value)), Var = "cell_clustering1m", replaceData = cluster_merging1L, from = "original_cluster", to = "new_cluster", vector = T) %>% as.factor()
+> drL$dr_melted$cell_clustering1mL <- FindReplace(data.frame(cell_clustering1m = as.factor(drL$dr$FlowSOM_L)), Var = "cell_clustering1m", replaceData = cluster_merging1L, from = "original_cluster", to = "new_cluster", vector = T) %>% as.factor()
+
+#new dr plots
+> PlotStars(fsomL, backgroundValues = cell_clustering1mL_plotStars,  backgroundColor = alpha(colors_palette, alpha = 0.5))
+
+> dr.plotting(drL$dr_melted, dr_calculated = "tSNE", color_by = "cell_clustering1mL", output_type = NULL, facet_by = "patient_id")
+
+> cluster_heatmap(expr = matrix_clusters[,surface_markers], expr_saturated = matrix_clusters01[,surface_markers], cell_clusters = cell_clustering1mL)
+```
+To have a better idea of distribution and phenotype of each population we represented our results in a phylogenic tree taking advantage of the recently developed ggtree22 package. The heatmap associated to each cell population reports the median expression of each marker, while the dimension of the circle is proportional to the relative abundance of the population itself. Next we performed a single cell heatmap to verify if the manual cluster merging respected the unsupervised distribution of cells.
+
+First line (`circ.tree.selectNodes`) draws a simple circular dendrogram to select those nodes where we can cut and differentiate each cell subpopulation (that will be colored later with `circ.tree`).
+```
+> circ.tree.selectNodes(exprs = matrix_clusters, exprs_saturated = matrix_clusters01, cell_clusters = cell_clustering1mL)
+> circ.tree(exprs = matrix_clusters, exprs_saturated = matrix_clusters01, cell_clusters = cell_clustering1mL, dendro_labels = F, nodes = c(29,33,35))
+
+#heatmap
+> sub_idxL_heat <- sub.samples.idx(metadata_scL, colname_samples = "sample_id", subsampling = 1000, set.seed = 1234)
+> sel_exprL_heat <- metadata_scL[sub_idxL_heat,]
+
+> annotation_col <- data.frame(row.names = rownames(sel_exprL_heat), sel_exprL_heat[,!(colnames(sel_exprL_heat) %in% surface_markers)])
+> annotation_colors <- list(condition = c(BM = colors_palette[1], PB = colors_palette[2]))
+
+> pheatmap(t(sel_exprL_heat[,surface_markers]), annotation_col = annotation_col, clustering_method = "average", color = colorRampPalette(brewer.pal(n = 9, name = "YlGnBu"))(100), display_numbers = FALSE, number_color = "black", fontsize_number = 5, annotation_colors = annotation_colors, show_colnames = F, treeheight_col = 0, treeheight_row = 0)
+```
