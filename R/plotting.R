@@ -18,13 +18,13 @@
 #' plot_clustering_heatmap_wrapper(expr = expr[,surface_markers],
 #'     expr_saturated = expr01[,surface_markers], cell_clusters = df$FlowSOM)}
 
-cluster.heatmap <- function(expr, expr_saturated, cell_clusters){
+cluster.heatmap <- function(expr, expr_saturated, cell_clusters, cluster_merging = NULL){
   #calculate the median expression
   expr_median <- data.frame(expr, cell_clusters = cell_clusters) %>%
-    group_by(.data$cell_clusters) %>% summarize_all(.data, median(.data$cell_clusters))
+    group_by(cell_clusters) %>% summarize_all(list(median))
   
   expr_saturated_median <- data.frame(expr_saturated, cell_clusters = cell_clusters) %>%
-    group_by(.data$cell_clusters) %>% summarize_all(.data, median(.data$cell_clusters))
+    group_by(cell_clusters) %>% summarize_all(list(median))
   
   #calculate cluster frequencies
   clustering_table <- as.numeric(table(cell_clusters))
@@ -47,19 +47,28 @@ cluster.heatmap <- function(expr, expr_saturated, cell_clusters){
   colors_palette1 <- colors_palette[1:nlevels(annotation_row$Cluster)]
   names(colors_palette1) <- levels(annotation_row$Cluster)
   annotation_colors <- list(Cluster = colors_palette1)
-
-  p <- pheatmap(expr_heat, color = color_heat, cluster_cols = FALSE,
-                cluster_rows = cluster_rows, labels_row = labels_row,
-                display_numbers = FALSE, number_color = "black",
-                fontsize = 8, fontsize_number = 6, legend_breaks = legend_breaks,
-                annotation_row = annotation_row, annotation_colors = annotation_colors)
   
+  #annotation for merged clusters
+  if(!is.null(cluster_merging)){
+    cluster_merging$new_cluster <- factor(cluster_merging$new_cluster)
+    annotation_row$Cluster_merging <- cluster_merging$new_cluster
+    colors_palette2 <- colors_palette[1:nlevels(cluster_merging$new_cluster)]
+    names(colors_palette2) <- levels(cluster_merging$new_cluster)
+    annotation_colors$Cluster_merging <- colors_palette2
+  }
+  
+  p <- pheatmap(expr_heat, color = color_heat, cluster_cols = FALSE,
+           cluster_rows = cluster_rows, labels_row = labels_row,
+           display_numbers = FALSE, number_color = "black",
+           fontsize = 8, fontsize_number = 6, legend_breaks = legend_breaks,
+           annotation_row = annotation_row, annotation_colors = annotation_colors)
+
   ## check X11 active to redirect output
   if("try-error" %in% class(suppressWarnings(try(x11(), silent = T)))){
     cat("X11 is not active, percentaje heatmap is saved as -> pctHeatmap.", deparse(substitute(expr)), ".jpg\n", sep = "")
-    suppressMessages(ggsave(paste0("pctHeatmap.", deparse(substitute(expr)), ".jpg"), device = "jpeg", plot = p))
+    suppressMessages(ggsave(paste0("pctHeatmap.", gsub("\\[.*.", "", deparse(substitute(expr))), ".jpg"), device = "jpeg", plot = p))
   }else{
-    print(p)
+    p
   }
 }
 
@@ -149,11 +158,12 @@ dr.plotting <- function(data, dr_calculated, color_by = "expression", facet_by =
 #'     cell_clusters = cell_clustering)}
 
 circ.tree.selectNodes <- function(exprs, exprs_saturated, cell_clusters, dist_method = "euclidean", hclust_method = "average"){
+  ## Circular hyerarchical clustering tree
   #median expression of each marker for each cell population
   expr_medianL <- data.frame(exprs, cell_clustering = cell_clusters) %>%
-    group_by(.data$cell_clustering) %>% summarize_all(.data, median(.data$cell_clustering)) %>% as.data.frame()
+    group_by(cell_clustering) %>% summarize_all(list(median)) %>% as.data.frame()
   expr01_medianL <- data.frame(exprs_saturated, cell_clustering = cell_clusters) %>%
-    group_by(.data$cell_clustering) %>% summarize_all(.data, median(.data$cell_clustering)) %>% as.data.frame()
+    group_by(cell_clustering) %>% summarize_all(list(median)) %>% as.data.frame()
   
   #calculate cluster frequencies (and annotation for heatmap)
   clustering_propL <- data.frame(node = 1:length(levels(cell_clusters)), prop.table(table(cell_clusters))*100)
@@ -169,15 +179,15 @@ circ.tree.selectNodes <- function(exprs, exprs_saturated, cell_clusters, dist_me
   hca$tip.label <- rownames(expr_heatL)
   
   g <- ggtree(hca, layout = "fan", branch.length = 1) + 
-    geom_text2(aes_string(subset =! "isTip", label = "node"), hjust = -.3) + geom_tiplab()
-  
-  #check X11 active to redirect output
-  if("try-error" %in% class(suppressWarnings(try(x11(), silent = T)))){
-    cat("X11 is not active, boxplot is saved in -> circTree_selectNodes.", deparse(substitute(cell_clusters)), ".jpg\n", sep = "")
-    suppressMessages(ggsave(paste0("circTree_selectNodes.", deparse(substitute(cell_clusters)), ".jpg"), device = "jpeg", plot = g))
-  }else{
-    print(g)
-  }
+    geom_text2(aes(subset=!isTip, label = node), hjust = -.3) + geom_tiplab()
+
+  ## check X11 active to redirect output
+    if("try-error" %in% class(suppressWarnings(try(x11(), silent = T)))){
+      cat("X11 is not active, boxplot is saved in -> circTree_selectNodes.", deparse(substitute(cell_clusters)), ".jpg\n", sep = "")
+      suppressMessages(ggsave(paste0("circTree_selectNodes.", deparse(substitute(cell_clusters)), ".jpg"), device = "jpeg", plot = g))
+    }else{
+      print(g)
+    }
 }
 
 
@@ -209,18 +219,17 @@ circ.tree.selectNodes <- function(exprs, exprs_saturated, cell_clusters, dist_me
 #' circ.tree(expr = matrix_clusters, expr_saturated = matrix_clusters01,
 #'     cell_clusters = cell_clustering, nodes = c(29,33,35))}
 
-circ.tree <- function(exprs, exprs_saturated, cell_clusters, dist_method = "euclidean", 
-                      hclust_method = "average", 
+circ.tree <- function(exprs, exprs_saturated, cell_clusters, dist_method = "euclidean", hclust_method = "average", 
                       open_angle = 100, dendro_labels = FALSE, nodes = NULL, set.seed = 333){
+  ## Circular hyerarchical clustering tree
   #median expression of each marker for each cell population
   expr_medianL <- data.frame(exprs, cell_clustering = cell_clusters) %>%
-    group_by(.data$cell_clustering) %>% summarize_all(.data, median(.data$cell_clustering)) %>% as.data.frame()
+    group_by(cell_clustering) %>% summarize_all(list(median)) %>% as.data.frame()
   expr01_medianL <- data.frame(exprs_saturated, cell_clustering = cell_clusters) %>%
-    group_by(.data$cell_clustering) %>% summarize_all(.data, median(.data$cell_clustering)) %>% as.data.frame()
+    group_by(cell_clustering) %>% summarize_all(list(median)) %>% as.data.frame()
   
   #calculate cluster frequencies (and annotation for heatmap)
-  clustering_propL <- data.frame(node = 1:length(levels(cell_clusters)), 
-                                 prop.table(table(cell_clusters))*100)
+  clustering_propL <- data.frame(node = 1:length(levels(cell_clusters)), prop.table(table(cell_clusters))*100)
   
   #hierarchical clustering on clusters
   dL <- dist(expr_medianL, method = dist_method)
@@ -233,7 +242,7 @@ circ.tree <- function(exprs, exprs_saturated, cell_clusters, dist_method = "eucl
   hca$tip.label <- rownames(expr_heatL)
   
   p1 <- ggtree(hca, layout = "fan", open.angle = open_angle, branch.length = 1) + 
-    geom_point(aes_string(shape = "1", color = "cell_clusters", size = "Freq")) +
+    geom_point(aes(shape = "1", color = cell_clusters, size = Freq)) +
     scale_color_manual(values = colors_palette) + 
     theme(legend.position="right")
   
@@ -254,9 +263,9 @@ circ.tree <- function(exprs, exprs_saturated, cell_clusters, dist_method = "eucl
   rownames(expr_tree_plot) <- rownames(expr_heatL)
   
   g <- gheatmap(p1, expr_tree_plot, offset = 0.5, width=1, font.size=2, colnames_angle=0, hjust=0,
-                colnames_position = "top", high="#b30000", low="#fff7f3") +
+           colnames_position = "top", high="#b30000", low="#fff7f3") +
     theme(legend.position = NULL)
-  
+
   ## check X11 active to redirect output
   if("try-error" %in% class(suppressWarnings(try(x11(), silent = T)))){
     cat("X11 is not active, boxplot is saved in -> circTree_heatmap.", deparse(substitute(cell_clusters)), ".jpg\n", sep = "")
