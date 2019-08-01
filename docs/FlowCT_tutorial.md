@@ -321,7 +321,6 @@ Dimensionality reduction algorithm aim to maintain the structure of the data (i.
 </p> 
 
 But changing at the single-cell level (previous subsampling to 1000 cells for each sample), PCA demonstrated an almost complete (and expected) overlapping between both cell distributions (PB and BM). Regarding the heatmap, we can observe a complete random distribution of cells derived from PB or BM, with the exception of a specific cluster of cells more abundant in the BM, presenting a complete negativity for the expression of all surface markers, thus probably being erythroblasts, obviously absent in PB.
-# El subsampling se ha hecho con la función anterior, la actual da problemas... corregir
 ```
 > sub_idx_heat <- sub.samples.idx(data = mdsc, colname_samples = "sample_id", samples_names = md$sample_id, subsampling = 1000, set.seed = 1234) #select how many cells to downsample per-sample
 Extracting subsampling index for: 1
@@ -363,7 +362,6 @@ While `FlowSOM` already integrate the `metaClustering_consensus` function, to pe
 
 Below heatmap reporting the median values of each marker in each cluster can help (however in a limited way) to interprete results:
 
-# Error en esta función, xq?: Error: Can't find columns `CD62L`, `CXCR3`, `CD8`, `CD194`, `CCR6`, … (and 3 more) in `.data`.
 `> cluster.heatmap(expr = expr[, surface_markers], expr_saturated = expr01[, surface_markers],
                                 cell_clusters = metaclusters$metaclusters)`
 
@@ -480,11 +478,16 @@ At this point, the next step is to perform a deeper analysis on specific subpopu
 > fsomL <- fsom.clustering(data = metadata_scL[,surface_markers], markers_to_use = "surface_markers", set.seed = 1234)
 > metaclustersL <- fsom.metaclustering(fsom = fsomL, num_clusters_metaclustering = 40, plotting = T, set.seed = 1234)
 
-> cluster_heatmap(expr = metadata_scL[,surface_markers], expr_saturated = matrix_clusters01[,surface_markers], cell_clusters = metaclustersL$metaclusters)
+> cluster.heatmap(expr = metadata_scL[,surface_markers], expr_saturated = matrix_clusters01[,surface_markers], cell_clusters = metaclustersL$metaclusters)
 
 > metadata_scL$FlowSOM_L <- metaclustersL$metaclusters
 ```
-imagen...
+
+<p float="left"> 
+  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/MST_metaclustering.fsomL.jpg" width="200" /> 
+  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/pctHeatmap.metadata_scL.jpg" width="200" />  
+</p> 
+
 ```
 #dim reduction
 > sub_idxL <- sub.samples.idx(metadata_scL, colname_samples = "sample_id", samples_names = md$sample_id, subsampling = 1000, set.seed = 1234)
@@ -497,7 +500,6 @@ imagen...
 > do.call("grid.arrange", c(gg_list, nrow = 2)) #show all plots
 ```
 ![dr_markers_subclust](https://github.com/jgarces02/FlowCT/blob/master/docs/marker_expression_sublust.png "Multimarker ploting dr subclustering")
-# Algo está petando en la sustitución en el DR...
 ```
 #exporting
 > to_export <- data.frame(sample_id = as.numeric(sel_exprL$sample_id), patient_id = as.numeric(sel_exprL$patient_id), condition = as.numeric(sel_exprL$condition), cluster_somL = as.numeric(sel_exprL$FlowSOM_L), expr_no_transfL[sub_idxL,], drL$dr[,grepl("PCA|tSNE|UMAP", colnames(drL$dr))])
@@ -520,9 +522,16 @@ imagen...
 
 > dr.plotting(drL$dr_melted, dr_calculated = "tSNE", color_by = "cell_clustering1mL", output_type = NULL, facet_by = "patient_id")
 
-> cluster_heatmap(expr = matrix_clusters[,surface_markers], expr_saturated = matrix_clusters01[,surface_markers], cell_clusters = cell_clustering1mL)
+> cluster.heatmap(expr = matrix_clusters[,surface_markers], expr_saturated = matrix_clusters01[,surface_markers], cell_clusters = cell_clustering1mL)
 ```
-To have a better idea of distribution and phenotype of each population we represented our results in a phylogenic tree taking advantage of the recently developed ggtree22 package. The heatmap associated to each cell population reports the median expression of each marker, while the dimension of the circle is proportional to the relative abundance of the population itself. Next we performed a single cell heatmap to verify if the manual cluster merging respected the unsupervised distribution of cells.
+
+<p float="left"> 
+  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/MST_sublust.png" width="200" /> 
+  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/dr.tSNE_col.cell_clustering1mL.png width="200" />  
+  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/pctHeatmap.matrix_clusters.jpg" width="200" />  
+</p> 
+
+To have a better idea of distribution and phenotype of each population we represented our results in a phylogenic tree taking advantage of the recently developed `ggtree`22 package. The heatmap associated to each cell population reports the median expression of each marker, while the dimension of the circle is proportional to the relative abundance of the population itself. Next we performed a single cell heatmap to verify if the manual cluster merging respected the unsupervised distribution of cells.
 
 First line (`circ.tree.selectNodes`) draws a simple circular dendrogram to select those nodes where we can cut and differentiate each cell subpopulation (that will be colored later with `circ.tree`).
 ```
@@ -534,7 +543,31 @@ First line (`circ.tree.selectNodes`) draws a simple circular dendrogram to selec
 > sel_exprL_heat <- metadata_scL[sub_idxL_heat,]
 
 > annotation_col <- data.frame(row.names = rownames(sel_exprL_heat), sel_exprL_heat[,!(colnames(sel_exprL_heat) %in% surface_markers)])
-> annotation_colors <- list(condition = c(BM = colors_palette[1], PB = colors_palette[2]))
+> annotation_colors <- list(condition = c(MO = colors_palette[1], SP = colors_palette[2]))
 
 > pheatmap(t(sel_exprL_heat[,surface_markers]), annotation_col = annotation_col, clustering_method = "average", color = colorRampPalette(brewer.pal(n = 9, name = "YlGnBu"))(100), display_numbers = FALSE, number_color = "black", fontsize_number = 5, annotation_colors = annotation_colors, show_colnames = F, treeheight_col = 0, treeheight_row = 0)
+```
+
+<p float="left"> 
+  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/circTree_selectNodes.cell_clustering1mL.jpg" width="200" /> 
+  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/circTree_heatmap.cell_clustering1mL.jpg width="200" />  
+</p> 
+
+![heatmap_subclust](https://github.com/jgarces02/FlowCT/blob/master/docs/heatmap_sublust.png "Heatmap from subclustering")
+
+#### 8) Final export and statistical analysis
+The most useful thing that we can obtain from this analysis, in a clinical trial perspective, is a table including all the abundance of each identified population for each patient. Such table indeed, could be subsequently used in any statistical software (even out of R) and population proportions correlated with clinical parameters such as time to endpoint, response to treatment, etc.
+
+`> prop_tableL <- barplot.cell.pops(cell_clustering1mL, metadata = metadata_scL, colname_sampleID = "sample_id")`
+
+![barplot_T_distro](https://github.com/jgarces02/FlowCT/blob/master/docs/barPlot_cell_prop.cell_clustering1mL.jpg "Barplot with T cell distro")
+
+```
+#data exporting
+> dataset <- data.frame(md, as.data.frame.matrix(t(prop_tableL)))
+> write.table(dataset, file = "resultsL.txt", sep = "\t")
+
+#and in SPSS format (if needed)
+> library(haven)
+> write_sav(dataset, "resultsL.sav")
 ```
