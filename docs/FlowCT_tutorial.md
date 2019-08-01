@@ -316,7 +316,7 @@ Dimensionality reduction algorithm aim to maintain the structure of the data (i.
          annotation_colors = annotation_colors, clustering_method = "average")
 ```
 <p float="left">
-  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/scdr.PCA_col.condition.png" width="400" />
+  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/scdr.PCA_col.condition.png" width="300" />
   <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/sc_heatmap_patient.png" width="400" /> 
 </p>
 
@@ -342,6 +342,6 @@ Extracting subsampling index for: 12
 >dr.plotting(ggdfPCA_1000$dr_melted, dr_calculated = "PCA", color_by = "condition", output_type = NULL)
 ```
 <p float="left">
-  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/scdr.PCA_col.condition.png" width="400" />
+  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/scdr.PCA_col.condition.png" width="300" />
   <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/sc_heatmap_patient.png" width="400" /> 
 </p>
