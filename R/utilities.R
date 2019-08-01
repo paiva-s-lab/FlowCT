@@ -19,7 +19,7 @@ sub.samples.idx <- function(data, colname_samples, subsampling = 1000, set.seed 
   set.seed(set.seed)
   
   sub_idx <- vector()
-  for(sam in unique(colname_samples)){
+  for(sam in unique(data[,colname_samples])){
     
     if(verbose){
       cat("Extracting subsampling index for: ", sam, "\n", sep = "")
