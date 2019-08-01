@@ -339,8 +339,9 @@ Extracting subsampling index for: 12
 >ggdfPCA_1000 <- dim.reduction(expr_data = heat_expr[,4:ncol(heat_expr)], metadata = heat_expr[,1:3],  reduction_method = "PCA")
 >dr.plotting(ggdfPCA_1000$dr_melted, dr_calculated = "PCA", color_by = "condition", output_type = NULL)
 ```
-Solarized dark             |  Solarized Ocean
-:-------------------------:|:-------------------------:
-![PCA_condition_sc](https://github.com/jgarces02/FlowCT/blob/master/docs/scdr.PCA_col.condition.png "PCA by condition, single-cell")  |  ![heatmap_condition_sc](https://github.com/jgarces02/FlowCT/blob/master/docs/sc_heatmap_patient.png "Heatmap by condition and patient, single-cell")
+<p float="left">
+  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/scdr.PCA_col.condition.png" width="100" />
+  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/sc_heatmap_patient.png" width="100" /> 
+</p>
 
 
