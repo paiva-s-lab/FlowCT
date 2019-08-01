@@ -6,6 +6,7 @@ Hello! Thanks for interesting you in FlowCT!
 This is a very generic tutorial showing some possibilites of this R package. For any additional information or check another analysis appoximations, you can see our paper in [xxxxx](wwww.web.com) and the help for each function of this package.
 
 # Adjust this part with general pipeline below!
+# Explain data used for tutorial (PB/BM)
 So let's go! Pipeline is structurated in multiple parts, some internals and other externals:
 1. Preprocess of FCS files, ie. to unify (florofore) channels names and set them in the same order. Normaly, it depends of computation power available, user also wants to reduce the number of events to avoid computer crashing or to facilitate compensation of multiple FCS.
 2. External compensation of FCS files (if needed) to correct overlap between channels. Whatever flow cytometry software can be used, in our case we use [Infinicyt<sup>TM</sup>](http://www.infinicyt.com/).
@@ -24,6 +25,7 @@ We've written a simple code to perform this task (on [Windows](https://github.co
 First step is unifying names for fluorofore channels and set them in the same order. This can be done through the *consolidate_and_reduction.rscript* script: it takes all FCS files inside a folder and make equal all channel names, puts them in the correct order and, if user says nothing, performs a events reduction. Running `Rscript consolidate_and_reduction.rscript --help` you can see default parameters and how to use them.
 
 ```
+$ Rscript ../src/consolidate_and_reduction.rscript -h
 Usage: consolidate_and_reduction.rscript [options]
 Options:
         -d CHARACTER, --directory=CHARACTER
@@ -38,11 +40,27 @@ Options:
                 output folder for storing new FCS files (default = current directory)
         -h, --help
                 Show this help message and exit
+
+$ Rscript ../src/consolidate_and_reduction.rscript
+Processing file: MO_017294.fcs (keeping > 10000 events)
+Processing file: MO_017564.fcs (keeping > 10000 events)
+Processing file: MO_017612.fcs (keeping > 10000 events)
+Processing file: MO_017809.fcs (keeping > 10000 events)
+Processing file: MO_018207.fcs (keeping > 10000 events)
+Processing file: MO_018208.fcs (keeping > 10000 events)
+Processing file: SP_017294.fcs (keeping > 10000 events)
+Processing file: SP_017565.fcs (keeping > 10000 events)
+Processing file: SP_017612.fcs (keeping > 10000 events)
+Processing file: SP_017809.fcs (keeping > 10000 events)
+Processing file: SP_018207.fcs (keeping > 10000 events)
+Processing file: SP_018208.fcs (keeping > 10000 events)
+
+>>> Final markers order: FSC-A, FSC-H, SSC-A, SSC-H, FITC-A, PE-A, PerCP-Cy5-5-A, PE-Cy7-A, APC-A, APC-H7-A, V500-A, V450-A               
 ```
 
 #### 0, bis) Setting R environment
 ```
-setwd("~/projects/FlowCT_tutorial")
+setwd("~/FlowCT/data")
 
 load_packages <- c("readxl", "flowCore", "flowAI", "flowViz", "flowStats", "gridExtra", "ggsci", "matrixStats", "ggplot2", "reshape2", 
                    "ggrepel", "dplyr", "RColorBrewer", "pheatmap", "FlowSOM", "ConsensusClusterPlus", "Rtsne", "uwot", "FlowCT",
@@ -55,25 +73,46 @@ For this step is suposed that all your FCS have the same order and name for thei
 ```
 >reduce.FCS(file_or_directory = ".", keep_n_events = 10000)
 FCS files within the selected folder:
-[1] "SP_018207.fcs"     "SP_018208.fcs"
+[1] "SP_018207.fcs"     "SP_018208.fcs"     ...
 
 Processing: SP_018207.fcs
 Processing: SP_018208.fcs
+...
 ```
 In the case you've already run *consolidate_and_reduction.rscript* you can jump to next step.
 
 Once we have events-reduced/names-checked/compensated files, we can start the quality check. To do that, we will use the package `flowAI`, an automatic method for the detection and removal of unwanted anomalies. Doublets removal is based on a ellipsoid gate in the FSC-A/FSC-H dotplot using the 95<sup>th</sup> percentile as limit for singlet cells (adjusted from Droumeva [one](https://github.com/LennonLab/flowcytometry/blob/master/bin/support_functions.R))
 ```
 >qc.and.removeDoublets()
-Processing: SP_018207.red.fcs
-Processing: SP_018208.red.fcs
+Processing: MO_017294.ren.red.fcs
+Processing: MO_017564.ren.red.fcs
+Processing: MO_017612.ren.red.fcs
+Processing: MO_017809.ren.red.fcs
+Processing: MO_018207.ren.red.fcs
+Processing: MO_018208.ren.red.fcs
+Processing: SP_017294.ren.red.fcs
+Processing: SP_017565.ren.red.fcs
+Processing: SP_017612.ren.red.fcs
+Processing: SP_017809.ren.red.fcs
+Processing: SP_018207.ren.red.fcs
+Processing: SP_018208.ren.red.fcs
 ------------------------------
 Final QC and remove doublets result:
 
-|filenames     | # initial events| % deleted events|Warning! |
-|:-------------|----------------:|----------------:|:--------|
-|SP_018207.red |            10000|             0.96|         |
-|SP_018208.red |            10000|             1.12|         |
+|filenames | # initial events| % deleted events|Warning! |
+|:---------|----------------:|----------------:|:--------|
+|MO_017294 |            10000|             0.36|         |
+|MO_017564 |            10000|             0.75|         |
+|MO_017612 |            10000|             0.57|         |
+|MO_017809 |            10000|             0.77|         |
+|MO_018207 |            10000|             0.46|         |
+|MO_018208 |            10000|             0.37|         |
+|SP_017294 |            10000|             1.04|         |
+|SP_017565 |            10000|             1.26|         |
+|SP_017612 |            10000|             0.92|         |
+|SP_017809 |            10000|             0.75|         |
+|SP_018207 |            10000|             0.91|         |
+|SP_018208 |            10000|             0.94|         |
 ```
 During the process, if a sample losses more than 30% of events in the QC and the doublet removal, a *warning* (`(!)`) will appear in the final table. *Important, pay attention to suffixes from reduction step, if you use another different from default you must to adjust it in later steps this parameter (eg, `qc.and.removeDoublets(reduction_suffix = "_red"))`).*
 
@@ -82,19 +121,32 @@ During the process, if a sample losses more than 30% of events in the QC and the
 Here it's the reason for given an informative name to your FCS files: metadata generation is based on these filenames! We prefer a filename with a structure like *condition_patientID_somethingElse.fcs*. but of course, you can use your own code to generate this metadata or importing from an external table with additional information such as clinical data, for example. 
 ```
 >(filenames <- list.files(pattern = ".preprocessed.fcs$"))
-[1] "SP_018207_red.preprocessed.fcs" "SP_018208_red.preprocessed.fcs"
+ [1] "MO_017294.ren.red.preprocessed.fcs" "MO_017564.ren.red.preprocessed.fcs"
+ [3] "MO_017612.ren.red.preprocessed.fcs" "MO_017809.ren.red.preprocessed.fcs"
+ [5] "MO_018207.ren.red.preprocessed.fcs" "MO_018208.ren.red.preprocessed.fcs"
+ [7] "SP_017294.ren.red.preprocessed.fcs" "SP_017565.ren.red.preprocessed.fcs"
+ [9] "SP_017612.ren.red.preprocessed.fcs" "SP_017809.ren.red.preprocessed.fcs"
+[11] "SP_018207.ren.red.preprocessed.fcs" "SP_018208.ren.red.preprocessed.fcs"
 
 >md <- data.frame(file_name = filenames, 
                  sample_id = 1:length(filenames),
                  condition = sapply(filenames,function(x) strsplit(x, split = "_|\\.")[[1]][1]),
                  patient_id = sapply(filenames,function(x) strsplit(x, split = "_|\\.")[[1]][2]))
 >head(md)
-                                                    file_name sample_id
-SP_018207_red.preprocessed.fcs SP_018207_red.preprocessed.fcs         1
-SP_018208_red.preprocessed.fcs SP_018208_red.preprocessed.fcs         2
-                               condition patient_id
-SP_018207_red.preprocessed.fcs        SP     018207
-SP_018208_red.preprocessed.fcs        SP     018208
+                                                            file_name sample_id
+MO_017294.ren.red.preprocessed.fcs MO_017294.ren.red.preprocessed.fcs         1
+MO_017564.ren.red.preprocessed.fcs MO_017564.ren.red.preprocessed.fcs         2
+MO_017612.ren.red.preprocessed.fcs MO_017612.ren.red.preprocessed.fcs         3
+MO_017809.ren.red.preprocessed.fcs MO_017809.ren.red.preprocessed.fcs         4
+MO_018207.ren.red.preprocessed.fcs MO_018207.ren.red.preprocessed.fcs         5
+MO_018208.ren.red.preprocessed.fcs MO_018208.ren.red.preprocessed.fcs         6
+                                   condition patient_id
+MO_017294.ren.red.preprocessed.fcs        MO     017294
+MO_017564.ren.red.preprocessed.fcs        MO     017564
+MO_017612.ren.red.preprocessed.fcs        MO     017612
+MO_017809.ren.red.preprocessed.fcs        MO     017809
+MO_018207.ren.red.preprocessed.fcs        MO     018207
+MO_018208.ren.red.preprocessed.fcs        MO     018208
 ```
 And read all FCS into the same FlowSet objetc:
 
@@ -168,7 +220,7 @@ Despite the great efforts in the standardization of flow cytometry protocols, bi
 ```
 ![peaks_distro](https://github.com/jgarces02/FlowCT/blob/master/docs/normalization_first.png "Testing intensity peaks distro")
 
-In our dataset it is easy to identify ¿SSC_A? and CD62L parameters as the ones with the highest variability between samples. After visual inspection you can decide to try normalization or exclude files from analysis, in our case we'll normalize CD62L and ¿SSC_A?:
+In our dataset it is easy to identify SSC_A and CD62L parameters as the ones with the highest variability between samples. After visual inspection you can decide to try normalization or exclude files from analysis, in our case we'll normalize CD62L and SSC_A:
 ```
 >fcs_no_norm <- fcs #backup for non-normalized data
 >markers_to_normalize <- c("SSC_A", "CD62L")
@@ -207,18 +259,85 @@ Finally, we can proceed with the generation of the “expression” matrix that 
                           condition = rep(md$condition, fsApply(fcs, nrow)))
 >mdsc <- data.frame(metadata_sc, expr[,surface_markers])
 >head(mdsc)
-  sample_id patient_id condition        CD62L      CXCR3         CD8      CD194
-1         1     018207        SP  0.100415325 0.12565532  0.09410983 2.88623478
-2         1     018207        SP  1.684631632 0.21251500  0.33678475 2.43242198
-3         1     018207        SP  2.713427007 0.21018863 -0.08113977 1.41647705
-4         1     018207        SP  0.106943000 0.08280282 -0.12873575 0.07693925
-5         1     018207        SP -0.001977132 0.35285651 -0.13759982 3.30589471
-6         1     018207        SP  0.525919523 0.06810811  0.37944536 0.43635330
-       CCR6         CD4       CD45      CD27
-1 0.1410125 -0.10364878 0.02049048 0.3859293
-2 0.6602614  2.75647495 1.01969186 0.3241081
-3 0.9508190  0.20926000 0.59292335 0.2593487
-4 0.0492510 -0.01760147 0.51407507 1.1442070
-5 0.5231158  0.08819571 0.13633504 0.2543581
-6 0.6266562  0.30556337 0.56742354 0.3538544
+  sample_id patient_id condition     CD62L      CXCR3       CD8      CD194
+1         1     017294        MO 1.3686484 0.13979632 0.1182595  1.6091200
+2         1     017294        MO 0.1491844 1.45099442 4.1543690 -0.4079546
+3         1     017294        MO 0.6164071 0.19323149 0.2415497  1.8109299
+4         1     017294        MO 1.8904142 0.16306925 0.1473292  1.9848075
+5         1     017294        MO 1.4291372 0.24543618 0.2426851  1.7537824
+6         1     017294        MO 0.3724427 0.09374397 0.1159728  1.8338250
+       CCR6         CD4      CD45       CD27
+1 0.5761576 -0.09418564 0.3449939 0.44249329
+2 0.9286080  0.41180576 0.2847564 3.55472430
+3 0.8220239  0.97953895 0.6238420 0.07819405
+4 0.8103202 -0.07624705 0.4794448 0.32365875
+5 0.4633399 -0.37461350 0.2857165 0.43914630
+6 0.7727667  0.57695024 0.3942684 0.29329506
 ```
+If you have a very large amount of files it's almost impossible to visualize with the previously reported `densityplot` function, so a per marker overlay histograms could be very helpful:
+```
+>ggdf <- melt(mdsc, id.var = c("sample_id", "patient_id", "condition"), value.name = "expression", variable.name = "antigen")
+>ggplot(ggdf, aes(x = expression, color = as.factor(sample_id))) +
+    geom_density() + facet_wrap(. ~ antigen) + 
+    theme_minimal() + theme(axis.text.x = element_text(angle = 90, hjust = 1),
+          strip.text = element_text(size = 7), axis.text = element_text(size = 5))
+```
+![alt_viz_multiple_samples](https://github.com/jgarces02/FlowCT/blob/master/docs/global_hist.png "Alternative viz for multiple samples")
+
+#### 4) Descriptive and exploratory analysis
+Let's begin seeing the cell numbers for each condition:
+
+`cell.count.bx(data = metadata_sc, metadata = md)`
+
+![boxplot_condition](https://github.com/jgarces02/FlowCT/blob/master/docs/cell_count_boxplot.metadata_sc.jpg "Boxplot by condition")
+
+Dimensionality reduction algorithm aim to maintain the structure of the data (i.e. the distance between the different subpopulations, or patients in our case) while reducing the dimensions needed to observe differences. PCA is one of this techniques, and perform dimensionality reduction by projecting data to new coordinate preserving the variance. Mimicking a transcriptomic approach, Nowicka M et al8, proposed to use the median marker expression calculated over all cells. However, while this approach resulted very useful for Cytof data (and probably the same could be also for flow cytometry data with a high number of parameters), in our datasets the results were doubtful. Indeed, looking at the PCA as weell the heatmap in below figures it is easy to (wrongly) conclude that PB samples segregate differently from BM samples... we'll see later how using high number of events, ie. at single-cell level, results change.
+```
+#get the median marker expression per sample
+>expr_median_sample_tbl <- data.frame(sample_id = metadata_sc$sample_id, expr) %>%
+  group_by(sample_id) %>% summarize_all(list(median)) %>% as.data.frame()
+>rownames(expr_median_sample_tbl) <- expr_median_sample_tbl$sample_id
+>expr_median_sample_tbl <- expr_median_sample_tbl[,-1]
+
+#compute the PCA
+>drPCA <- dim.reduction(expr_data = expr_median_sample_tbl, metadata = md, reduction_method = "PCA")
+>dr.plotting(drPCA$dr_melted, dr_calculated = "PCA", color_by = "condition", size = 3, output_type = "png", labels = "patient_id")
+
+#draw heatmap
+>annotation_col <- data.frame(row.names = rownames(expr_median_sample_tbl), condition = md$condition, patient_id = md$patient_id)
+>color <- colorRampPalette(brewer.pal(n = 9, name = "YlGnBu"))(100) #colors for the heatmap (expression values)
+>x <- x2 <- c()
+>set.seed(3); for(i in unique(md$condition)) x[i] <- sample(colors_palette, 1)
+>set.seed(3); for(i in unique(md$patient_id)) x2[i] <- sample(colors_palette, 1)
+>annotation_colors <- list(condition = x, patient_id = x2)
+
+>pheatmap(t(expr_median_sample_tbl), color = color, display_numbers = FALSE,
+         number_color = "black", fontsize_number = 5, annotation_col = annotation_col,
+         annotation_colors = annotation_colors, clustering_method = "average")
+```
+![PCA_condition](https://github.com/jgarces02/FlowCT/blob/master/docs/dr.PCA_col.condition.png "PCA by condition")
+![heatmap_condition](https://github.com/jgarces02/FlowCT/blob/master/docs/heatmap_patient.png "Heatmap by condition and patient")
+
+But changing at the single-cell level (previous subsampling to 1000 cells for each sample), PCA demonstrated an almost complete (and expected) overlapping between both cell distributions (PB and BM). Regarding the heatmap, we can observe a complete random distribution of cells derived from PB or BM, with the exception of a specific cluster of cells more abundant in the BM, presenting a complete negativity for the expression of all surface markers, thus probably being erythroblasts, obviously absent in PB.
+# El subsampling se ha hecho con la función anterior, la actual da problemas... corregir
+```
+>sub_idx_heat <- sub.samples.idx(data = mdsc, colname_samples = "sample_id", samples_names = md$sample_id, subsampling = 1000, set.seed = 1234) #select how many cells to downsample per-sample
+Extracting subsampling index for: 1
+Extracting subsampling index for: 2
+Extracting subsampling index for: 3
+Extracting subsampling index for: 4
+Extracting subsampling index for: 5
+Extracting subsampling index for: 6
+Extracting subsampling index for: 7
+Extracting subsampling index for: 8
+Extracting subsampling index for: 9
+Extracting subsampling index for: 10
+Extracting subsampling index for: 11
+Extracting subsampling index for: 12
+>heat_expr<- mdsc[sub_idx_heat,]
+
+>ggdfPCA_1000 <- dim.reduction(expr_data = heat_expr[,4:ncol(heat_expr)], metadata = heat_expr[,1:3],  reduction_method = "PCA")
+>dr.plotting(ggdfPCA_1000$dr_melted, dr_calculated = "PCA", color_by = "condition", output_type = NULL)
+```
+![PCA_condition_sc](https://github.com/jgarces02/FlowCT/blob/master/docs/scdr.PCA_col.condition.png "PCA by condition, single-cell")
+![heatmap_condition_sc](https://github.com/jgarces02/FlowCT/blob/master/docs/sc_heatmap_patient.png "Heatmap by condition and patient, single-cell")
