@@ -315,8 +315,10 @@ Dimensionality reduction algorithm aim to maintain the structure of the data (i.
          number_color = "black", fontsize_number = 5, annotation_col = annotation_col,
          annotation_colors = annotation_colors, clustering_method = "average")
 ```
-![PCA_condition](https://github.com/jgarces02/FlowCT/blob/master/docs/dr.PCA_col.condition.png "PCA by condition")
-![heatmap_condition](https://github.com/jgarces02/FlowCT/blob/master/docs/heatmap_patient.png "Heatmap by condition and patient")
+<p float="left">
+  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/scdr.PCA_col.condition.png" width="400" />
+  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/sc_heatmap_patient.png" width="400" /> 
+</p>
 
 But changing at the single-cell level (previous subsampling to 1000 cells for each sample), PCA demonstrated an almost complete (and expected) overlapping between both cell distributions (PB and BM). Regarding the heatmap, we can observe a complete random distribution of cells derived from PB or BM, with the exception of a specific cluster of cells more abundant in the BM, presenting a complete negativity for the expression of all surface markers, thus probably being erythroblasts, obviously absent in PB.
 # El subsampling se ha hecho con la función anterior, la actual da problemas... corregir
@@ -340,6 +342,6 @@ Extracting subsampling index for: 12
 >dr.plotting(ggdfPCA_1000$dr_melted, dr_calculated = "PCA", color_by = "condition", output_type = NULL)
 ```
 <p float="left">
-  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/scdr.PCA_col.condition.png" width="300" />
-  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/sc_heatmap_patient.png" width="600" /> 
+  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/scdr.PCA_col.condition.png" width="400" />
+  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/sc_heatmap_patient.png" width="400" /> 
 </p>
