@@ -11,7 +11,7 @@ So let's go! Pipeline is structurated in multiple parts, some internals and othe
 1. Preprocess of FCS files, ie. to unify (florofore) channels names and set them in the same order. Normaly, it depends of computation power available, user also wants to reduce the number of events to avoid computer crashing or to facilitate compensation of multiple FCS.
 2. External compensation of FCS files (if needed) to correct overlap between channels. Whatever flow cytometry software can be used, in our case we use [Infinicyt<sup>TM</sup>](http://www.infinicyt.com/).
 3. Import data from all FCS compensated files, check uniformity of marker names (eg. CCR4 and not CD194), quality control, doublet removal and transformation/normalization.
-4. Descriptive analysis through heatmaps, boxplots, PCA... and general and single-cell level.
+4. Descriptive analysis through heatmaps, boxplots, PCA... at general and single-cell level.
 5. Cell clustering using SOM (Self-Organizing Map), PCA, tSNE and UMAP and respective visualizations.
 6. New global FCS generation and manually identification of generated clusters in the previous step. Later, assign and merge of identified cell populations.
 7. (Optional) Subclustering and repeeat the analysis on a desired specific population.
@@ -71,7 +71,7 @@ invisible(lapply(load_packages, library, character.only = TRUE))
 #### 1) Preprocessing and quality control
 For this step is suposed that all your FCS have the same order and name for their fluorofore channels. If you haven't performed the reduction step previously, you can run: 
 ```
->reduce.FCS(file_or_directory = ".", keep_n_events = 10000)
+> reduce.FCS(file_or_directory = ".", keep_n_events = 10000)
 FCS files within the selected folder:
 [1] "SP_018207.fcs"     "SP_018208.fcs"     ...
 
@@ -83,7 +83,7 @@ In the case you've already run *consolidate_and_reduction.rscript* you can jump 
 
 Once we have events-reduced/names-checked/compensated files, we can start the quality check. To do that, we will use the package `flowAI`, an automatic method for the detection and removal of unwanted anomalies. Doublets removal is based on a ellipsoid gate in the FSC-A/FSC-H dotplot using the 95<sup>th</sup> percentile as limit for singlet cells (adjusted from Droumeva [one](https://github.com/LennonLab/flowcytometry/blob/master/bin/support_functions.R))
 ```
->qc.and.removeDoublets()
+> qc.and.removeDoublets()
 Processing: MO_017294.ren.red.fcs
 Processing: MO_017564.ren.red.fcs
 Processing: MO_017612.ren.red.fcs
@@ -120,7 +120,7 @@ During the process, if a sample losses more than 30% of events in the QC and the
 #### 3) Importing, transformation and marker normalization
 Here it's the reason for given an informative name to your FCS files: metadata generation is based on these filenames! We prefer a filename with a structure like *condition_patientID_somethingElse.fcs*. but of course, you can use your own code to generate this metadata or importing from an external table with additional information such as clinical data, for example. 
 ```
->(filenames <- list.files(pattern = ".preprocessed.fcs$"))
+> (filenames <- list.files(pattern = ".preprocessed.fcs$"))
  [1] "MO_017294.ren.red.preprocessed.fcs" "MO_017564.ren.red.preprocessed.fcs"
  [3] "MO_017612.ren.red.preprocessed.fcs" "MO_017809.ren.red.preprocessed.fcs"
  [5] "MO_018207.ren.red.preprocessed.fcs" "MO_018208.ren.red.preprocessed.fcs"
@@ -128,11 +128,11 @@ Here it's the reason for given an informative name to your FCS files: metadata g
  [9] "SP_017612.ren.red.preprocessed.fcs" "SP_017809.ren.red.preprocessed.fcs"
 [11] "SP_018207.ren.red.preprocessed.fcs" "SP_018208.ren.red.preprocessed.fcs"
 
->md <- data.frame(file_name = filenames, 
+> md <- data.frame(file_name = filenames, 
                  sample_id = 1:length(filenames),
                  condition = sapply(filenames,function(x) strsplit(x, split = "_|\\.")[[1]][1]),
                  patient_id = sapply(filenames,function(x) strsplit(x, split = "_|\\.")[[1]][2]))
->head(md)
+> head(md)
                                                             file_name sample_id
 MO_017294.ren.red.preprocessed.fcs MO_017294.ren.red.preprocessed.fcs         1
 MO_017564.ren.red.preprocessed.fcs MO_017564.ren.red.preprocessed.fcs         2
@@ -154,7 +154,7 @@ And read all FCS into the same FlowSet objetc:
 
 Sometimes (more often we'd like :sweat:) markers names are different (eg, CCR4 and CD194). In with this function you can adjust them with the name you want:
 ```
-> markers.names(fcs_raw) #with no parameters, you only see them
+>  markers.names(fcs_raw) #with no parameters, you only see them
 
 |      |Florophore/Channel |Marker (default name) |New marker name  |
 |:-----|:------------------|:---------------------|:----------------|
@@ -171,7 +171,7 @@ Sometimes (more often we'd like :sweat:) markers names are different (eg, CCR4 a
 |$P11N |V500-A             |CD45RA                |not defined yet! |
 |$P12N |V450-A             |CD27                  |not defined yet! |
 
-> fcs_raw <- markers.names(fcs_raw, new_names = c("FSC_A", "FSC_H", "SSC_A", "SSC_H", "CD62L", "CXCR3", "CD8", "CD194", "CCR6 ", "CD4", "CD45", "CD27"))
+>  fcs_raw <- markers.names(fcs_raw, new_names = c("FSC_A", "FSC_H", "SSC_A", "SSC_H", "CD62L", "CXCR3", "CD8", "CD194", "CCR6 ", "CD4", "CD45", "CD27"))
 
 |      |Florophore/Channel |Marker (default name) |New marker name |
 |:-----|:------------------|:---------------------|:---------------|
@@ -190,16 +190,16 @@ Sometimes (more often we'd like :sweat:) markers names are different (eg, CCR4 a
 ```
 And define those markers of interest and discard physical parameters for downstream analysis:
 ```
->surface_markers <- colnames(fcs_raw)[!grepl("FSC|SSC", colnames(fcs_raw))]
+> surface_markers <- colnames(fcs_raw)[!grepl("FSC|SSC", colnames(fcs_raw))]
 [1] "CD62L" "CXCR3" "CD8"   "CD194" "CCR6"  "CD4"   "CD45"  "CD27"
->H_markers <- colnames(fcs_raw)[grepl("FSC|SSC", colnames(fcs_raw))]
+> H_markers <- colnames(fcs_raw)[grepl("FSC|SSC", colnames(fcs_raw))]
 [1] "FSC_A" "FSC_H" "SSC_A" "SSC_H"
 ```
 `FlowCore` allow us to transform flow cytometry data in a format that is more suitable for subsequent analysis. This transformation is necessary to deal with the bad representation of negative data values with digital cytometer: the Log transformation, indeed, leads to compression of data against the axes, poor visual representation of low intensity or unstained populations and errors in subsequent automatic gating/clustering algorithms... accordingly, we use the `arcsinh` transformation:
 ```
->cofact <- 500 #it should be optimized, if necessary, according to the experiment
+> cofact <- 500 #it should be optimized, if necessary, according to the experiment
 
->fcs <- fsApply(fcs_raw, function(x, cofactor = cofact){
+> fcs <- fsApply(fcs_raw, function(x, cofactor = cofact){
   colnames(x)<- colnames(fcs_raw)
   expr <- exprs(x)
   expr <- asinh(expr[, c(surface_markers, H_markers)] / cofactor)
@@ -207,7 +207,7 @@ And define those markers of interest and discard physical parameters for downstr
   x})
 
 #generate a similar flowset without transformation for subsequent fcs generation
->fcs_no_transf<- fsApply(fcs_raw, function(x){
+> fcs_no_transf<- fsApply(fcs_raw, function(x){
   colnames(x)<- colnames(fcs_raw)
   expr <- exprs(x)
   expr <- expr[, c(surface_markers, H_markers)] 
@@ -216,16 +216,16 @@ And define those markers of interest and discard physical parameters for downstr
 ```
 Despite the great efforts in the standardization of flow cytometry protocols, biological and technical variability can be reduced but not completely abrogated. To deal with this problem we used the `gaussNorm` method within the `flowStats` to reduce this technical variation by “shifting” and aligning the area of high local density (landmarks) in each channels. The first step in this process is to look at the distribution of peaks in each channel and identify parameters that needs to be aligned:
 ```
->densityplot(~ . , fcs, channels = c(surface_markers, H_markers), xlim = lims.FCS(fcs), filter = lapply(c(surface_markers, H_markers), curv1Filter))
+> densityplot(~ . , fcs, channels = c(surface_markers, H_markers), xlim = lims.FCS(fcs), filter = lapply(c(surface_markers, H_markers), curv1Filter))
 ```
 ![peaks_distro](https://github.com/jgarces02/FlowCT/blob/master/docs/normalization_first.png "Testing intensity peaks distro")
 
 In our dataset it is easy to identify SSC_A and CD62L parameters as the ones with the highest variability between samples. After visual inspection you can decide to try normalization or exclude files from analysis, in our case we'll normalize CD62L and SSC_A:
 ```
->fcs_no_norm <- fcs #backup for non-normalized data
->markers_to_normalize <- c("SSC_A", "CD62L")
+> fcs_no_norm <- fcs #backup for non-normalized data
+> markers_to_normalize <- c("SSC_A", "CD62L")
 
->for(marker in markers_to_normalize){
+> for(marker in markers_to_normalize){
   datr <- gaussNorm(fcs, marker)$flowset
   if(require(flowViz)){
     grid.arrange(densityplot(as.formula(paste0("~", marker)), fcs, main = "original", xlim = lims.FCS(fcs), filter=curv1Filter(marker)),
@@ -244,21 +244,21 @@ Adjusting the distance between landmarks
 
 Finally, we can proceed with the generation of the “expression” matrix that would contain all the fluorescence intensity data at single cell level, and adjust initial metadata for each cell. 
 ```
->expr <- fsApply(fcs, exprs)
->expr_no_transf <- fsApply(fcs_no_transf, exprs)
+> expr <- fsApply(fcs, exprs)
+> expr_no_transf <- fsApply(fcs_no_transf, exprs)
 
 #saturate marker intensities to values between 0 and 1... easier to interprete in heatmaps 
->rng <- colQuantiles(expr, probs = c(0.01, 0.99))
->expr01 <- t((t(expr) - rng[, 1]) / (rng[, 2] - rng[, 1]))
->expr01[expr01 < 0] <- 0
->expr01[expr01 > 1] <- 1
+> rng <- colQuantiles(expr, probs = c(0.01, 0.99))
+> expr01 <- t((t(expr) - rng[, 1]) / (rng[, 2] - rng[, 1]))
+> expr01[expr01 < 0] <- 0
+> expr01[expr01 > 1] <- 1
 
 #generate sample IDs for each cell in the expression matrix and create a metadata table from initial one
->metadata_sc <- data.frame(sample_id = rep(md$sample_id, fsApply(fcs, nrow)), 
+> metadata_sc <- data.frame(sample_id = rep(md$sample_id, fsApply(fcs, nrow)), 
                           patient_id = rep(md$patient_id, fsApply(fcs, nrow)), 
                           condition = rep(md$condition, fsApply(fcs, nrow)))
->mdsc <- data.frame(metadata_sc, expr[,surface_markers])
->head(mdsc)
+> mdsc <- data.frame(metadata_sc, expr[,surface_markers])
+> head(mdsc)
   sample_id patient_id condition     CD62L      CXCR3       CD8      CD194
 1         1     017294        MO 1.3686484 0.13979632 0.1182595  1.6091200
 2         1     017294        MO 0.1491844 1.45099442 4.1543690 -0.4079546
@@ -276,8 +276,8 @@ Finally, we can proceed with the generation of the “expression” matrix that 
 ```
 If you have a very large amount of files it's almost impossible to visualize with the previously reported `densityplot` function, so a per marker overlay histograms could be very helpful:
 ```
->ggdf <- melt(mdsc, id.var = c("sample_id", "patient_id", "condition"), value.name = "expression", variable.name = "antigen")
->ggplot(ggdf, aes(x = expression, color = as.factor(sample_id))) +
+> ggdf <- melt(mdsc, id.var = c("sample_id", "patient_id", "condition"), value.name = "expression", variable.name = "antigen")
+> ggplot(ggdf, aes(x = expression, color = as.factor(sample_id))) +
     geom_density() + facet_wrap(. ~ antigen) + 
     theme_minimal() + theme(axis.text.x = element_text(angle = 90, hjust = 1),
           strip.text = element_text(size = 7), axis.text = element_text(size = 5))
@@ -287,43 +287,43 @@ If you have a very large amount of files it's almost impossible to visualize wit
 #### 4) Descriptive and exploratory analysis
 Let's begin seeing the cell numbers for each condition:
 
-`cell.count.bx(data = metadata_sc, metadata = md)`
+`> cell.count.bx(data = metadata_sc, metadata = md)`
 
 ![boxplot_condition](https://github.com/jgarces02/FlowCT/blob/master/docs/cell_count_boxplot.metadata_sc.jpg "Boxplot by condition")
 
 Dimensionality reduction algorithm aim to maintain the structure of the data (i.e. the distance between the different subpopulations, or patients in our case) while reducing the dimensions needed to observe differences. PCA is one of this techniques, and perform dimensionality reduction by projecting data to new coordinate preserving the variance. Mimicking a transcriptomic approach, Nowicka M et al8, proposed to use the median marker expression calculated over all cells. However, while this approach resulted very useful for Cytof data (and probably the same could be also for flow cytometry data with a high number of parameters), in our datasets the results were doubtful. Indeed, looking at the PCA as weell the heatmap in below figures it is easy to (wrongly) conclude that PB samples segregate differently from BM samples... we'll see later how using high number of events, ie. at single-cell level, results change.
 ```
 #get the median marker expression per sample
->expr_median_sample_tbl <- data.frame(sample_id = metadata_sc$sample_id, expr) %>%
+> expr_median_sample_tbl <- data.frame(sample_id = metadata_sc$sample_id, expr) %>%
   group_by(sample_id) %>% summarize_all(list(median)) %>% as.data.frame()
->rownames(expr_median_sample_tbl) <- expr_median_sample_tbl$sample_id
->expr_median_sample_tbl <- expr_median_sample_tbl[,-1]
+> rownames(expr_median_sample_tbl) <- expr_median_sample_tbl$sample_id
+> expr_median_sample_tbl <- expr_median_sample_tbl[,-1]
 
 #compute the PCA
->drPCA <- dim.reduction(expr_data = expr_median_sample_tbl, metadata = md, reduction_method = "PCA")
->dr.plotting(drPCA$dr_melted, dr_calculated = "PCA", color_by = "condition", size = 3, output_type = "png", labels = "patient_id")
+> drPCA <- dim.reduction(expr_data = expr_median_sample_tbl, metadata = md, reduction_method = "PCA")
+> dr.plotting(drPCA$dr_melted, dr_calculated = "PCA", color_by = "condition", size = 3, output_type = "png", labels = "patient_id")
 
 #draw heatmap
->annotation_col <- data.frame(row.names = rownames(expr_median_sample_tbl), condition = md$condition, patient_id = md$patient_id)
->color <- colorRampPalette(brewer.pal(n = 9, name = "YlGnBu"))(100) #colors for the heatmap (expression values)
->x <- x2 <- c()
->set.seed(3); for(i in unique(md$condition)) x[i] <- sample(colors_palette, 1)
->set.seed(3); for(i in unique(md$patient_id)) x2[i] <- sample(colors_palette, 1)
->annotation_colors <- list(condition = x, patient_id = x2)
+> annotation_col <- data.frame(row.names = rownames(expr_median_sample_tbl), condition = md$condition, patient_id = md$patient_id)
+> color <- colorRampPalette(brewer.pal(n = 9, name = "YlGnBu"))(100) #colors for the heatmap (expression values)
+> x <- x2 <- c()
+> set.seed(3); for(i in unique(md$condition)) x[i] <- sample(colors_palette, 1)
+> set.seed(3); for(i in unique(md$patient_id)) x2[i] <- sample(colors_palette, 1)
+> annotation_colors <- list(condition = x, patient_id = x2)
 
->pheatmap(t(expr_median_sample_tbl), color = color, display_numbers = FALSE,
+> pheatmap(t(expr_median_sample_tbl), color = color, display_numbers = FALSE,
          number_color = "black", fontsize_number = 5, annotation_col = annotation_col,
          annotation_colors = annotation_colors, clustering_method = "average")
 ```
-<p float="left">
-  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/scdr.PCA_col.condition.png" width="300" />
-  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/sc_heatmap_patient.png" width="400" /> 
-</p>
+<p float="left"> 
+  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/dr.PCA_col.condition.png" width="300" /> 
+  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/heatmap_patient.png" width="400" />  
+</p> 
 
 But changing at the single-cell level (previous subsampling to 1000 cells for each sample), PCA demonstrated an almost complete (and expected) overlapping between both cell distributions (PB and BM). Regarding the heatmap, we can observe a complete random distribution of cells derived from PB or BM, with the exception of a specific cluster of cells more abundant in the BM, presenting a complete negativity for the expression of all surface markers, thus probably being erythroblasts, obviously absent in PB.
 # El subsampling se ha hecho con la función anterior, la actual da problemas... corregir
 ```
->sub_idx_heat <- sub.samples.idx(data = mdsc, colname_samples = "sample_id", samples_names = md$sample_id, subsampling = 1000, set.seed = 1234) #select how many cells to downsample per-sample
+> sub_idx_heat <- sub.samples.idx(data = mdsc, colname_samples = "sample_id", samples_names = md$sample_id, subsampling = 1000, set.seed = 1234) #select how many cells to downsample per-sample
 Extracting subsampling index for: 1
 Extracting subsampling index for: 2
 Extracting subsampling index for: 3
@@ -336,12 +336,92 @@ Extracting subsampling index for: 9
 Extracting subsampling index for: 10
 Extracting subsampling index for: 11
 Extracting subsampling index for: 12
->heat_expr<- mdsc[sub_idx_heat,]
+> heat_expr<- mdsc[sub_idx_heat,]
 
->ggdfPCA_1000 <- dim.reduction(expr_data = heat_expr[,4:ncol(heat_expr)], metadata = heat_expr[,1:3],  reduction_method = "PCA")
->dr.plotting(ggdfPCA_1000$dr_melted, dr_calculated = "PCA", color_by = "condition", output_type = NULL)
+> ggdfPCA_1000 <- dim.reduction(expr_data = heat_expr[,4:ncol(heat_expr)], metadata = heat_expr[,1:3],  reduction_method = "PCA")
+> dr.plotting(ggdfPCA_1000$dr_melted, dr_calculated = "PCA", color_by = "condition", output_type = NULL)
 ```
-<p float="left">
-  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/scdr.PCA_col.condition.png" width="300" />
-  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/sc_heatmap_patient.png" width="400" /> 
-</p>
+<p float="left"> 
+  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/scdr.PCA_col.condition.png" width="300" /> 
+  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/sc_heatmap_patient.png" width="400" />  
+</p> 
+
+#### 5) Cell clustering
+As already stated before, and that's the reason for developin `FlowCT`, analyzing datasets of flow cytometry data with 8 or more colors (for exploratory/discovery purpose) with traditional gating strategies is absolutely not easy, time‐consuming and difficult to reproduce. Additionally, our capability to work with two-dimensional plots (or rarely with three-dimensional ones) only, renders quite impossible to keep an overview of all markers behavior on selected cell types, increasing the risk of missing valuable information. To overcome these limits, several methods of unsupervised cell clustering have been developed. A recent performance comparison of 18 clustering methods17 identified FlowSom18 as the first choice for exploratory analyses of large datasets, since this method was really fast and reproducible.
+```
+> fsom <- fsom.clustering(fcs, markers_to_use = "surface_markers", markers_to_plot = "tree", set.seed = 1234)
+Calculating SOM clustering...
+Building MST...
+```
+![MST_FlowSOM](https://github.com/jgarces02/FlowCT/blob/master/docs/MST_general.fcs.jpg "MST FlowSOM")
+
+While `FlowSOM` already integrate the `metaClustering_consensus` function, to perform metaclustering we followed the approach suggested by Nowicka et al8 and used the ConsensusClusterPlus package to obtain a better control on each specific function. In this passage, we could decide the final number of clusters in which we would like our cells to be divided. It is important to select a number higher than the one expected: similar clusters could be later manually merged avoiding the risk to lose rare populations clusters. 
+
+`> metaclusters <- fsom.metaclustering(fsom = fsom, num_clusters_metaclustering = 40, plotting = T, set.seed = 1234)`
+
+![MST_metaclustering](https://github.com/jgarces02/FlowCT/blob/master/docs/MST_metaclustering.fsom.jpg "MST from metaclustering")
+
+Below heatmap reporting the median values of each marker in each cluster can help (however in a limited way) to interprete results:
+
+# Error en esta función, xq?: Error: Can't find columns `CD62L`, `CXCR3`, `CD8`, `CD194`, `CCR6`, … (and 3 more) in `.data`.
+`> cluster.heatmap(expr = expr[, surface_markers], expr_saturated = expr01[, surface_markers],
+                                cell_clusters = metaclusters$metaclusters)`
+
+As previously described, dimensional reduction, togheter with SOM information, can be very useful to interprete cell behaviour giving us an idea of population distribution. Among the most recent algorithms for dimensionality reduction, t‑stochastic neighbour embedding (t-SNE)4,19 and Uniform Manifold Approximation and Projection (UMAP) represents the most popular ones. 
+```
+#combine single-cell data with SOM clusters
+> mdsc_som <- data.frame(mdsc[,1:3], SOM = as.factor(metaclusters$metaclusters), mdsc[,4:ncol(mdsc)])
+
+#subsampling
+> sub_idx_som <- sub.samples.idx(data = mdsc_som, colname_samples = "sample_id", samples_names = md$sample_id, subsampling = 1000, set.seed = 1234)
+> sel_expr <- mdsc_som[sub_idx_som,]
+
+## Calculate dimensional reductions (simultaneously)
+> dr <- dim.reduction(expr_data = sel_expr[,5:ncol(sel_expr)], metadata = sel_expr[,1:4], reduction_method = "all", set.seed = 1234)
+Calculating PCA reduction...
+Calculating tSNE reduction...
+Calculating UMAP reduction...
+
+#plot PCA, tSNE or UMAP ->  change "dr_calculated"
+> dr.plotting(dr$dr_melted, dr_calculated = "tSNE", output_type = "png", color_by = "SOM")
+> dr.plotting(dr$dr, dr_calculated = "UMAP", output_type = "png", color_by = "CD62L")
+
+> for(facet in c("patient_id", "condition", "sample_id")){
+  dr.plotting(dr$dr_melted, dr_calculated = "PCA", output_type = "png", color_by = "SOM", facet_by = facet, 
+              output_name = paste0(facet, "_"))
+}
+PCA reduction colored by SOM and faceted by patient_id. Saved as -> patient_id_dr.PCA_col.SOM.png
+PCA reduction colored by SOM and faceted by condition. Saved as -> condition_dr.PCA_col.SOM.png
+PCA reduction colored by SOM and faceted by sample_id. Saved as -> sample_id_dr.PCA_col.SOM.png
+```
+<p float="left"> 
+  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/dr.tSNE_col.SOM.png" width="200" /> 
+  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/dr.UMAP_col.CD62L.png" width="200" />  
+  <img src="https://github.com/jgarces02/FlowCT/blob/master/docs/patient_id_dr.PCA_col.SOM.png" width="200" />  
+</p> 
+
+#### 6) Data exporting and external analysis
+Once all the process of clustering and dimensional reduction have been completed, we can export our downsampled dataset in a new FCS files containing for each cell its expression value, dimensional reduction info (PCA, t-SNE and UMAP), SOM clusters... This file could be loaded in any flow cytometry software and subsequently analyzed to identify the population to which each cluster belongs.
+```
+> to_export <- data.frame(sample_id = as.numeric(sel_expr$sample_id), patient_id = as.numeric($patient_id), condition = as.numeric(sel_expr$condition), cluster_som = as.numeric(sel_expr$SOM),expr_no_transf[sub_idx_som,], dr$dr[,grepl("PCA|tSNE|UMAP", colnames(dr$dr))])
+
+> outFile <- file.path(getwd(), "alltubeTh.fcs")
+> write.FCS(as_flowFrame(as.matrix(to_export), source.frame = NULL), outFile)
+[1] "~/FlowCT/data/results_preprocessing/alltubeTh.fcs"
+```
+..... external tutorial? ......
+
+The final step for external analysis is to create an excel file (or a text file and modify consequently code below) assigning a new name for each cluster, some like that: 
+
+<center>
+
+|original_cluster | new_name        |
+|----------------:|:----------------|
+|1                | debris          |
+|2                | lymphocytes     |
+|3                | lymphocytes     |
+|4                | eosinophils     |
+|5                | erythroblasts   |
+|...              | ...             |
+    
+</center>
