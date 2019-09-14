@@ -1,7 +1,7 @@
 ## FlowCT (R package)
 ### A semi-automated workflow for deconvolution of immunophenotypic data and objective reporting on large datasets
 
-Hello! Thanks for interesting you in FlowCT!
+Hello! Thanks for your interest in FlowCT!
 
 This is a very generic tutorial showing some possibilites of this R package. For any additional information or check another analysis appoximations, you can see our paper in [xxxxx](wwww.web.com) and the help for each function of this package.
 
