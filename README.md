@@ -7,3 +7,10 @@
 
 FlowCT is a semi-automated pipeline for flow cytometry data analysis. 
 Starting from compensated data obtained with standardized protocols, allows simultaneous analyses of multiple files, automated cell clustering and statistical analysis. It provides results in tabular format that can be exported into other databases for integrated analysis (e.g. clinical trials).
+
+```
+options(rsconnect.http = "internal")
+Sys.setenv(http_proxy = "http://proxy.unav.es:8080")
+Sys.setenv(https_proxy = "http://proxy.unav.es:8080")  
+devtools::install_github("jgarces02/FlowCT", auth_token = "21ea9880f944d42755479e54a5b19ddd00fe17f6")
+```
