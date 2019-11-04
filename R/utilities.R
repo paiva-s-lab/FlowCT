@@ -14,23 +14,26 @@
 #'     subsampling = 1000)
 #' sel_expr <- mdsc_som[sub_idx_som,]}
 
-sub.samples.idx <- function(data, colname_samples, subsampling = 1000, set.seed = 333,
-                            verbose = TRUE){
-  set.seed(set.seed)
-  
-  sub_idx <- vector()
-  for(sam in unique(data[,colname_samples])){
-    
-    if(verbose){
-      cat("Extracting subsampling index for: ", sam, "\n", sep = "")
+sub.samples.idx <- function (data, colname_samples, subsampling = 1000, set.seed = 333,
+    verbose = TRUE)
+{
+    set.seed(set.seed)
+    sub_idx <- vector()
+    for (sam in unique(data[, colname_samples])) {
+        if (verbose) {
+            cat("Extracting subsampling index for: ", sam, "\n",
+                sep = "")
+        }
+        aux <- rownames(data[data[, colname_samples] == sam,])
+        if(length(aux) < subsampling){
+            cat("\t Attention!", sam, "has a lower number of events, reduction won't be computed.\n")
+            sub_idx <- append(sub_idx, aux)
+        }else{
+            sub_idx <- append(sub_idx, aux[sample(length(aux), subsampling)])    
+        }
     }
-    
-    aux <- rownames(data[data[,colname_samples] == sam,])
-    sub_idx <- append(sub_idx, aux[sample(length(aux), subsampling)])
-  }
-  
-  sub_idx <- as.integer(sub_idx)
-  return(sub_idx)
+    sub_idx <- as.integer(sub_idx)
+    return(sub_idx)
 }
 
 
