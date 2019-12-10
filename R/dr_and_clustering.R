@@ -172,9 +172,9 @@ fsom.metaclustering <- function(fsom, num_clusters_metaclustering = 40,
                                 plotting = T, folder_name = NULL, 
                                 set.seed = 333){
   
-  if(is.null(folder_name)){
+  if(!is.null(folder_name)){
     mc <- suppressMessages(ConsensusClusterPlus(t(fsom$map$codes), maxK = num_clusters_metaclustering, reps = 100,
-                                                pItem = 0.9, pFeature = 1, plot = NULL,
+                                                pItem = 0.9, pFeature = 1, plot = "png", title = folder_name,
                                                 clusterAlg = "hc", innerLinkage = "average", finalLinkage = "average",
                                                 distance = "euclidean", seed = set.seed, verbose = F))
   }else{
