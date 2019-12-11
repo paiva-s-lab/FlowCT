@@ -13,7 +13,7 @@
 #' \dontrun{reduce.FCS()}
 
 reduce.FCS <- function(file_or_directory = ".", keep_n_events = 100000, output_suffix = ".red",
-                       output_folder = "reduced"){
+                       output_folder = "reduced", set.seed = set.seed){
   if(is_file(file_or_directory)){
     filelist <- file_or_directory
   }else{
@@ -32,6 +32,7 @@ reduce.FCS <- function(file_or_directory = ".", keep_n_events = 100000, output_s
       cat(paste0(file, " has a lower number of events that keep_n_events so it'll be only copied.\n"))
       write.FCS(aux, paste0(output_folder, "/", gsub(".fcs","", file), output_suffix, ".fcs"))
     }else{
+      set.seed(set.seed)
       tmp_exprs <- aux@exprs[sample(nrow(aux@exprs), keep_n_events),] #reduce events number
       
       aux@parameters@data$desc <- ifelse(is.na(aux@parameters@data$desc), aux@parameters@data$name, aux@parameters@data$desc) #replace NA values with CD names
