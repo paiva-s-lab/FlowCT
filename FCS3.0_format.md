@@ -1,7 +1,10 @@
 # Data File Standard for Flow Cytometry, Version FCS3.0
-_Data File Standards Committee of the International Society for Analytical Cytology (ISAC)
 
-_FCS version 2.0 can be found in Cytometry 1990;11(3):323-32.
+_Data File Standards Committee of the International Society for Analytical Cytology (ISAC)_
+
+_FCS version 2.0 can be found in Cytometry 1990;11(3):323-32._
+
+_https://www.bioconductor.org/packages/release/bioc/vignettes/flowCore/inst/doc/fcs3.html_
 
 ## ABSTRACT
 The flow cytometry data file standard provides the specifications needed to completely describe flow cytometry data sets within the confines of the file containing the experimental data. In 1984 the first Flow Cytometry Standard format for data files was adopted as FCS1.0, this standard was modified in 1990 as FCS2.0. We report here on the proposed next generation Flow Cytometry Standard data file format, FCS3.0. The principal goal of the Standard is to provide a uniform file format allowing files created by one type of acquisition hardware and software to be analyzed by another type. The proposed FCS3.0 standard maintains backwards compatibility with previous versions by retaining the basic FCS file structure. The FCS structure requires that each data set in a file contains three segments: HEADER, TEXT and DATA, with an optional ANALYSIS segment. The HEADER appears first and contains plain text byte offsets needed to locate the other segments. The TEXT segment contains plain text keyword-value pairs that describe the experiment, the instrument, the specimen, the data and any other information which the file creator wishes to include. The DATA segment contains the actual FCM data in one of several formats specified in the TEXT segment. The ANALYSIS segment contains plain text keyword-value pairs that describe user-specified analyses of the data. The proposed changes in FCS3.0 include: a mechanism for handling data sets of 100 megabytes and larger, support for UNICODE text for keyword values, support for cyclic redundancy check (CRC) validation for each data set, a requirement for the inclusion of information describing the method of signal amplification and increased support for the inclusion of time as a measurement parameter.
