@@ -29,7 +29,6 @@ Imports:
     ggtree,
     gridExtra,
     pheatmap,
-    premessa,
     uwot
 Suggests: 
     base,
