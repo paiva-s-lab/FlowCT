@@ -12,25 +12,42 @@ The changes included in FCS3.0 were made necessary by rapid evolution in microco
 
 ## Table of Contents
 1. General
-1.1 Scope
-1.2 Conformance
-2. Terminology and General Requirements
-2.1 Conventions
-2.2 Definitions
-2.3 General Concepts
-3. File Segments
-3.1 HEADER Segment
-3.2 TEXT Segment
-3.3 DATA Segment
-3.4 ANALYSIS segment
-3.5 CRC Value
-3.6 Other Segments
-4. References
-5. Appendices
-5.1 Appendix A - Differences from FCS2.0
-5.2 Appendix B - Data File Standard Committee Members
-5.3 Appendix C - Proposed API for reading and writing FCS files
 
+1.1 Scope
+
+1.2 Conformance
+
+2. Terminology and General Requirements
+
+2.1 Conventions
+
+2.2 Definitions
+
+2.3 General Concepts
+
+3. File Segments
+
+3.1 HEADER Segment
+
+3.2 TEXT Segment
+
+3.3 DATA Segment
+
+3.4 ANALYSIS segment
+
+3.5 CRC Value
+
+3.6 Other Segments
+
+4. References
+
+5. Appendices
+
+5.1 Appendix A - Differences from FCS2.0
+
+5.2 Appendix B - Data File Standard Committee Members
+
+5.3 Appendix C - Proposed API for reading and writing FCS files
 
 ## 1. General
 
