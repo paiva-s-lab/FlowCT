@@ -1,15 +1,16 @@
-##Data File Standard for Flow Cytometry, Version FCS3.0
-Data File Standards Committee of the International Society for Analytical Cytology (ISAC)
+# Data File Standard for Flow Cytometry, Version FCS3.0
+_Data File Standards Committee of the International Society for Analytical Cytology (ISAC)
 
-FCS version 2.0 can be found in Cytometry 1990;11(3):323-32.
+_FCS version 2.0 can be found in Cytometry 1990;11(3):323-32.
 
-ABSTRACT
+## ABSTRACT
 The flow cytometry data file standard provides the specifications needed to completely describe flow cytometry data sets within the confines of the file containing the experimental data. In 1984 the first Flow Cytometry Standard format for data files was adopted as FCS1.0, this standard was modified in 1990 as FCS2.0. We report here on the proposed next generation Flow Cytometry Standard data file format, FCS3.0. The principal goal of the Standard is to provide a uniform file format allowing files created by one type of acquisition hardware and software to be analyzed by another type. The proposed FCS3.0 standard maintains backwards compatibility with previous versions by retaining the basic FCS file structure. The FCS structure requires that each data set in a file contains three segments: HEADER, TEXT and DATA, with an optional ANALYSIS segment. The HEADER appears first and contains plain text byte offsets needed to locate the other segments. The TEXT segment contains plain text keyword-value pairs that describe the experiment, the instrument, the specimen, the data and any other information which the file creator wishes to include. The DATA segment contains the actual FCM data in one of several formats specified in the TEXT segment. The ANALYSIS segment contains plain text keyword-value pairs that describe user-specified analyses of the data. The proposed changes in FCS3.0 include: a mechanism for handling data sets of 100 megabytes and larger, support for UNICODE text for keyword values, support for cyclic redundancy check (CRC) validation for each data set, a requirement for the inclusion of information describing the method of signal amplification and increased support for the inclusion of time as a measurement parameter.
 
-INTRODUCTION
+## INTRODUCTION
 The goal of the Flow Cytometry Data File Standard is to facilitate the development of software for reading and writing flow cytometry data files in a standardized format. Application of a standard file format allows files created on one type of instrument to be read and analyzed by software implemented on a different computer. The original FCS standard was published in 1984 as FCS1.0 (1) and amended in 1990 as FCS2.0 (2).
 The changes included in FCS3.0 were made necessary by rapid evolution in microcomputer technology, computer communications, instrument design and experimental complexity. These technological advances have resulted in an increase in the average data file size straining the limit of 99,999,999 bytes per data set designed into previous FCS versions. FCS3.0 provides a mechanism to avoid this restriction while retaining backwards compatibility for those data files which do not exceed the 100-megabyte limit. The growth of computer networks has resulted in the routine movements of large amounts of data between computers. This has created the need for a means of confirming file integrity. Therefore, FCS3.0 provides support for a cyclic redundancy check (CRC) word to be placed at the end of each FCS3.0 data set. The use of a CRC check word allows errors, occurring during file transfer or reading, to be detected. Time is increasingly used as a measurement parameter. Therefore, keyword support has been added to better describe the acquisition of time. Internationalization in the field of flow cytometry has caused a need for the incorporation of international characters in keyword values. Therefore, a provision has been made to support the use of multi-byte characters for some strings by providing a keyword to support the UNICODE character set (3).
-Table of Contents
+
+## Table of Contents
 1. General
 1.1 Scope
 1.2 Conformance
@@ -31,12 +32,13 @@ Table of Contents
 5.3 Appendix C - Proposed API for reading and writing FCS files
 
 
-1. General
+## 1. General
 
-1.1 Scope
+## 1.1 Scope
 
 This is version 3.0 of the Flow Cytometry Data File Standard (FCS3.0). Its purpose is to provide detailed specifications for the structure of the data sets produced as a result of acquiring data on a cytometer and writing the data to a file.
-1.2 Conformance
+
+## 1.2 Conformance
 
 To be conformant with FCS3.0, a data file must conform to the file structure as described in this document and must contain all required keyword-value pairs in the primary TEXT segment of the file. A conformant file must not contain other segments not described in the data set HEADER segment. To be conformant with FCS3.0 an analysis program must be able to correctly read and interpret all of the data contained in any minimum FCS3.0 conformant file (a minimum FCS3.0 conformant file is one with only the required keyword-value pairs in the TEXT segment of the file and no information in the ANALYSIS segment).
 2. Terminology and General Requirements
