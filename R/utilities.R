@@ -124,3 +124,22 @@ markers.names <- function (fcs, new_names = NULL){
     return(fcs)
   }
 }
+
+                                                 
+#' delete.pop
+#'
+ delete.pop <- function(object, colID, pops){
+	if(!missing(colID)){
+		for(j in pops){
+			object <- object[object[,colID] != j,]
+			object[,colID] <- droplevels(object[,colID])
+		}
+	}else{
+		for(j in pops){
+			object <- object[object != j]
+			object <- droplevels(object)
+		}
+	}
+	return(object)
+}
+                                               
