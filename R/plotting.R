@@ -54,7 +54,7 @@ dr.plotting <- function(dr, dr.calculated, n.dims = c(1,2), color.by = "expressi
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
           panel.background = element_blank(), panel.border = element_rect(color = "black", fill = NA))
   
-  if(is.factor(dr[,color.by])){
+  if(is.factor(dr[,color.by]) | is.character(dr[,color.by])){
     g <- g + scale_color_manual(values = div.colors(length(unique(dr[,color.by]))), name = color.by) +
       guides(color = guide_legend(override.aes = list(size = 4), ncol = 2))
   }else{
