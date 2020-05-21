@@ -28,7 +28,7 @@ dr.plotting(data, assay.i = "normalized", plot.dr, dims = c(1, 2),
 
 \item{size}{Point size. Default = \code{0.5}.}
 
-\item{raster}{Vector indicating if image should be rasterized (logical element) and the number of pixels to consider (numerical element). It is based on (\ref{https://github.com/exaexa/scattermore}{scattermore package}). Default = \code{c(T, 1000)}.}
+\item{raster}{Vector indicating if image should be rasterized (logical element) and the number of pixels to consider (numerical element). It is based on \ref{https://github.com/exaexa/scattermore}{scattermore package}. Default = \code{c(T, 1000)}.}
 
 \item{return.df}{Logical indicating if built \code{data.frame} with DR information and metadata must be returned. Default = \code{FALSE}.}
 
