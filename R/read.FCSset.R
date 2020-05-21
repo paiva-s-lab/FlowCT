@@ -10,6 +10,7 @@
 #' @keywords FCS reading
 #' @keywords FCS parallel
 #' @export
+#' @importFrom ncdfFlow as.flowSet read.ncdfFlowSet
 #' @examples
 #' \dontrun{
 #' # option 1: trough a vector with filenames (full path)
@@ -22,12 +23,16 @@
 
 read.FCSset <- function(filelist = NULL, directory = getwd(), pattern = ".fcs$", 
                         events = "all", dataset = 1, num.threads = NULL){
-  if(events == "all") events <- NULL
   if(is.null(filelist)) print(filelist <- list.files(path = directory, pattern = pattern, full.names = T))
   
   if(Sys.info()[1] == "Windows") require(parallelsugar) #devtools::github_install('nathanvan/parallelsugar')
-  fcs <- ncdfFlow::as.flowSet(ncdfFlow::read.ncdfFlowSet(filelist, emptyValue = FALSE, transformation = FALSE, truncate_max_range = FALSE, 
-                                        which.lines = events, dataset = dataset, mc.cores = num.threads))
+  if(events == "all"){
+  	fcs <- as.flowSet(read.ncdfFlowSet(filelist, emptyValue = FALSE, transformation = FALSE, truncate_max_range = FALSE, 
+                                which.lines = NULL, dataset = dataset, mc.cores = num.threads))
+  	}else{
+	fcs <- as.flowSet(read.ncdfFlowSet(filelist, emptyValue = FALSE, transformation = FALSE, truncate_max_range = FALSE, 
+                                which.lines = events, dataset = dataset, mc.cores = num.threads))
+  	}
   
   return(fcs)
 }

@@ -14,6 +14,11 @@
 #' @return The final output if \code{fix = F} is a table with three columns: \code{names} for channels, \code{freq} for frequency of apparition of these channel names and \code{length} for number of channels within that frequency.
 #' @return If \code{fix = T}, those FCS files with a distinct header from selected frequency will be renamed/reordered, added with the suffix \code{fixed.fcs} and the original ones (unchanged) will be stored in a new \code{original_files} folder. In the case a FCS would have a different number of channels, it will moved to a new folder called \code{discarded_files_because_diffs} and dicarded from downstream analysis (this will be changed in the future).
 #' @export
+#' @importFrom flowCore read.FCS write.FCS
+#' @importFrom data.table melt
+#' @importFrom progress progress_bar
+#' @importFrom filesstrings file.move
+#' @importFrom utils View
 #' @examples
 #' \dontrun{
 #' ## detect header's frequencies
@@ -35,11 +40,11 @@ unify.FCSheaders <- function(filelist = NULL, directory = getwd(), pattern = ".f
   ## test frequency for each combination of channel/markers
   mnames <- c()
   for(i in 1:length(filelist)){
-    aux <- flowCore::read.FCS(filelist[i], dataset = dataset, emptyValue = FALSE, transformation = FALSE, truncate_max_range = FALSE, which.lines = 1)
+    aux <- read.FCS(filelist[i], dataset = dataset, emptyValue = FALSE, transformation = FALSE, truncate_max_range = FALSE, which.lines = 1)
     mnames <- append(mnames, paste(colnames(aux), collapse = ", "))
   }
   
-  tm <- data.table::melt(table(mnames))
+  tm <- melt(table(mnames))
   colnames(tm) <- c("names", "freq")
   tm$length <- sapply(tm$names, function(x) length(strsplit(as.character(x), ", ")[[1]]))
   tm <- tm[order(tm$freq, decreasing = T),]
@@ -51,7 +56,7 @@ unify.FCSheaders <- function(filelist = NULL, directory = getwd(), pattern = ".f
       return(cat("All files are correctly and uniformly named!\n"))
     }else{
       cat("--------------------------\nTable with frequency of differently named FCSs:\n")
-      if(view) utils::View(tm) else print(tm)
+      if(view) View(tm) else print(tm)
       
       if(select.freq == "ask"){
         select.freq <- as.numeric(readline("Select a number for establishing a common marker order: "))
@@ -62,34 +67,34 @@ unify.FCSheaders <- function(filelist = NULL, directory = getwd(), pattern = ".f
     } 
     
     ## detect files that not keep more abundant order and reorder/rename them
-    pb <- progress::progress_bar$new(total = length(filelist), format = "\nCorrecting divergent files [:bar] :percent eta: :eta")
+    pb <- progress_bar$new(total = length(filelist), format = "\nCorrecting divergent files [:bar] :percent eta: :eta")
     
     for(i in 1:length(filelist)){
       pb$tick()
       # diff_files <- c()
-      aux <- flowCore::read.FCS(filelist[i], dataset = dataset, emptyValue = FALSE, transformation = FALSE, truncate_max_range = FALSE, which.lines = events)
+      aux <- read.FCS(filelist[i], dataset = dataset, emptyValue = FALSE, transformation = FALSE, truncate_max_range = FALSE, which.lines = events)
       
       if(!identical(o, colnames(aux))){
         if(length(colnames(aux)) != length(o)){
           cat("\nFile", filelist[i], "has a some different markers or channels, it cannot be included in the analysis. Moved to 'discarded_files_because_diffs/'\n")
           dir.create(paste0(directory, "discarded_files_because_diffs"))
-          suppressMessages(filesstrings::file.move(filelist[i], paste0(directory, "discarded_files_because_diffs")))
+          suppressMessages(file.move(filelist[i], paste0(directory, "discarded_files_because_diffs")))
           # diff_files <- append(diff_files, filelist[i])
         }else{
           dir.create(paste0(directory, "original_files"), showWarnings = F) #move files
-          suppressMessages(filesstrings::file.move(filelist[i], paste0(directory, "original_files")))
+          suppressMessages(file.move(filelist[i], paste0(directory, "original_files")))
           
           aux@parameters@data <- aux@parameters@data[match(o, aux@parameters@data$name),] #reorder
           colnames(aux) <- o
           
           extension <- strsplit(filelist[i], "\\.")
           extension <- extension[[1]][length(extension[[1]])]
-          flowCore::write.FCS(aux, filename = paste0(gsub(extension, "", filelist[i]), "fixed.", extension))
+          write.FCS(aux, filename = paste0(gsub(extension, "", filelist[i]), "fixed.", extension))
         }      
       }
       Sys.sleep(1/100)
     }
   }else{
-    if(view) utils::View(tm) else print(tm)
+    if(view) View(tm) else print(tm)
   }
 }

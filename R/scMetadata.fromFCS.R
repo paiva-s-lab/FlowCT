@@ -7,18 +7,21 @@
 #' @keywords single-cell metadata
 #' @keywords flowset metadata
 #' @export
+#' @importFrom progress progress_bar
+#' @importFrom flowCore fsApply exprs
 #' @examples
 #' \dontrun{
 #'  sc_metadata <- scMetadata.fromFCS(fcs, metadata, add.exprs = T)
 #' }
 
 scMetadata.fromFCS <- function(flowset, metadata, add.exprs = T){
-  expr <- flowCore::fsApply(flowset, flowCore::exprs)
+  expr <- fsApply(flowset, exprs)
   mtd <- data.frame()
-  pb <- progress::progress_bar$new(total = length(flowset), format = "Generating single cell metadata [:bar] :percent")
+  pb <- progress_bar$new(total = length(flowset), format = "Generating single cell metadata [:bar] :percent")
   
+  filenames <- flowset@phenoData@data$name
   file_count <- 1
-  for(i in flowCore::sampleNames(flowset)){
+  for(i in filenames){
     pb$tick()
     
     aux_md <- subset(metadata, metadata$filename == i)

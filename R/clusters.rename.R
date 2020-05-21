@@ -18,10 +18,10 @@
 #'  # 4 4                lymphocytes
 #'  # 5 5                eosinophils
 #'  # 6 6                eosinophils
-#' fcs_se$SOM_named <- clusters.rename(fcs_se$SOM, cluster = replacedata$original_cluster, name = replacedata$new_cluster)
+#' fcs$SOM_named <- clusters.rename(fcs$SOM, cluster = replacedata$original_cluster, name = replacedata$new_cluster)
 #' 
 #' # option 2
-#' fcs_se$SOM_named <- clusters.rename(fcs_se$SOM, cluster = 1:6, name = c("debris", "lymphocytes", "monocytes", "lymphocytes", "eosinophils", "eosinophils"))
+#' fcs$SOM_named <- clusters.rename(fcs$SOM, cluster = 1:6, name = c("debris", "lymphocytes", "monocytes", "lymphocytes", "eosinophils", "eosinophils"))
 #' }
 
 clusters.rename <- function(x, cluster, name){

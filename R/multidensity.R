@@ -1,10 +1,10 @@
 #' multidensity
 #'
-#' This function draws multidensity plot with all FCS files included in a \code{FCS.SE} object. If there are more files than limit specified in \code{ridgeline.lim}, instead of plottting density in a ridge-way all density lines will be overlapped.
-#' @param fcs.SE A FCS.SE object generated through \code{\link[FlowCT:fcs.SE]{FlowCT::fcs.SE()}}.
-#' @param assay.i Name of matrix stored in the \code{FCS.SE} object from which calculate correlation. Default = \code{"normalized"}.
+#' This function draws multidensity plot with all FCS files included in a \code{fcs.SCE} object. If there are more files than limit specified in \code{ridgeline.lim}, instead of plottting density in a ridge-way all density lines will be overlapped.
+#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.
+#' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.
 #' @param show.markers Vector with markers to plot. Default = \code{"all"}.
-#' @param color.by Variable name (from \code{colData(fcs.SE)}) for lines coloring. 
+#' @param color.by Variable name (from \code{colData(fcs.SCE)}) for lines coloring. 
 #' @param subsampling Numeric value indicating how many events use to calculate density lines and speed up plotting. Default = \code{NULL}.
 #' @param interactive Logical indicating if the user can interact with the (only overlapping-lines) plot. Default = \code{FALSE}.
 #' @param ridgeline.lim Numeric value specifying the limit for shifting from ridgeline-mode to overlapping-lines plot. Default = \code{15}.
@@ -17,22 +17,22 @@
 #' @importFrom stats median
 #' @examples
 #' \dontrun{
-#' multidensity(fcs.SE = fcs_se, assay.i = "normalized", subsampling = 1000)
-#' multidensity(fcs_se, assay.i = 2, color.by = "file_name", ridgeline.lim = 0, show.markers = c("CD62L", "CD4"), interactive = T)
+#' multidensity(fcs.SCE = fcs, assay.i = "normalized", subsampling = 1000)
+#' multidensity(fcs, assay.i = 2, color.by = "file_name", ridgeline.lim = 0, show.markers = c("CD62L", "CD4"), interactive = T)
 #' }
 
-multidensity <- function(fcs.SE, assay.i, show.markers = "all", color.by = NULL, subsampling = NULL, interactive = F, ridgeline.lim = 15){
-  if(show.markers == "all") show.markers <- rownames(fcs.SE)
-  if(!is.null(subsampling)) suppressMessages(fcs.SE <- sub.samples(fcs.SE, subsampling = subsampling))
+multidensity <- function(fcs.SCE, assay.i, show.markers = "all", color.by = NULL, subsampling = NULL, interactive = F, ridgeline.lim = 15){
+  if(show.markers == "all") show.markers <- rownames(fcs.SCE)
+  if(!is.null(subsampling)) suppressMessages(fcs.SCE <- sub.samples(fcs.SCE, subsampling = subsampling))
   
-  data <- t(assay(fcs.SE, i = assay.i))
-  data2 <- merge(data, colData(fcs.SE), by = "row.names")[,-1]
+  data <- t(assay(fcs.SCE, i = assay.i))
+  data2 <- merge(data, colData(fcs.SCE), by = "row.names")[,-1]
   
   # prepare tables: for plotting and with median values for each marker
   median_df <- data.frame(antigen = show.markers, median = apply(data[,show.markers], 2, median))
   ggdf <- data.table::melt(data2, measure.vars = show.markers, value.name = "expression", variable.name = "antigen")
   
-  if(length(unique(fcs.SE$filename)) > ridgeline.lim){
+  if(length(unique(fcs.SCE$filename)) > ridgeline.lim){
     g <- ggplot(data = ggdf[grepl(paste0(show.markers, collapse = "|"), ggdf$antigen),], 
                 aes_string(x = "expression", color = color.by, group = "filename")) + 
       # geom_density(size = 0.5) +

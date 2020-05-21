@@ -1,9 +1,9 @@
 #' circ.tree
 #'
-#' This function plots a circular dendrogram and a heatmap according a \code{FCS.SE}. Every leaf has a different colored point size regarding the cell type and the frequency for each cluster.
+#' This function plots a circular dendrogram and a heatmap according a \code{fcs.SCE}. Every leaf has a different colored point size regarding the cell type and the frequency for each cluster.
 #' For additional information go to \href{https://guangchuangyu.github.io/software/ggtree/documentation/}{\code{\link{ggtree}}} package.
-#' @param fcs.SE A FCS.SE object generated through \code{\link[FlowCT:fcs.SE]{FlowCT::fcs.SE()}}.
-#' @param assay.i Name of matrix stored in the \code{FCS.SE} object from which drawing the circular tree. Default = \code{"normalized"}.
+#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.
+#' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which drawing the circular tree. Default = \code{"normalized"}.
 #' @param cell.clusters A vector with clusters identified through \code{\link[FlowCT:fsom.clustering]{FlowCT::fsom.clustering()}} (and, normaly, later renamed).
 #' @param dist.method Distance method measurement to be used. Possible values are "euclidean" (default), "maximum", "manhattan", "canberra", "binary" or "minkowski".
 #' @param hclust.method Hierarchical clustering method to be used. Possible values are "average" (default), "ward.D", "ward.D2", "single", "complete", "mcquitty", "median" or "centroid".
@@ -21,43 +21,47 @@
 #' @import ggtree
 #' @import ggplot2
 #' @importFrom treeio isTip
+#' @importFrom SummarizedExperiment assay
+#' @importFrom stats dist hclust median
+#' @importFrom ape as.phylo
 #' @examples
 #' \dontrun{
 #' # step 1: display all node numbers to select how to coloring areas
-#' circ.tree(fcs.SE = fcs_seL, cell.clusters = fcs_seL$SOM_L_named, nodes = "display")
+#' circ.tree(fcs.SCE = fcsL, cell.clusters = fcsL$SOM_L_named, nodes = "display")
 #' 
 #' # step 2: color areas indicating node numbers
-#' circ.tree(fcs.SE = fcs_seL, cell.clusters = fcs_seL$SOM_L_named, nodes = c(17, 25))
+#' circ.tree(fcs.SCE = fcsL, cell.clusters = fcsL$SOM_L_named, nodes = c(17, 25))
 #' }
 
-circ.tree <- function(fcs.SE, assay.i = "normalized", cell.clusters, dist.method = "euclidean", hclust.method = "average", 
+circ.tree <- function(fcs.SCE, assay.i = "normalized", cell.clusters, dist.method = "euclidean", hclust.method = "average", 
                       nodes = "display", open.angle = 100, dendro.labels = FALSE, scale.size = 10){
-  exprs <- t(SummarizedExperiment::assay(fcs.SE, i = assay.i))
-  exprs_01 <- exprs.saturate(exprs)
+  exprs <- t(assay(fcs.SCE, i = assay.i))
+  exprs_01 <- scale.exprs(exprs)
   colors_palette <- div.colors(length(cell.clusters))
   
   ## Circular hyerarchical clustering tree
   #median expression of each marker for each cell population
   expr_medianL <- data.frame(exprs, cell_clustering = cell.clusters) %>%
-    group_by(.data$cell_clustering) %>% summarize_all(list(stats::median)) %>% as.data.frame(.data)
+    group_by(.data$cell_clustering) %>% summarize_all(list(median)) %>% as.data.frame(.data)
   expr01_medianL <- data.frame(exprs_01, cell_clustering = cell.clusters) %>%
-    group_by(.data$cell_clustering) %>% summarize_all(list(stats::median)) %>% as.data.frame(.data)
+    group_by(.data$cell_clustering) %>% summarize_all(list(median)) %>% as.data.frame(.data)
   
   #calculate cluster frequencies (and annotation for heatmap)
   clustering_propL <- data.frame(node = 1:length(levels(cell.clusters)), prop.table(table(cell.clusters))*100)
-  
+  colnames(clustering_propL) <- c("node", "cell_cluster", "Freq")
+
   #hierarchical clustering on clusters
-  dL <- stats::dist(expr_medianL, method = dist.method)
-  cluster_rowsL <- stats::hclust(dL, method = hclust.method)
+  dL <- dist(expr_medianL, method = dist.method)
+  cluster_rowsL <- hclust(dL, method = hclust.method)
   expr_heatL <- as.matrix(expr01_medianL)
   rownames(expr_heatL) <- expr01_medianL$cell_clustering
   
   #hyerarchical tree building
-  hca <- ape::as.phylo(cluster_rowsL)
+  hca <- as.phylo(cluster_rowsL)
   hca$tip.label <- rownames(expr_heatL)
   
   if(nodes == "display"){
-    print(ggtree(hca, layout = "fan", branch.length = 1) + geom_text2(aes_string(subset =! "isTip", label = "node"), hjust = -.3) + geom_tiplab())
+    print(ggtree(hca, layout = "fan", branch.length = 1) + geom_text2(aes_string(label = "node"), hjust = -.3) + geom_tiplab())
   }else{
     p1 <- ggtree(hca, layout = "fan", open.angle = open.angle, branch.length = 1) 
     
@@ -65,9 +69,8 @@ circ.tree <- function(fcs.SE, assay.i = "normalized", cell.clusters, dist.method
     
     for(i in nodes){
       p1 <- p1 + geom_hilight(node = i, fill = sample(colors_palette, 1), alpha = .6) +
-        geom_point(aes_string(shape = "1", color = "cell_clusters", size = "Freq")) +
-        scale_size_area(max_size = scale.size) +
-        scale_color_manual(values = colors_palette) + 
+        geom_point(aes_string(color = "cell_cluster", size = "Freq")) +
+        scale_size_area(max_size = scale.size) + scale_color_manual(values = colors_palette) + 
         theme(legend.position = "right")
     }
     

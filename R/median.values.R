@@ -1,25 +1,27 @@
 # 'median.values
 #'
-#' It calculates median values according a specfied variable, normally "filename".
-#' @param fcs.SE A FCS.SE object generated through \code{\link[FlowCT:fcs.SE]{FlowCT::fcs.SE()}}.
-#' @param assay.i Name of matrix stored in the \code{FCS.SE} object from which calculate medians. Default = \code{"raw"}.
+#' It calculates median values according a specfied variable, normaly "filename".
+#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.
+#' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate medians. Default = \code{"raw"}.
 #' @param var Variable for grouping and calculating medians. Default = \code{"filename"} (i.e., names of FCS files).
 #' @keywords median values
 #' @keywords MFI
 #' @keywords median fluorescence intensity
 #' @export median.values
+#' @importFrom SummarizedExperiment	assay
+#' @importFrom stats median
 #' @examples
 #' \dontrun{
-#' mfis_FCS <- median.values(fcs.SE = fcs_se)
-#' med_SOM_clust <- median.values(fcs.SE = fcs_se, assay.i = "normalized", var = "SOM_named")
+#' mfis_FCS <- median.values(fcs.SCE = fcs)
+#' med_SOM_clust <- median.values(fcs.SCE = fcs, assay.i = "normalized", var = "SOM_named")
 #' }
 
-median.values <- function(fcs.SE, assay.i = "raw", var = "filename"){
+median.values <- function(fcs.SCE, assay.i = "raw", var = "filename"){
   med <- list()
-  for(i in unique(fcs.SE[[var]])){
-    aux_se <- fcs.SE[,fcs.SE[[var]] == i]
-    med[[i]] <- apply(SummarizedExperiment::assay(aux_se, i = assay.i), 1, stats::median)
+  for(i in unique(fcs.SCE[[var]])){
+    aux_se <- fcs.SCE[,fcs.SCE[[var]] == i]
+    med[[i]] <- apply(assay(aux_se, i = assay.i), 1, median)
   }
-  if(is.null(names(med))) names(med) <- unique(fcs.SE[[var]])
+  if(is.null(names(med))) names(med) <- unique(fcs.SCE[[var]])
   return(t(as.data.frame(med)))
 }
