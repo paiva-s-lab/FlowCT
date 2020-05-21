@@ -1,15 +1,13 @@
 Package: FlowCT.v2
 Type: Package
 Title: A semi-automated workflow for deconvolution of immunophenotypic data and objective reporting on large datasets
-Version: 2.0
+Version: 2.1
 Authors@R: c(
     person("Cirino", "Botta", email = "cirino.botta@gmail.com", role = "aut"),
     person("Juan José", "Garcés", email = "jgarces@unav.es", role = c("cre", "ctb")))
 Description: FlowCT is a semi-automated pipeline for flow cytometry data analysis. 
     Starting from compensated data obtained with standardized protocols, allows simultaneous analyses of multiple files, automated cell clustering and statistical analysis. It provides results in tabular format that can be exported into other databases for integrated analysis (e.g. clinical trials). 
-Depends: R (>= 2.10)
 License: CC0
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
-Imports: dplyr, phytools, ggtree, ggplot2, rlang, flowCore, RColorBrewer, FlowSOM, SummarizedExperiment
