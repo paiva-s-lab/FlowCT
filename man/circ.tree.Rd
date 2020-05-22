@@ -10,11 +10,11 @@ circ.tree(fcs.SCE, assay.i = "normalized", cell.clusters,
   scale.size = 10)
 }
 \arguments{
-\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{fcs.SCE()}}.}
+\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which drawing the circular tree. Default = \code{"normalized"}.}
 
-\item{cell.clusters}{A vector with clusters identified through \code{\link[FlowCT:fsom.clustering]{fsom.clustering()}} (and, normaly, later renamed).}
+\item{cell.clusters}{A vector with clusters identified through \code{\link[FlowCT.v2:fsom.clustering]{FlowCT.v2::fsom.clustering()}} (and, normaly, later renamed).}
 
 \item{dist.method}{Distance method measurement to be used. Possible values are "euclidean" (default), "maximum", "manhattan", "canberra", "binary" or "minkowski".}
 
@@ -30,7 +30,7 @@ circ.tree(fcs.SCE, assay.i = "normalized", cell.clusters,
 }
 \description{
 This function plots a circular dendrogram and a heatmap according a \code{fcs.SCE}. Every leaf has a different colored point size regarding the cell type and the frequency for each cluster.
-For additional information go to \href{https://guangchuangyu.github.io/software/ggtree/documentation/}{\code{ggtree}} package.
+For additional information go to \href{https://guangchuangyu.github.io/software/ggtree/documentation/}{\code{ggtree} package}.
 }
 \examples{
 \dontrun{

@@ -10,9 +10,9 @@ qc.and.removeDoublets(fcs.SCE = NULL, filelist = NULL,
   return.idx = FALSE, return.fcs = FALSE)
 }
 \arguments{
-\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{fcs.SCE()}}. If \code{NULL} (default), this function will search for FCS files within current working directory.}
+\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}. If \code{NULL} (default), this function will search for FCS files within current working directory.}
 
-\item{filelist}{A vector with full path of FCS files to be read, commonly generated through \code{\link[base:list.files]{list.files()}}. If \code{NULL}, this file list will be generated as indicated below.}
+\item{filelist}{A vector with full path of FCS files to be read, commonly generated through \code{\link[base:list.files]{base::list.files()}}. If \code{NULL}, this file list will be generated as indicated below.}
 
 \item{directory}{If \code{filelist = NULL}, those files stored in this location will be read. Default = \code{getwd()} (current directory).}
 

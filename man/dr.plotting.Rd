@@ -10,7 +10,7 @@ dr.plotting(data, assay.i = "normalized", plot.dr, dims = c(1, 2),
   return.df = F)
 }
 \arguments{
-\item{data}{A object with DR generated with \code{\link[FlowCT:dim.reduction]{dim.reduction()}} or a \code{data.frame} with DR, expression and metadata information (like the first element list of the object generated with \code{\link[FlowCT:dim.reduction]{dim.reduction()}}).}
+\item{data}{A object with DR generated with \code{\link[FlowCT.v2:dim.reduction]{FlowCT.v2::dim.reduction()}} or a \code{data.frame} with DR, expression and metadata information (like the first element list of the object generated with \code{\link[FlowCT.v2:dim.reduction]{FlowCT.v2::dim.reduction()}}).}
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.}
 
@@ -35,7 +35,7 @@ dr.plotting(data, assay.i = "normalized", plot.dr, dims = c(1, 2),
 \item{n.dims}{Vector indicating the two DR components to plot. Default = \code{c(1,2)}.}
 }
 \description{
-This function plots the indicated dimensional reduction (DR) from a previously calculated \code{\link[FlowCT:dim.reduction]{dim.reduction()}} object.
+This function plots the indicated dimensional reduction (DR) from a previously calculated \code{\link[FlowCT.v2:dim.reduction]{FlowCT.v2::dim.reduction()}} object.
 }
 \examples{
 \dontrun{

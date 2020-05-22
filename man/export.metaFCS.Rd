@@ -9,7 +9,7 @@ export.metaFCS(fcs.SCE, assay.i = "raw", output.name = NULL,
   output.suffix = "meta")
 }
 \arguments{
-\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{fcs.SCE()}}.}
+\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}
 
 \item{output.name}{Name for generated FCS file. If \code{NULL} (default), the project name specified in the \code{fcs.SCE} building will be used.}
 
@@ -19,7 +19,7 @@ export.metaFCS(fcs.SCE, assay.i = "raw", output.name = NULL,
 
 \item{output.suffix}{Suffix to be added to the new generated FCS files. Default = \code{"meta"}.}
 
-\item{dr.object}{Object created with \code{\link[FlowCT:dim.reduction]{dim.reduction()}} function or a table combining DR and experimental metadata information.}
+\item{dr.object}{Object created with \code{\link[FlowCT.v2:dim.reduction]{FlowCT.v2::dim.reduction()}} function or a table combining DR and experimental metadata information.}
 }
 \description{
 It creates a FCS file containing all analysis incorpored to colData(fcs.SCE) as well as the dimensional reduction coordinates calculated.
