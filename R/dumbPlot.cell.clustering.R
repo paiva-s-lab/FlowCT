@@ -1,10 +1,10 @@
 # 'dumbPlot.cell.clustering
 #'
 #' It draws a Dumbbell plot according condition for each cell cluster identified.
-#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT]{fcs.SCE()}}.
+#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{fcs.SCE()}}.
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.
-#' @param cell.clusters A vector with clusters identified through \code{\link[FlowCT]{fsom.clustering()}} (and, normaly, later renamed).
-#' @param condition.column Column name from the \code{colData(fcs.SCE)} object which contains condition information. De
+#' @param cell.clusters A vector with clusters identified through \code{\link[FlowCT:fsom.clustering]{fsom.clustering()}} (and, normaly, later renamed).
+#' @param condition.column Column name from the \code{colData(fcs.SCE)} object which contains condition information.
 #' @param psig.cutoff P-value cutoff. Default = \code{0.05}.
 #' @param return.stats Logical indicating if calculated statistics should be returned in a new variable. Default = \code{TRUE}.
 #' @keywords differential dotplot

@@ -1,7 +1,7 @@
 # 'sc.Heatmap
 #'
 #' This function draws a heatmap with single-cell fluorescence values.
-#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT]{fcs.SCE()}}.
+#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{fcs.SCE()}}.
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.
 #' @param markers.to.use Vector with markers to use. Default = \code{"all"}.
 #' @param not.metadata Vector with variable names (from \code{colData(fcs.SCE)}) for not including in the heatmap annotation. Default = \code{c("filename", "cell_id", "sample_id")}.

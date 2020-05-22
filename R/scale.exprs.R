@@ -1,7 +1,7 @@
 #' scale.exprs
 #'
 #' It scales a matrix expression and fit all values to a range from 0 to 1.
-#' @param data A \code{fcs.SCE} object generated through \code{\link[FlowCT]{fcs.SCE()}} or a expression table with events in rows and markers in columns.
+#' @param data A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{fcs.SCE()}} or a expression table with events in rows and markers in columns.
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.
 #' @param include.FCS.SCE Logical indicating if new scaled matrix must to be stored within the \code{fcs.SCE} object.
 #' @param scaled.matrix.name New scaled matrix name (it will stored within the \code{fcs.SCE} object). Default = \code{"scaled"}.

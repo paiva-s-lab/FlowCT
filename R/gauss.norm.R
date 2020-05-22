@@ -1,9 +1,9 @@
 #'gauss.norm
 #'
-#' It performs a Gaussian normalization based on \code{\link[flowStats]{gaussNorm()}} function.
-#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT]{fcs.SCE()}}.
+#' It performs a Gaussian normalization based on \code{\link[flowStats:gaussNorm]{gaussNorm()}} function.
+#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{fcs.SCE()}}.
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"transformed"}.
-#' @param marker.to.norm Marker name(s) to normalize (based on visual inspection with \code{\link[FlowCT]{multidensity()}}).
+#' @param marker.to.norm Marker name(s) to normalize (based on visual inspection with \code{\link[FlowCT:multidensity]{multidensity()}}).
 #' @param norm.matrix.name New normalized matrix name (it will stored within the \code{fcs.SCE} object). Default = \code{"normalized"}.
 #' @keywords Gaussian normalization
 #' @keywords marker alignment

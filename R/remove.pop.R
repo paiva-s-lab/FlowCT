@@ -1,9 +1,9 @@
 # 'remove.pop
 #'
 #' It removes one or multiple cell populations from a \code{fcs.SCE} object.
-#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT]{fcs.SCE()}}.
+#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{fcs.SCE()}}.
 #' @param population Name(s) of cell population(s) to be removed.
-#' @param clusters.named Column name from the \code{colData(fcs.SCE)} object which contains renamed clusters (through \code{\link[FlowCT]{clusters.rename()}}).
+#' @param clusters.named Column name from the \code{colData(fcs.SCE)} object which contains renamed clusters (through \code{\link[FlowCT:clusters.rename]{clusters.rename()}}).
 #' @keywords remove cell population
 #' @keywords debris
 #' @export

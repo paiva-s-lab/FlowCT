@@ -1,7 +1,7 @@
 # 'median.values
 #'
 #' It calculates median values according a specfied variable, normaly "filename".
-#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT]{fcs.SCE()}}.
+#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{fcs.SCE()}}.
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate medians. Default = \code{"raw"}.
 #' @param var Variable for grouping and calculating medians. Default = \code{"filename"} (i.e., names of FCS files).
 #' @keywords median values
