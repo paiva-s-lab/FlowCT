@@ -31,7 +31,7 @@ median.heatmap <- function(fcs.SCE, assay.i = "normalized", cell.clusters = NULL
   if(markers.to.use == "all") markers.to.use <- colnames(data)
   
   ## prepare median tables
-  if(is.null(cell.lcusters)){
+  if(is.null(cell.clusters)){
     med <- median.values(fcs.SCE, assay.i = assay.i)
   }else{
     expr_median <- data.frame(cell_clusters = cell.clusters, data[,markers.to.use]) %>%
