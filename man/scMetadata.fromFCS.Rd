@@ -7,14 +7,14 @@
 scMetadata.fromFCS(flowset, metadata, add.exprs = T)
 }
 \arguments{
-\item{flowset}{A flowset object generated following the (\ref{https://bioconductor.org/packages/devel/bioc/vignettes/flowCore/inst/doc/HowTo-flowCore.pdf}\code{flowCore}{tutorial}).}
+\item{flowset}{A \code{flowset} object generated following the \href{https://bioconductor.org/packages/devel/bioc/vignettes/flowCore/inst/doc/HowTo-flowCore.pdf}{\code{flowCore} tutorial}.}
 
 \item{metadata}{Metadata information for each read FCS file.}
 
 \item{add.exprs}{Logical indicating if expression data must be added to each cell's metadata. Default = \code{TRUE}.}
 }
 \description{
-It creates, from an initial metadata provided by the user, a global metadata for each event in a (\href{https://www.rdocumentation.org/packages/flowCore/versions/1.38.2/topics/flowSet-class}{flowset}) object.
+It creates, from an initial metadata provided by the user, a global metadata for each event in a \href{https://www.rdocumentation.org/packages/flowCore/versions/1.38.2/topics/flowSet-class}{\code{flowset} object}.
 }
 \examples{
 \dontrun{

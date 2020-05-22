@@ -9,7 +9,7 @@ fsom.clustering(fcs.SCE, assay.i = "normalized",
   k.metaclustering = 40, metaclustering.name = NULL)
 }
 \arguments{
-\item{fcs.SCE}{A fcs.SCE object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.}
+\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT]{fcs.SCE()}}.}
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate SOM clustering. Default = \code{"normalized"}.}
 
@@ -19,10 +19,10 @@ fsom.clustering(fcs.SCE, assay.i = "normalized",
 
 \item{k.metaclustering}{Number of metaclusters to calculate in the metaclustering step. Default = \code{40}.}
 
-\item{metaclustering.name}{Name for PDF with metaclustering results (see (\ref{https://bioconductor.org/packages/release/bioc/vignettes/ConsensusClusterPlus/inst/doc/ConsensusClusterPlus.pdf}{ConsensusClusterPlus package}) for interpretation help). Default = \code{NULL}.}
+\item{metaclustering.name}{Name for PDF with metaclustering results (see \href{https://bioconductor.org/packages/release/bioc/vignettes/ConsensusClusterPlus/inst/doc/ConsensusClusterPlus.pdf}{\code{ConsensusClusterPlus} package} for interpretation help). Default = \code{NULL}.}
 }
 \description{
-This function calculates a Self-Organizing Map (SOM) clustering and a simultaneous metaclustering from a \code{fcs.SCE} object. For additional information go to \href{https://github.com/SofieVG/FlowSOM}{\code{\link{FlowSOM}}} package.
+This function calculates a Self-Organizing Map (SOM) clustering and a simultaneous metaclustering from a \code{fcs.SCE} object. For additional information go to \href{https://github.com/SofieVG/FlowSOM}{\code{FlowSOM} package}.
 }
 \examples{
 \dontrun{

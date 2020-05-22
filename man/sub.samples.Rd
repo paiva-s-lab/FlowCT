@@ -7,14 +7,14 @@
 sub.samples(fcs.SCE, subsampling = 1000, index = F)
 }
 \arguments{
-\item{fcs.SCE}{A fcs.SCE object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.}
+\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT]{fcs.SCE()}}.}
 
 \item{subsampling}{Number of events to keep. Default = 1000.}
 
 \item{index}{Logical indicating if returning an fcs.SCE object or a index vector. Default = \code{FALSE}.}
 }
 \description{
-It generates reduce randomly the number of events of a fcs.SCE object (it computes this reduction for each FCS file separatelly inside this object). It can generate a new reduced fcs.SCE object or a simple index position for removing events.
+It generates reduce randomly the number of events of a fcs.SCE object (it computes this reduction for each FCS file separatelly inside this object). It can generate a new reduced \code{fcs.SCE} object or a simple index position for removing events.
 }
 \examples{
 \dontrun{

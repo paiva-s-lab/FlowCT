@@ -8,17 +8,17 @@ read.FCSset(filelist = NULL, directory = getwd(), pattern = ".fcs$",
   events = "all", dataset = 1, num.threads = NULL)
 }
 \arguments{
-\item{filelist}{A vector with full path of FCS files to be read, commonly generated through \code{\link[base:list.files]{base::list.files()}}. If \code{NULL}, this file list will be generated as indicated below.}
+\item{filelist}{A vector with full path of FCS files to be read, commonly generated through \code{\link[base]{list.files()}}. If \code{NULL}, this file list will be generated as indicated below.}
 
 \item{directory}{If \code{filelist = NULL}, those files stored in this location will be read. Default = \code{getwd()} (current directory).}
 
 \item{pattern}{Pattern for reading files within \code{directory}. Default = \code{"fcs"}.}
 
-\item{events}{Numeric vector indicating how many events to read in each FCS file (same behaviour as \code{\link[flowCore:read.FCS]{flowCore::read.FCS()}}). Default = \code{NULL}, i.e., all events will be read.}
+\item{events}{Numeric vector indicating how many events to read in each FCS file (same behaviour as \code{\link[flowCore]{read.FCS()}}). Default = \code{NULL}, i.e., all events will be read.}
 
-\item{dataset}{Specify data segment to be read in the FCS file (same behaviour as \code{\link[flowCore:read.FCS]{flowCore::read.FCS()}}). Default = \code{1}.}
+\item{dataset}{Specify data segment to be read in the FCS file (same behaviour as \code{\link[flowCore]{read.FCS()}}). Default = \code{1}.}
 
-\item{num.threads}{Number of threads for reading the FCS files. For Windows users, you should to install \code{parallelsugar} from (\href{https:https://github.com/nathanvan/parallelsugar}{Nathanvan's GitHub}). Defult = \code{NULL}, i.e., not parallelization.}
+\item{num.threads}{Number of threads for reading the FCS files. For Windows users, you should to install \code{parallelsugar} package from (\href{https:https://github.com/nathanvan/parallelsugar}{Nathanvan's GitHub}). Defult = \code{NULL} (i.e., not parallelization).}
 }
 \description{
 It reads multiple FCS files (in a computationaly-distributed way) contained in a specific folder or given through a vector.

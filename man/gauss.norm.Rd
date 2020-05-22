@@ -8,16 +8,16 @@ gauss.norm(fcs.SCE, assay.i = "transformed", marker.to.norm,
   norm.matrix.name = "normalized")
 }
 \arguments{
-\item{fcs.SCE}{A fcs.SCE object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.}
+\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT]{fcs.SCE()}}.}
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"transformed"}.}
 
-\item{marker.to.norm}{Marker name(s) to normalize (based on visual inspection with \code{\link[FlowCT:multidensity]{FlowCT::multidensity()}}).}
+\item{marker.to.norm}{Marker name(s) to normalize (based on visual inspection with \code{\link[FlowCT]{multidensity()}}).}
 
 \item{norm.matrix.name}{New normalized matrix name (it will stored within the \code{fcs.SCE} object). Default = \code{"normalized"}.}
 }
 \description{
-It performs a Gaussian normalization based on \code{\link[flowStats:gaussNorm]{flowStats::gaussNorm()}} function.
+It performs a Gaussian normalization based on \code{\link[flowStats]{gaussNorm()}} function.
 }
 \examples{
 \dontrun{

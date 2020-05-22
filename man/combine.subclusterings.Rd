@@ -8,11 +8,11 @@ combine.subclusterings(initial.fcs.SCE, subclustering.fcs.SCE,
   clusters.named = "SOM_named")
 }
 \arguments{
-\item{initial.fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}. The initial one, without extracting any cell population.}
+\item{initial.fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT]{fcs.SCE()}}. The initial one, without extracting any cell population.}
 
 \item{subclustering.fcs.SCE}{A list with all \code{fcs.SCE} object(s) generated in the subclustering analysis (they have to come from the original \code{initial.fcs.SCE}).}
 
-\item{clusters.named}{Column name from the \code{initial.fcs.SCE} object which contains renamed clusters (through \code{\link[FlowCT:clusters.rename]{FlowCT::clusters.rename()}}) and has been used to extract cell populations for subclustering steps.}
+\item{clusters.named}{Column name from the \code{initial.fcs.SCE} object which contains renamed clusters (through \code{\link[FlowCT]{clusters.rename()}}) and has been used to extract cell populations for subclustering steps.}
 }
 \description{
 It combines initial \code{fcs.SCE} object (without subclustering) with other \code{fcs.SCE} objects with subclustering analysis coming from downstream steps and generates a new \code{fcs.SCE} object. This final \code{fcs.SCE} object has an additional column combining all information from initial and subclustering analysis.

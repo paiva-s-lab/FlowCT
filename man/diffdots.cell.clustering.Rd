@@ -2,17 +2,17 @@
 % Please edit documentation in R/diffdots.cell.clustering.R
 \name{diffdots.cell.clustering}
 \alias{diffdots.cell.clustering}
-\title{It draws a differential dot plot (longitudinally) according condition for each cell cluster identified.}
+\title{It draws a differential dot plot (longitudinaly) according condition for each cell cluster identified.}
 \usage{
 diffdots.cell.clustering(fcs.SCE, assay.i = "normalized", cell.clusters,
   condition.column, psig.cutoff = 0.05, return.stats = T)
 }
 \arguments{
-\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.}
+\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT]{fcs.SCE()}}.}
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.}
 
-\item{cell.clusters}{A vector with clusters identified through \code{\link[FlowCT:fsom.clustering]{FlowCT::fsom.clustering()}} (and, normaly, later renamed).}
+\item{cell.clusters}{A vector with clusters identified through \code{\link[FlowCT]{fsom.clustering()}} (and, normaly, later renamed).}
 
 \item{condition.column}{Column name from the \code{colData(fcs.SCE)} object which contains condition information. De}
 
@@ -21,7 +21,7 @@ diffdots.cell.clustering(fcs.SCE, assay.i = "normalized", cell.clusters,
 \item{return.stats}{Logical indicating if calculated statistics should be returned in a new variable. Default = \code{TRUE}.}
 }
 \description{
-It draws a differential dot plot (longitudinally) according condition for each cell cluster identified.
+It draws a differential dot plot (longitudinaly) according condition for each cell cluster identified.
 }
 \examples{
 \dontrun{

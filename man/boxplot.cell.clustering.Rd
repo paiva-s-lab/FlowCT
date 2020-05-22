@@ -2,7 +2,7 @@
 % Please edit documentation in R/boxplot.cell.clustering.R
 \name{boxplot.cell.clustering}
 \alias{boxplot.cell.clustering}
-\title{It draws a boxplot with cell clusters identified through \code{\link[FlowCT:fsom.clustering]{FlowCT::fsom.clustering()}}.}
+\title{It draws a boxplot with cell clusters identified through \code{\link[FlowCT]{fsom.clustering()}}.}
 \usage{
 \method{boxplot}{cell.clustering}(fcs.SCE, assay.i = "normalized",
   cell.clusters, condition.column = "condition",
@@ -13,11 +13,11 @@
   show.stats = T, return.stats = T, plot.only.sig = c(F, 0.05))
 }
 \arguments{
-\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.}
+\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT]{fcs.SCE()}}.}
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.}
 
-\item{cell.clusters}{A vector with clusters identified through \code{\link[FlowCT:fsom.clustering]{FlowCT::fsom.clustering()}} (and, normaly, later renamed).}
+\item{cell.clusters}{A vector with clusters identified through \code{\link[FlowCT]{fsom.clustering()}} (and, normaly, later renamed).}
 
 \item{condition.column}{Column name from the \code{colData(fcs.SCE)} object which contains condition information.}
 
@@ -29,7 +29,7 @@
 
 \item{facet}{Logical indicating if splitting boxplots by cell clusters. Default = \code{FALSE}.}
 
-\item{facet.free.scale}{If \code{facet = TRUE}, string indicating how scales would be shared across all facets. Possible values: "free_x" (default), "free_y" and "free".}
+\item{facet.free.scale}{If \code{facet = TRUE}, string indicating how scales would be shared across all facets. Possible values: \code{"free_x"} (default), \code{"free_y"} and \code{"free"}.}
 
 \item{shape.by}{Variable name (from \code{colData(fcs.SCE)}) for dot shaping. Default = \code{NULL}.}
 
@@ -39,10 +39,10 @@
 
 \item{return.stats}{Logical indicating if calculated statistics should be returned in a new variable. Default = \code{TRUE}.}
 
-\item{plot.only.sig}{Vector indicating if only significant cell clusters should be displayed (logical element) and the P-value cutoff for selecting those ones (numerical element). Default = \code{c(F, 0.05)}.}
+\item{plot.only.sig}{Vector indicating if only significant cell clusters should be displayed (logical element) and the P-value cutoff for selecting those ones (numerical element). Default = \code{c(FALSE, 0.05)}.}
 }
 \description{
-It draws a boxplot with cell clusters identified through \code{\link[FlowCT:fsom.clustering]{FlowCT::fsom.clustering()}}.
+It draws a boxplot with cell clusters identified through \code{\link[FlowCT]{fsom.clustering()}}.
 }
 \examples{
 \dontrun{

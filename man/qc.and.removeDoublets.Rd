@@ -10,9 +10,9 @@ qc.and.removeDoublets(fcs.SCE = NULL, filelist = NULL,
   return.idx = FALSE, return.fcs = FALSE)
 }
 \arguments{
-\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}. If \code{NULL} (default), this function will search for FCS files within current working directory.}
+\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT]{fcs.SCE()}}. If \code{NULL} (default), this function will search for FCS files within current working directory.}
 
-\item{filelist}{A vector with full path of FCS files to be read, commonly generated through \code{\link[base:list.files]{base::list.files()}}. If \code{NULL}, this file list will be generated as indicated below.}
+\item{filelist}{A vector with full path of FCS files to be read, commonly generated through \code{\link[base]{list.files()}}. If \code{NULL}, this file list will be generated as indicated below.}
 
 \item{directory}{If \code{filelist = NULL}, those files stored in this location will be read. Default = \code{getwd()} (current directory).}
 
@@ -24,12 +24,12 @@ qc.and.removeDoublets(fcs.SCE = NULL, filelist = NULL,
 
 \item{output.suffix}{Suffix added to new generated FCS files (in case not being working with a \code{fcs.SCE} object). Default = \code{qc}.}
 
-\item{return.idx}{Logical indicating whether output is a new \code{fcs.SCE} object without low-quality events or an index with this positions (without removing them from original \code{fcs.SCE}). This option is only available if the input is a \code{fcs.SCE} object. Default = \code{F} (\code{fcs.SCE} output).}
+\item{return.idx}{Logical indicating whether output is a new \code{fcs.SCE} object without low-quality events or an index with this positions (without removing them from original \code{fcs.SCE}). This option is only available if the input is a \code{fcs.SCE} object. Default = \code{FALSE} (\code{fcs.SCE} output).}
 
 \item{return.fcs}{Logical indicating whether new FCS file should be generated without low quality events. They will stored in specified \code{output.folder} with the corresponding \code{output.suffix}.}
 }
 \value{
-Final output is a new \code{fcs.SCE} object (if fcs.SCE input) without these events that do not pass the quality control or new FCS files with the suffix \code{qc} with these low quality events removed. If user specifies \code{return.idx = T}, output would be a vector with all low-quality events positions.
+Final output is a new \code{fcs.SCE} object (if \code{fcs.SCE} input) without these events that do not pass the quality control or new FCS files with the suffix \code{"qc"} with these low quality events removed. If user specifies \code{return.idx = TRUE}, output would be a vector with all low-quality events positions.
 
 A table with percentaje of removed events for each FCS will be also shown in the terminal (those files with more than 30% of events removed will have a '!' signal).
 }

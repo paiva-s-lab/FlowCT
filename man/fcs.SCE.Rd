@@ -10,19 +10,19 @@ fcs.SCE(filelist = NULL, directory = getwd(), pattern = ".fcs$",
   project.name = "noname")
 }
 \arguments{
-\item{filelist}{A vector with full path of FCS files to be read, commonly generated through \code{\link[base:list.files]{base::list.files()}}. If \code{NULL}, this file list will be generated as indicated below.}
+\item{filelist}{A vector with full path of FCS files to be read, commonly generated through \code{\link[base]{list.files()}}. If \code{NULL}, this file list will be generated as indicated below.}
 
 \item{directory}{If \code{filelist = NULL}, those files stored in this location will be read. Default = \code{getwd()} (current directory).}
 
 \item{pattern}{Pattern for reading files within \code{directory}. Default = \code{"fcs"}.}
 
-\item{events}{Numeric vector indicating how many events to read in each FCS file (same behaviour as \code{\link[flowCore:read.FCS]{flowCore::read.FCS()}}), those are the number of events for new and unified generated FCS files. Default = \code{"all"}.}
+\item{events}{Numeric vector indicating how many events to read in each FCS file (same behaviour as \code{\link[flowCore]{read.FCS()}}), those are the number of events for new and unified generated FCS files. Default = \code{"all"}.}
 
-\item{dataset}{Specify data segment to be read in the FCS file (same behaviour as \code{\link[flowCore:read.FCS]{flowCore::read.FCS()}}). Default = \code{1}.}
+\item{dataset}{Specify data segment to be read in the FCS file (same behaviour as \code{\link[flowCore]{read.FCS()}}). Default = \code{1}.}
 
-\item{num.threads}{Number of threads for reading the FCS files. For Windows users, you should to install \code{parallelsugar} from (\href{https:https://github.com/nathanvan/parallelsugar}{Nathanvan's GitHub}). Defult = \code{NULL}, i.e., not parallelization.}
+\item{num.threads}{Number of threads for reading the FCS files. For Windows users, you should to install \code{parallelsugar} from \href{https:https://github.com/nathanvan/parallelsugar}{Nathanvan's GitHub}. Defult = \code{NULL}, i.e., not parallelization.}
 
-\item{metadata}{Metadata information for each FCS files included in the analysis. It will be used to assign to each event an specific metadata and it will be added to \code{fcs.SCE@metadata} as \code{reduced_metadata}.}
+\item{metadata}{Metadata information for each FCS files included in the analysis. It will be used to assign to each event an specific metadata and it will be added to \code{metadata(fcs.SCE)} as \code{reduced_metadata}.}
 
 \item{transformation}{Because FCS data is normally exported in a logarithmic format, it is necessary its transformation for downstream analysis. Default (and the only one) = \code{arcsinh}.}
 
@@ -31,7 +31,7 @@ fcs.SCE(filelist = NULL, directory = getwd(), pattern = ".fcs$",
 \item{project.name}{String naming the \code{fcs.SCE} generated. Default = \code{"noname"}.}
 }
 \description{
-It reads and creates a fcs.SCE object (based on the structure of a (\ref{https://www.bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html}{\code{SummarizedExperiment}}) from FCS files in a specific folder or indicated in a vector.
+It reads and creates a \code{fcs.SCE} object (based on the \href{https://www.bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html}{\code{SummarizedExperiment} class}) from FCS files in a specific folder or indicated in a vector.
 }
 \examples{
 \dontrun{

@@ -8,11 +8,11 @@ dumbPlot.cell.clustering(fcs.SCE, assay.i = "normalized", cell.clusters,
   condition.column, psig.cutoff = 0.05, return.stats = T)
 }
 \arguments{
-\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.}
+\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT]{fcs.SCE()}}.}
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.}
 
-\item{cell.clusters}{A vector with clusters identified through \code{\link[FlowCT:fsom.clustering]{FlowCT::fsom.clustering()}} (and, normaly, later renamed).}
+\item{cell.clusters}{A vector with clusters identified through \code{\link[FlowCT]{fsom.clustering()}} (and, normaly, later renamed).}
 
 \item{condition.column}{Column name from the \code{colData(fcs.SCE)} object which contains condition information. De}
 
@@ -25,7 +25,7 @@ It draws a Dumbbell plot according condition for each cell cluster identified.
 }
 \examples{
 \dontrun{
-diffDots.cell.clustering(fcs.SCE = fcs.SCE, cell.clusters = fcs.SCE$SOM_named, return.stats = F)
+diffDots.cell.clustering(fcs.SCE = fcs, cell.clusters = fcs$SOM_named, return.stats = F)
 }
 }
 \keyword{Dumbbell}
