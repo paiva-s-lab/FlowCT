@@ -1,11 +1,11 @@
 #' read.FCSset
 #'
 #' It reads multiple FCS files (in a computationaly-distributed way) contained in a specific folder or given through a vector.
-#' @param filelist A vector with full path of FCS files to be read, commonly generated through \code{\link[base:list.files]{list.files()}}. If \code{NULL}, this file list will be generated as indicated below.
+#' @param filelist A vector with full path of FCS files to be read, commonly generated through \code{\link[base:list.files]{base::list.files()}}. If \code{NULL}, this file list will be generated as indicated below.
 #' @param directory If \code{filelist = NULL}, those files stored in this location will be read. Default = \code{getwd()} (current directory).
 #' @param pattern Pattern for reading files within \code{directory}. Default = \code{"fcs"}.
-#' @param events Numeric vector indicating how many events to read in each FCS file (same behaviour as \code{\link[flowCore:read.FCS]{read.FCS()}}). Default = \code{NULL}, i.e., all events will be read.
-#' @param dataset Specify data segment to be read in the FCS file (same behaviour as \code{\link[flowCore:read.FCS]{read.FCS()}}). Default = \code{1}.
+#' @param events Numeric vector indicating how many events to read in each FCS file (same behaviour as \code{\link[flowCore:read.FCS]{flowCcre::read.FCS()}}). Default = \code{NULL}, i.e., all events will be read.
+#' @param dataset Specify data segment to be read in the FCS file (same behaviour as \code{\link[flowCore:read.FCS]{flowCcre::read.FCS()}}). Default = \code{1}.
 #' @param num.threads Number of threads for reading the FCS files. For Windows users, you should to install \code{parallelsugar} package from (\href{https:https://github.com/nathanvan/parallelsugar}{Nathanvan's GitHub}). Defult = \code{NULL} (i.e., not parallelization).
 #' @keywords FCS reading
 #' @keywords FCS parallel

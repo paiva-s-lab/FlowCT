@@ -1,7 +1,7 @@
 #' dr.plotting
 #'
-#' This function plots the indicated dimensional reduction (DR) from a previously calculated \code{\link[FlowCT:dim.reduction]{dim.reduction()}} object.
-#' @param data A object with DR generated with \code{\link[FlowCT:dim.reduction]{dim.reduction()}} or a \code{data.frame} with DR, expression and metadata information (like the first element list of the object generated with \code{\link[FlowCT:dim.reduction]{dim.reduction()}}).
+#' This function plots the indicated dimensional reduction (DR) from a previously calculated \code{\link[FlowCT.v2:dim.reduction]{FlowCT.v2::dim.reduction()}} object.
+#' @param data A object with DR generated with \code{\link[FlowCT.v2:dim.reduction]{FlowCT.v2::dim.reduction()}} or a \code{data.frame} with DR, expression and metadata information (like the first element list of the object generated with \code{\link[FlowCT.v2:dim.reduction]{FlowCT.v2::dim.reduction()}}).
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.
 #' @param plot.dr String indicating the desired DR to plot (this indicated DR should be prevoulsy calculated to being plotted).
 #' @param n.dims Vector indicating the two DR components to plot. Default = \code{c(1,2)}.

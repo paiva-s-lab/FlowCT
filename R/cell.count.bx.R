@@ -1,7 +1,7 @@
 #' cell.count.bx
 #'
 #' This function draws a boxplot according to the cell count for a specified condition.
-#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{fcs.SCE()}}.
+#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.
 #' @param x.axis Variable name (from \code{colData(fcs.SCE)}) for drawing the x-axis in plot.
 #' @param color.by Variable name (from \code{colData(fcs.SCE)}) for coloring the plot. Default = \code{x.axis} (i.e., the same specfied in \code{x.axis}).

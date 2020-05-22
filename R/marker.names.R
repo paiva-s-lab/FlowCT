@@ -1,7 +1,7 @@
 # 'marker.names
 #'
 #' It shows marker names of a \code{fcs.SCE} object and renames them accordin a new vector provided by the user.
-#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{fcs.SCE()}}.
+#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.
 #' @param new.names Vector with new channel/marker names (it must has the same length that \code{fcs.SCE}'s markers). Default = \code{NULL} (i.e., markers will not be renamed, only displayed).
 #' @keywords marker renaming names
 #' @importFrom knitr kable

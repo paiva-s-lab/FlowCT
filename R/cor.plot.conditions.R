@@ -1,9 +1,9 @@
 #' cor.plot.conditions
 #'
 #' It draws a correlation plot (between two specified conditions within a \code{fcs.SCE} object.
-#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{fcs.SCE()}}.
+#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.
-#' @param cell.clusters A vector with clusters identified through \code{\link[FlowCT:fsom.clustering]{fsom.clustering()}} (and, normaly, later renamed).
+#' @param cell.clusters A vector with clusters identified through \code{\link[FlowCT.v2:fsom.clustering]{FlowCT.v2::fsom.clustering()}} (and, normaly, later renamed).
 #' @param condition.column Column name from the \code{colData(fcs.SCE)} object which contains condition information.
 #' @param return.stats Logical indicating if calculated statistics should be returned in a new variable. Default = \code{FALSE}.
 #' @keywords correlation plot

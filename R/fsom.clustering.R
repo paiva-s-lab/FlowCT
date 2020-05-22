@@ -1,7 +1,7 @@
 #' fsom.clustering
 #'
 #' This function calculates a Self-Organizing Map (SOM) clustering and a simultaneous metaclustering from a \code{fcs.SCE} object. For additional information go to \href{https://github.com/SofieVG/FlowSOM}{\code{FlowSOM} package}.
-#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{fcs.SCE()}}.
+#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate SOM clustering. Default = \code{"normalized"}.
 #' @param markers.to.use Markers used for the clustering calculation. Default = \code{"all"}.
 #' @param markers.to.plot Markers to plot in the final minimum spanning tree (MST). Posible values are \code{NULL} (no plotting), \code{"tree"} (plotting a general MST with all identified clusters), \code{"tree_metaclustering"} (plotting a general MST but colored by metaclustering results) or a vector with markers (and it draws multiple MSTs for each marker indicated).
