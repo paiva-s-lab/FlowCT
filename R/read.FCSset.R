@@ -11,6 +11,7 @@
 #' @keywords FCS parallel
 #' @export
 #' @importFrom ncdfFlow as.flowSet read.ncdfFlowSet
+#' @importFrom flowCore fsApply exprs sampleNames
 #' @examples
 #' \dontrun{
 #' # option 1: trough a vector with filenames (full path)
