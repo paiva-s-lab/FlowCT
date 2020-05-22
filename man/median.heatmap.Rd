@@ -9,18 +9,18 @@
   not.metadata = "filename")
 }
 \arguments{
-\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT]{fcs.SCE()}}.}
+\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{fcs.SCE()}}.}
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.}
 
-\item{cell.clusters}{A vector with clusters identified through \code{\link[FlowCT]{fsom.clustering()}} (and, normaly, later renamed). Default = \code{NULL} (i.e., median values will be calculated for each FCS file).}
+\item{cell.clusters}{A vector with clusters identified through \code{\link[FlowCT:fsom.clustering]{fsom.clustering()}} (and, normaly, later renamed). Default = \code{NULL} (i.e., median values will be calculated for each FCS file).}
 
 \item{markers.to.use}{Vector with markers to use. Default = \code{"all"}.}
 
 \item{not.metadata}{Vector with variable names (from \code{colData(fcs.SCE)}) for not including in the heatmap annotation. Default = \code{"filename"}.}
 }
 \description{
-This function draws a heatmap with median values for each FCS file or for identified cluster with \code{\link[FlowCT]{fsom.clustering()}}
+This function draws a heatmap with median values for each FCS file or for identified cluster with \code{\link[FlowCT:fsom.clustering]{fsom.clustering()}}
 }
 \examples{
 \dontrun{

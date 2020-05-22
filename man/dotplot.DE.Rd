@@ -9,11 +9,11 @@ dotplot.DE(fcs.SCE, assay.i = "normalized",
   psig.cutoff = 0.05, return.stats = F, scale.size = 9)
 }
 \arguments{
-\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT]{fcs.SCE()}}.}
+\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{fcs.SCE()}}.}
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.}
 
-\item{clusters.named}{Column name from the \code{initial.fcs.SCE} object which contains renamed clusters (through \code{\link[FlowCT]{clusters.rename()}}).}
+\item{clusters.named}{Column name from the \code{initial.fcs.SCE} object which contains renamed clusters (through \code{\link[FlowCT:clusters.rename]{clusters.rename()}}).}
 
 \item{markers.to.use}{Vector with markers to use. Default = \code{"all"}.}
 

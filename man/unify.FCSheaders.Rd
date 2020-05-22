@@ -9,19 +9,19 @@ unify.FCSheaders(filelist = NULL, directory = getwd(),
   events = "all", view = F)
 }
 \arguments{
-\item{filelist}{A vector with full path of FCS files to be read, commonly generated through \code{\link[base]{list.files()}}. If \code{NULL}, this file list will be generated as indicated below.}
+\item{filelist}{A vector with full path of FCS files to be read, commonly generated through \code{\link[base:list.files]{list.files()}}. If \code{NULL}, this file list will be generated as indicated below.}
 
 \item{directory}{If \code{filelist = NULL}, those files stored in this location will be read. Default = \code{getwd()} (current directory).}
 
 \item{pattern}{Pattern for reading files within \code{directory}. Default = \code{"fcs"}.}
 
-\item{dataset}{Specify data segment to be read in the FCS file (same behaviour as \code{\link[flowCore]{read.FCS()}}). Default = \code{1}.}
+\item{dataset}{Specify data segment to be read in the FCS file (same behaviour as \code{\link[flowCore:read.FCS]{read.FCS()}}). Default = \code{1}.}
 
 \item{fix}{Logical indicating if user wants to perform the unification of FCS's headers or only display header frecuencies. If \code{TRUE} (default value), you should to specify the chosen frequency.}
 
 \item{select.freq}{Of diplayed frequencies (row-numered), indicate which is your option for unifiying FCS files. Default = \code{1} (i.e., the more frequent).}
 
-\item{events}{Numeric vector indicating how many events to read in each FCS file (same behaviour as \code{\link[flowCore]{read.FCS()}}), those are the number of events for new and unified generated FCS files. Default = \code{NULL} (i.e., all events will be read).}
+\item{events}{Numeric vector indicating how many events to read in each FCS file (same behaviour as \code{\link[flowCore:read.FCS]{read.FCS()}}), those are the number of events for new and unified generated FCS files. Default = \code{NULL} (i.e., all events will be read).}
 
 \item{view}{Logical indicating whether table with frequencies should be displayed in the terminal or in a external table. Default = \code{FALSE}.}
 }

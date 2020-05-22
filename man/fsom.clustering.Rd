@@ -9,7 +9,7 @@ fsom.clustering(fcs.SCE, assay.i = "normalized",
   k.metaclustering = 40, metaclustering.name = NULL)
 }
 \arguments{
-\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT]{fcs.SCE()}}.}
+\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{fcs.SCE()}}.}
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate SOM clustering. Default = \code{"normalized"}.}
 

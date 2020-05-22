@@ -10,11 +10,11 @@ circ.tree(fcs.SCE, assay.i = "normalized", cell.clusters,
   scale.size = 10)
 }
 \arguments{
-\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT]{fcs.SCE()}}.}
+\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{fcs.SCE()}}.}
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which drawing the circular tree. Default = \code{"normalized"}.}
 
-\item{cell.clusters}{A vector with clusters identified through \code{\link[FlowCT]{fsom.clustering()}} (and, normaly, later renamed).}
+\item{cell.clusters}{A vector with clusters identified through \code{\link[FlowCT:fsom.clustering]{fsom.clustering()}} (and, normaly, later renamed).}
 
 \item{dist.method}{Distance method measurement to be used. Possible values are "euclidean" (default), "maximum", "manhattan", "canberra", "binary" or "minkowski".}
 

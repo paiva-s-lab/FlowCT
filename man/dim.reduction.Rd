@@ -9,7 +9,7 @@
   perplexity.tsne = 100, n.neighbors.umap = 50)
 }
 \arguments{
-\item{data}{A \code{fcs.SCE} object generated through \code{\link[FlowCT]{fcs.SCE()}} or a expression table with events in rows and markers in columns.}
+\item{data}{A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{fcs.SCE()}} or a expression table with events in rows and markers in columns.}
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate the DR (this option is useless if input is not a \code{fcs.SCE} object). Default = \code{"normalized"}.}
 

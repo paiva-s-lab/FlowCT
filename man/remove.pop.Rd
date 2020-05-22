@@ -7,11 +7,11 @@
 remove.pop(fcs.SCE, population, clusters.named)
 }
 \arguments{
-\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT]{fcs.SCE()}}.}
+\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{fcs.SCE()}}.}
 
 \item{population}{Name(s) of cell population(s) to be removed.}
 
-\item{clusters.named}{Column name from the \code{colData(fcs.SCE)} object which contains renamed clusters (through \code{\link[FlowCT]{clusters.rename()}}).}
+\item{clusters.named}{Column name from the \code{colData(fcs.SCE)} object which contains renamed clusters (through \code{\link[FlowCT:clusters.rename]{clusters.rename()}}).}
 }
 \description{
 It removes one or multiple cell populations from a \code{fcs.SCE} object.

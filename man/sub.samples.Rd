@@ -7,7 +7,7 @@
 sub.samples(fcs.SCE, subsampling = 1000, index = F)
 }
 \arguments{
-\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT]{fcs.SCE()}}.}
+\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{fcs.SCE()}}.}
 
 \item{subsampling}{Number of events to keep. Default = 1000.}
 

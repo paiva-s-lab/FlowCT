@@ -8,13 +8,13 @@ dumbPlot.cell.clustering(fcs.SCE, assay.i = "normalized", cell.clusters,
   condition.column, psig.cutoff = 0.05, return.stats = T)
 }
 \arguments{
-\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT]{fcs.SCE()}}.}
+\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{fcs.SCE()}}.}
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.}
 
-\item{cell.clusters}{A vector with clusters identified through \code{\link[FlowCT]{fsom.clustering()}} (and, normaly, later renamed).}
+\item{cell.clusters}{A vector with clusters identified through \code{\link[FlowCT:fsom.clustering]{fsom.clustering()}} (and, normaly, later renamed).}
 
-\item{condition.column}{Column name from the \code{colData(fcs.SCE)} object which contains condition information. De}
+\item{condition.column}{Column name from the \code{colData(fcs.SCE)} object which contains condition information.}
 
 \item{psig.cutoff}{P-value cutoff. Default = \code{0.05}.}
 
