@@ -16,7 +16,12 @@
 #' @keywords doublets removal
 #' @keywords remove low quality events
 #' @export
-#' @importFrom flowCore exprs
+#' @importFrom flowCore exprs write.FCS
+#' @importFrom premessa as_flowFrame
+#' @importFrom flowAI flow_auto_qc
+#' @importFrom stats median sd
+#' @importFrom utils capture.output read.table
+#' @importFrom knitr kable
 #' @return Final output is a new \code{fcs.SCE} object (if \code{fcs.SCE} input) without these events that do not pass the quality control or new FCS files with the suffix \code{"qc"} with these low quality events removed. If user specifies \code{return.idx = TRUE}, output would be a vector with all low-quality events positions.
 #' @return A table with percentaje of removed events for each FCS will be also shown in the terminal (those files with more than 30% of events removed will have a '!' signal).
 #' @examples
@@ -43,15 +48,15 @@ qc.and.removeDoublets <- function(fcs.SCE = NULL, filelist = NULL, directory = g
     for(file in filenames){
       fcs[[file]]@description$FILENAME <- file #requirements for flow_auto_qc
       
-      invisible(utils::capture.output(idx1 <- flowAI::flow_auto_qc(fcs[[file]], ChExcludeFS = physical.markers, fcs_QC = FALSE, output = 3, html_report = F, folder_results = F, mini_report = F)[[1]]))
+      invisible(capture.output(idx1 <- flow_auto_qc(fcs[[file]], ChExcludeFS = physical.markers, fcs_QC = FALSE, output = 3, html_report = F, folder_results = F, mini_report = F)[[1]]))
       
       # doublet removal
       FSCA <- grep("FS.*.A", physical.markers, value = T)
       FSCH <- grep("FS.*.H", physical.markers, value = T)
       
       ratio <- exprs(fcs[[file]])[,FSCA]/(1+ exprs(fcs[[file]])[,FSCH]) #calculate the ratios
-      r <- stats::median(ratio)
-      w <- 2*stats::sd(ratio) 
+      r <- median(ratio)
+      w <- 2*sd(ratio) 
       idx2 <- as.vector(which(ratio > r+w)) #define the region that will be removed
       
       idx <- c(idx, rownames(exprs(fcs[[file]]))[c(idx1, idx2)])
@@ -63,13 +68,13 @@ qc.and.removeDoublets <- function(fcs.SCE = NULL, filelist = NULL, directory = g
         extension <- tolower(strsplit(filenames[1], split="\\.")[[1]][-1])
         idx_fcs <- unique(rownames(exprs(fcs[[file]]))[c(idx1, idx2)])
 
-        file_return <- premessa::as_flowFrame(exprs(fcs[[file]])[-match(idx_fcs, rownames(exprs(fcs[[file]]))),])
-        flowCore::write.FCS(file_return, paste0(output.folder, "/", gsub(extension, "", file), output.suffix, ".", extension))
+        file_return <- as_flowFrame(exprs(fcs[[file]])[-match(idx_fcs, rownames(exprs(fcs[[file]]))),])
+        write.FCS(file_return, paste0(output.folder, "/", gsub(extension, "", file), output.suffix, ".", extension))
       }
     }
 
     if(return.fcs) cat("New generated FCSs without low quality events are stored in:", output.folder)
-    print(knitr::kable(as.data.frame(losses), col.names = "removed events (%)"))
+    print(kable(as.data.frame(losses), col.names = "removed events (%)"))
     fcs.SCE@metadata$lowQC_events <- idx
 
     if(return.idx) return(idx) else return(fcs.SCE[,-match(idx, colnames(fcs.SCE))])
@@ -78,24 +83,24 @@ qc.and.removeDoublets <- function(fcs.SCE = NULL, filelist = NULL, directory = g
     
     for(file in filelist){
       print(file)
-      invisible(utils::capture.output(file_q <- flowAI::flow_auto_qc(file, ChExcludeFS = physical.markers, fcs_QC = FALSE, output = 1, html_report = F, folder_results = F, mini_report = "miniQC")))
+      invisible(capture.output(file_q <- flow_auto_qc(file, ChExcludeFS = physical.markers, fcs_QC = FALSE, output = 1, html_report = F, folder_results = F, mini_report = "miniQC")))
       
       # doublet removal
       FSCA <- grep("FS.*.A", physical.markers, value = T)
       FSCH <- grep("FS.*.H", physical.markers, value = T)
       
       ratio <- exprs(file_q)[,FSCA]/(1+ exprs(file_q)[,FSCH]) #calculate the ratios
-      r <- stats::median(ratio)
-      w <- 2*stats::sd(ratio) 
+      r <- median(ratio)
+      w <- 2*sd(ratio) 
       file_d <- file_q[which(ratio < r+w),] #define the region that is accepted
       
       extension <- strsplit(basename(file), "\\.")[[1]][2]
       filename <- strsplit(basename(file), "\\.")[[1]][1]
-      flowCore::write.FCS(file_d, paste0(output.folder, "/", filename, ".", output.suffix, ".", extension))
+      write.FCS(file_d, paste0(output.folder, "/", filename, ".", output.suffix, ".", extension))
     }
     # notify removed evens
-    qct <- utils::read.table("miniQC.txt", header = T, sep = "\t", colClasses = c("character", rep("numeric", 2), rep("NULL", 4)))
+    qct <- read.table("miniQC.txt", header = T, sep = "\t", colClasses = c("character", rep("numeric", 2), rep("NULL", 4)))
     qct$warning <- ifelse(qct$X..anomalies >= 30, "(!)", "")
-    print(knitr::kable(qct, col.names = c("filenames", "# initial events", "% deleted events", "Warning!")))
+    print(kable(qct, col.names = c("filenames", "# initial events", "% deleted events", "Warning!")))
   }
 }

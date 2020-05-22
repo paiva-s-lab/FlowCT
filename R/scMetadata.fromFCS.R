@@ -1,7 +1,7 @@
 #' scMetadata.fromFCS
 #'
-#' It creates, from an initial metadata provided by the user, a global metadata for each event in a \href{https://www.rdocumentation.org/packages/flowCore/versions/1.38.2/topics/flowSet-class}{\code{flowset}} object.
-#' @param flowset A \code{flowset} object generated following the \ref{https://bioconductor.org/packages/devel/bioc/vignettes/flowCore/inst/doc/HowTo-flowCore.pdf}{\code{flowCore} tutorial}.
+#' It creates, from an initial metadata provided by the user, a global metadata for each event in a \href{https://www.rdocumentation.org/packages/flowCore/versions/1.38.2/topics/flowSet-class}{\code{flowset} object}.
+#' @param flowset A \code{flowset} object generated following the \href{https://bioconductor.org/packages/devel/bioc/vignettes/flowCore/inst/doc/HowTo-flowCore.pdf}{\code{flowCore} tutorial}.
 #' @param metadata Metadata information for each read FCS file.
 #' @param add.exprs Logical indicating if expression data must be added to each cell's metadata. Default = \code{TRUE}.
 #' @keywords single-cell metadata

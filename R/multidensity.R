@@ -15,6 +15,9 @@
 #' @import ggplot2
 #' @importFrom SummarizedExperiment colData assay
 #' @importFrom stats median
+#' @importFrom data.table melt
+#' @importFrom plotly ggplotly
+#' @importFrom ggridges geom_density_ridges
 #' @examples
 #' \dontrun{
 #' multidensity(fcs.SCE = fcs, assay.i = "normalized", subsampling = 1000)
@@ -30,7 +33,7 @@ multidensity <- function(fcs.SCE, assay.i, show.markers = "all", color.by = NULL
   
   # prepare tables: for plotting and with median values for each marker
   median_df <- data.frame(antigen = show.markers, median = apply(data[,show.markers], 2, median))
-  ggdf <- data.table::melt(data2, measure.vars = show.markers, value.name = "expression", variable.name = "antigen")
+  ggdf <- melt(data2, measure.vars = show.markers, value.name = "expression", variable.name = "antigen")
   
   if(length(unique(fcs.SCE$filename)) > ridgeline.lim){
     g <- ggplot(data = ggdf[grepl(paste0(show.markers, collapse = "|"), ggdf$antigen),], 
@@ -43,10 +46,10 @@ multidensity <- function(fcs.SCE, assay.i, show.markers = "all", color.by = NULL
       theme_minimal() + theme(axis.text.x = element_text(angle = 90, hjust = 1),
                               strip.text = element_text(size = 7), axis.text = element_text(size = 5))
     
-    if(interactive) plotly::ggplotly(g) else print(g)
+    if(interactive) ggplotly(g) else print(g)
   }else{
     suppressMessages(print(ggplot(ggdf, aes_string(x = "expression", y = "filename")) + 
-                             ggridges::geom_density_ridges(alpha = 0.7) +
+                             geom_density_ridges(alpha = 0.7) +
                              facet_wrap(~ antigen, scales = "free") +
                              geom_vline(data = median_df, aes(xintercept = median), linetype = 2, color = "gray55") +
                              theme_minimal() + theme(axis.text.x = element_text(angle = 90, hjust = 1),
