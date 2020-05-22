@@ -1,12 +1,12 @@
 #' fsom.clustering
 #'
-#' This function calculates a Self-Organizing Map (SOM) clustering and a simultaneous metaclustering from a \code{fcs.SCE} object. For additional information go to \href{https://github.com/SofieVG/FlowSOM}{\code{\link{FlowSOM}}} package.
-#' @param fcs.SCE A fcs.SCE object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.
+#' This function calculates a Self-Organizing Map (SOM) clustering and a simultaneous metaclustering from a \code{fcs.SCE} object. For additional information go to \href{https://github.com/SofieVG/FlowSOM}{\code{FlowSOM} package}.
+#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT]{fcs.SCE()}}.
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate SOM clustering. Default = \code{"normalized"}.
 #' @param markers.to.use Markers used for the clustering calculation. Default = \code{"all"}.
 #' @param markers.to.plot Markers to plot in the final minimum spanning tree (MST). Posible values are \code{NULL} (no plotting), \code{"tree"} (plotting a general MST with all identified clusters), \code{"tree_metaclustering"} (plotting a general MST but colored by metaclustering results) or a vector with markers (and it draws multiple MSTs for each marker indicated).
 #' @param k.metaclustering Number of metaclusters to calculate in the metaclustering step. Default = \code{40}.
-#' @param metaclustering.name Name for PDF with metaclustering results (see (\ref{https://bioconductor.org/packages/release/bioc/vignettes/ConsensusClusterPlus/inst/doc/ConsensusClusterPlus.pdf}{ConsensusClusterPlus package}) for interpretation help). Default = \code{NULL}.
+#' @param metaclustering.name Name for PDF with metaclustering results (see \href{https://bioconductor.org/packages/release/bioc/vignettes/ConsensusClusterPlus/inst/doc/ConsensusClusterPlus.pdf}{\code{ConsensusClusterPlus} package} for interpretation help). Default = \code{NULL}.
 #' @keywords SOM clustering
 #' @keywords SOM metaclustering
 #' @keywords minimum spanning tree MST

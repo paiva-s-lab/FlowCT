@@ -1,7 +1,7 @@
 # 'median.dr
 #'
 #' This function draws a plot from internally calculated dimensional reduction (DR).
-#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.
+#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT]{fcs.SCE()}}.
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.
 #' @param markers.to.use Vector with markers to use. Default = \code{"all"}.
 #' @param dr.method DR method to calculate. Possible values are "PCA", "tSNE" or "UMAP", individually, or "all". Take into account the number of samples for this DR, for few samples t-SNE and UMAP are useless.

@@ -1,20 +1,20 @@
 # 'boxplot.cell.clustering
 #'
-#' It draws a boxplot with cell clusters identified through \code{\link[FlowCT:fsom.clustering]{FlowCT::fsom.clustering()}}.
-#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.
+#' It draws a boxplot with cell clusters identified through \code{\link[FlowCT]{fsom.clustering()}}.
+#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT]{fcs.SCE()}}.
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.
-#' @param cell.clusters A vector with clusters identified through \code{\link[FlowCT:fsom.clustering]{FlowCT::fsom.clustering()}} (and, normaly, later renamed).
+#' @param cell.clusters A vector with clusters identified through \code{\link[FlowCT]{fsom.clustering()}} (and, normaly, later renamed).
 #' @param condition.column Column name from the \code{colData(fcs.SCE)} object which contains condition information.
 #' @param pvalue.cutoffs List of P-value cutoffs and their symbols for indicante significances within the plot. Default = \code{list(cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, 1), symbols = c("xxxx", "***", "**", "*", "ns"))}.
 #' @param color.by Variable name (from \code{colData(fcs.SCE)}) for lines coloring. 
 #' @param geom.point Logical indicating if adding points to boxplot. Default = \code{TRUE}.
 #' @param facet Logical indicating if splitting boxplots by cell clusters. Default = \code{FALSE}.
-#' @param facet.free.scale If \code{facet = TRUE}, string indicating how scales would be shared across all facets. Possible values: "free_x" (default), "free_y" and "free".
+#' @param facet.free.scale If \code{facet = TRUE}, string indicating how scales would be shared across all facets. Possible values: \code{"free_x"} (default), \code{"free_y"} and \code{"free"}.
 #' @param shape.by Variable name (from \code{colData(fcs.SCE)}) for dot shaping. Default = \code{NULL}.
 #' @param y.limits Numeric vector with limits for y-axis (minimum, maximum). Default = \code{NULL}.
 #' @param show.stats Significances should be added to boxplots? Default = \code{TRUE}.
 #' @param return.stats Logical indicating if calculated statistics should be returned in a new variable. Default = \code{TRUE}.
-#' @param plot.only.sig Vector indicating if only significant cell clusters should be displayed (logical element) and the P-value cutoff for selecting those ones (numerical element). Default = \code{c(F, 0.05)}.
+#' @param plot.only.sig Vector indicating if only significant cell clusters should be displayed (logical element) and the P-value cutoff for selecting those ones (numerical element). Default = \code{c(FALSE, 0.05)}.
 #' @keywords differential boxplot
 #' @keywords cell clusters distributions
 #' @export boxplot.cell.clustering

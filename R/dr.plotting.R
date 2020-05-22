@@ -1,7 +1,7 @@
 #' dr.plotting
 #'
-#' This function plots the indicated dimensional reduction (DR) from a previously calculated \code{\link[FlowCT:dim.reduction]{FlowCT::dim.reduction()}} object.
-#' @param data A object with DR generated with \code{\link[FlowCT:dim.reduction]{FlowCT::dim.reduction()}} or a \code{data.frame} with DR, expression and metadata information (like the first element list of the object generated with \code{\link[FlowCT:dim.reduction]{FlowCT::dim.reduction()}}).
+#' This function plots the indicated dimensional reduction (DR) from a previously calculated \code{\link[FlowCT]{dim.reduction()}} object.
+#' @param data A object with DR generated with \code{\link[FlowCT]{dim.reduction()}} or a \code{data.frame} with DR, expression and metadata information (like the first element list of the object generated with \code{\link[FlowCT]{dim.reduction()}}).
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.
 #' @param plot.dr String indicating the desired DR to plot (this indicated DR should be prevoulsy calculated to being plotted).
 #' @param n.dims Vector indicating the two DR components to plot. Default = \code{c(1,2)}.
@@ -11,7 +11,7 @@
 #' @param title Title to add to the plot.
 #' @param label.by Variable from (from \code{colData(fcs.SCE)}) for dots labeling. Default = \code{NULL}.
 #' @param size Point size. Default = \code{0.5}.
-#' @param raster Vector indicating if image should be rasterized (logical element) and the number of pixels to consider (numerical element). It is based on \href{https://github.com/exaexa/scattermore}{\code{\link{scattermore}}} package. Default = \code{c(T, 1000)}.
+#' @param raster Vector indicating if image should be rasterized (logical element) and the number of pixels to consider (numerical element). It is based on \href{https://github.com/exaexa/scattermore}{\code{scattermore} package}. Default = \code{c(TRUE, 1000)}.
 #' @param return.df Logical indicating if built \code{data.frame} with DR information and metadata must be returned. Default = \code{FALSE}.
 #' @keywords dimensional reduction plotting
 #' @keywords tSNE

@@ -1,9 +1,9 @@
 # 'dumbPlot.cell.clustering
 #'
 #' It draws a Dumbbell plot according condition for each cell cluster identified.
-#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.
+#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT]{fcs.SCE()}}.
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.
-#' @param cell.clusters A vector with clusters identified through \code{\link[FlowCT:fsom.clustering]{FlowCT::fsom.clustering()}} (and, normaly, later renamed).
+#' @param cell.clusters A vector with clusters identified through \code{\link[FlowCT]{fsom.clustering()}} (and, normaly, later renamed).
 #' @param condition.column Column name from the \code{colData(fcs.SCE)} object which contains condition information. De
 #' @param psig.cutoff P-value cutoff. Default = \code{0.05}.
 #' @param return.stats Logical indicating if calculated statistics should be returned in a new variable. Default = \code{TRUE}.
@@ -17,7 +17,7 @@
 #' @importFrom matrixTests col_kruskalwallis
 #' @examples
 #' \dontrun{
-#' diffDots.cell.clustering(fcs.SCE = fcs.SCE, cell.clusters = fcs.SCE$SOM_named, return.stats = F)
+#' diffDots.cell.clustering(fcs.SCE = fcs, cell.clusters = fcs$SOM_named, return.stats = F)
 #' }
 
 dumbPlot.cell.clustering <- function(fcs.SCE, assay.i = "normalized", cell.clusters, condition.column, psig.cutoff = 0.05, return.stats = T){

@@ -1,7 +1,7 @@
 #' dim.reduction
 #'
 #' It calculates a dimensional reduction (DR) from a \code{fcs.SCE} object (or an expression table). Three different DR methods are available: Principal Component Analsis (PCA), t-Distributed Stochastic Neighbor Embedding (t-SNE) and  Uniform Manifold Approximation and Projection (UMAP).
-#' @param data A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}} or a expression table with events in rows and markers in columns.
+#' @param data A \code{fcs.SCE} object generated through \code{\link[FlowCT]{fcs.SCE()}} or a expression table with events in rows and markers in columns.
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate the DR (this option is useless if input is not a \code{fcs.SCE} object). Default = \code{"normalized"}.
 #' @param markers.to.use Markers to take account in the DR calculus. Default = \code{"all"}.
 #' @param dr.method DR method to calculate. Possible values are "PCA", "tSNE" and/or "UMAP".

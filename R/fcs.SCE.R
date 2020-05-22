@@ -1,13 +1,13 @@
 #' fcs.SCE
 #'
-#' It reads and creates a fcs.SCE object (based on the structure of a (\ref{https://www.bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html}{\code{SummarizedExperiment}}) from FCS files in a specific folder or indicated in a vector.
-#' @param filelist A vector with full path of FCS files to be read, commonly generated through \code{\link[base:list.files]{base::list.files()}}. If \code{NULL}, this file list will be generated as indicated below.
+#' It reads and creates a \code{fcs.SCE} object (based on the \href{https://www.bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html}{\code{SummarizedExperiment} class}) from FCS files in a specific folder or indicated in a vector.
+#' @param filelist A vector with full path of FCS files to be read, commonly generated through \code{\link[base]{list.files()}}. If \code{NULL}, this file list will be generated as indicated below.
 #' @param directory If \code{filelist = NULL}, those files stored in this location will be read. Default = \code{getwd()} (current directory).
 #' @param pattern Pattern for reading files within \code{directory}. Default = \code{"fcs"}.
-#' @param events Numeric vector indicating how many events to read in each FCS file (same behaviour as \code{\link[flowCore:read.FCS]{flowCore::read.FCS()}}), those are the number of events for new and unified generated FCS files. Default = \code{"all"}.
-#' @param dataset Specify data segment to be read in the FCS file (same behaviour as \code{\link[flowCore:read.FCS]{flowCore::read.FCS()}}). Default = \code{1}.
-#' @param num.threads Number of threads for reading the FCS files. For Windows users, you should to install \code{parallelsugar} from (\href{https:https://github.com/nathanvan/parallelsugar}{Nathanvan's GitHub}). Defult = \code{NULL}, i.e., not parallelization.
-#' @param metadata Metadata information for each FCS files included in the analysis. It will be used to assign to each event an specific metadata and it will be added to \code{fcs.SCE@metadata} as \code{reduced_metadata}.
+#' @param events Numeric vector indicating how many events to read in each FCS file (same behaviour as \code{\link[flowCore]{read.FCS()}}), those are the number of events for new and unified generated FCS files. Default = \code{"all"}.
+#' @param dataset Specify data segment to be read in the FCS file (same behaviour as \code{\link[flowCore]{read.FCS()}}). Default = \code{1}.
+#' @param num.threads Number of threads for reading the FCS files. For Windows users, you should to install \code{parallelsugar} from \href{https:https://github.com/nathanvan/parallelsugar}{Nathanvan's GitHub}. Defult = \code{NULL}, i.e., not parallelization.
+#' @param metadata Metadata information for each FCS files included in the analysis. It will be used to assign to each event an specific metadata and it will be added to \code{metadata(fcs.SCE)} as \code{reduced_metadata}.
 #' @param transformation Because FCS data is normally exported in a logarithmic format, it is necessary its transformation for downstream analysis. Default (and the only one) = \code{arcsinh}.
 #' @param transf.cofactor Cofactor numeric value for that \code{arcsinh} transformation. Values can ranged from 15 to 50 (for mass cytometry) and from 150 to 10,000 (for flow cytometry). Default = \code{500}.
 #' @param project.name String naming the \code{fcs.SCE} generated. Default = \code{"noname"}.
