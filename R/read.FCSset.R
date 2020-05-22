@@ -42,7 +42,7 @@ read.FCSset <- function(filelist = NULL, directory = getwd(), pattern = ".fcs$",
     
   if(length(wrong) != 0){
     cat("These files had some troubles in being read, please check them!:", paste(wrong, collapse = ","))
-    fcs <- fcs[sampleNames(fcs) != wrong]
+    fcs <- fcs[!grepl(paste(wrong, collapse = "|"), sampleNames(fcs))]
   }
 
   return(fcs)
