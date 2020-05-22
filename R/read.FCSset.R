@@ -40,8 +40,10 @@ read.FCSset <- function(filelist = NULL, directory = getwd(), pattern = ".fcs$",
   wrong <- fsApply(fcs, function(x) sum(apply(exprs(x), 2, is.na)))[,1]
   wrong <- names(wrong)[wrong != 0]
     
-  cat("These files had some troubles in being read, please check them!:", paste(wrong, collapse = ","))
-  fcs <- fcs[sampleNames(fcs) != wrong]
+  if(length(wrong) != 0){
+    cat("These files had some troubles in being read, please check them!:", paste(wrong, collapse = ","))
+    fcs <- fcs[sampleNames(fcs) != wrong]
+  }
 
   return(fcs)
 }
