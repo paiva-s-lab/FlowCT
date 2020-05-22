@@ -34,6 +34,13 @@ read.FCSset <- function(filelist = NULL, directory = getwd(), pattern = ".fcs$",
 	fcs <- as.flowSet(read.ncdfFlowSet(filelist, emptyValue = FALSE, transformation = FALSE, truncate_max_range = FALSE, 
                                 which.lines = events, dataset = dataset, mc.cores = num.threads))
   	}
-  
+
+  ## check if any FCS files is wrongly read...
+  wrong <- fsApply(fcs, function(x) sum(apply(exprs(x), 2, is.na)))[,1]
+  wrong <- names(wrong)[wrong != 0]
+    
+  cat("These files had some troubles in being read, please check them!:", paste(wrong, collapse = ","))
+  fcs <- fcs[sampleNames(fcs) != wrong]
+
   return(fcs)
 }
