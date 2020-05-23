@@ -22,6 +22,7 @@
 #' @import ggplot2
 #' @importFrom SummarizedExperiment assay
 #' @importFrom stats dist hclust median
+#' @importFrom treeio isTip
 #' @importFrom ape as.phylo
 #' @examples
 #' \dontrun{
