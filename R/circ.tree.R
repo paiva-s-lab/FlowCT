@@ -20,7 +20,6 @@
 #' @import phytools
 #' @import ggtree
 #' @import ggplot2
-#' @importFrom treeio isTip
 #' @importFrom SummarizedExperiment assay
 #' @importFrom stats dist hclust median
 #' @importFrom ape as.phylo
