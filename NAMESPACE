@@ -81,7 +81,7 @@ importFrom(stats,median)
 importFrom(stats,pairwise.wilcox.test)
 importFrom(stats,prcomp)
 importFrom(stats,sd)
-# importFrom(treeio,isTip) #it's crashing in HPC instalation
+importFrom(treeio,isTip) #it's crashing in HPC instalation
 importFrom(utils,View)
 importFrom(utils,capture.output)
 importFrom(utils,read.table)
