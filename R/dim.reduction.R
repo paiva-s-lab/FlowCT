@@ -34,11 +34,11 @@ dim.reduction <- function(data, assay.i = "normalized", markers.to.use = "all", 
   if(is.null(num.threads)) num.threads <- detectCores()-1
   
   if(class(data)[1] == "SingleCellExperiment"){
-    if(markers.to.use == "all") markers.to.use2 <- rownames(data) else markers.to.use2 <- markers.to.use
-    data1 <- t(assay(data, i = assay.i))[,markers.to.use2]
+    if(length(markers.to.use) == 1 && markers.to.use == "all") markers.to.use <- rownames(data)
+    data1 <- t(assay(data, i = assay.i))[,markers.to.use]
   }else{
-    if(markers.to.use == "all") markers.to.use2 <- rownames(data) else markers.to.use2 <- markers.to.use
-    data1 <- data[,markers.to.use2]
+    if(length(markers.to.use) == 1 && markers.to.use == "all") markers.to.use <- rownames(data)
+    data1 <- data[,markers.to.use]
   }
   
   drs <- list()
