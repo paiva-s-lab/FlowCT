@@ -18,7 +18,7 @@
 #' \dontrun{cell.count.bx(fcsL, assay.i = "normalized", x.axis = "condition")}
 
 cell.count.bx <- function(fcs.SCE, assay.i = "normalized", x.axis, color.by = x.axis, label.by = NULL, limits = NULL){
-  data <- merge(t(assay(fcs.SCE, i = assay.i)), colData(fcs.SCE), by = "row.names")[,-1]
+  data <- cbind(colData(fcs.SCE), t(assay(fcs.SCE, i = assay.i)))
   ggdf <- data.frame(data[!duplicated(data[,"filename"]),], cell_counts = as.numeric(table(data[,"filename"])))
   
   if(is.null(limits)) limits <- c(min(ggdf$cell_counts), max(ggdf$cell_counts))
