@@ -8,7 +8,7 @@
 #' @param norm.matrix.name New normalized matrix name (it will stored within the \code{fcs.SCE} object). Default = \code{"normalized"}.
 #' @keywords marker alignment
 #' @keywords marker normalization
-#' @export
+#' @export normalization.flw
 #' @importFrom flowStats gaussNorm warpSet
 #' @importFrom SummarizedExperiment assay
 #' @importFrom flowCore fsApply exprs
