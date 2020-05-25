@@ -11,24 +11,4 @@ License: CC0
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
-Imports: 
-    SingleCellExperiment (>= 1.10.1)
-    flowAI
-    FlowSOM
-    flowStats
-    matrixTests
-    ggtree
-    corrplot
-    filesstrings
-    ggpubr
-    ggrepel
-    ggridges
-    Hmisc
-    pheatmap
-    phytools
-    plotly
-    premessa
-    progress
-    Rtsne
-    scattermore
-    uwot
+
