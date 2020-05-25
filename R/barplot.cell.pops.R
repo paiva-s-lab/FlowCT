@@ -14,7 +14,7 @@
 #' @method barplot cell.pops
 #' @import ggplot2
 #' @importFrom SummarizedExperiment colData assay
-#' @importFrom data.table melt
+#' @importFrom data.table melt as.data.table
 #' @examples
 #' \dontrun{
 #' prop_table <- barplot.cell.pops(fcs.SCE = fcs, cell.clusters = fcs$SOM_named, 
@@ -33,7 +33,7 @@ barplot.cell.pops <- function(fcs.SCE, assay.i = "normalized", cell.clusters, pl
   prop_table <- prop.table(counts_table, margin = 2)*100
   
   if(plot){
-    ggdf <- melt(prop_table, value.name = "proportion")
+    ggdf <- melt(as.data.table(prop_table), value.name = "proportion")
     colnames(ggdf)[2] <- count.by
     
     mm <- match(ggdf[,count.by], metadata[,count.by]) #add other infos

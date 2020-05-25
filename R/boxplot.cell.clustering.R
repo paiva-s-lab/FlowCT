@@ -19,7 +19,7 @@
 #' @keywords cell clusters distributions
 #' @export boxplot.cell.clustering
 #' @import ggplot2
-#' @importFrom data.table melt
+#' @importFrom data.table melt as.data.table
 #' @importFrom matrixTests col_kruskalwallis
 #' @importFrom stats pairwise.wilcox.test
 #' @importFrom ggpubr stat_compare_means
@@ -45,7 +45,7 @@ boxplot.cell.clustering <- function(fcs.SCE, assay.i = "normalized", cell.cluste
   
   prop_table_md <- merge(fcs.SCE@metadata$reduced_metada, prop_table, by.x = "filename", by.y = "row.names")
   
-  prop_table_mdm <- melt(prop_table_md, id.vars = colnames(fcs.SCE@metadata$reduced_metada), 
+  prop_table_mdm <- melt(as.data.table(prop_table_md), id.vars = colnames(fcs.SCE@metadata$reduced_metada), 
                          variable.name = "cell_cluster", value.name = "proportion")
   
   ## statistics table

@@ -4,7 +4,7 @@
 #' @param data A object with DR generated with \code{\link[FlowCT.v2:dim.reduction]{FlowCT.v2::dim.reduction()}} or a \code{data.frame} with DR, expression and metadata information (like the first element list of the object generated with \code{\link[FlowCT.v2:dim.reduction]{FlowCT.v2::dim.reduction()}}).
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.
 #' @param plot.dr String indicating the desired DR to plot (this indicated DR should be prevoulsy calculated to being plotted).
-#' @param n.dims Vector indicating the two DR components to plot. Default = \code{c(1,2)}.
+#' @param n.dims Vector indicating the two DR components to plot. Default = \code{c(1,2)} (by now, these are the only dims allowed).
 #' @param color.by Variable from (from \code{colData(fcs.SCE)}) for dots coloring. If \code{color.by = "expression"} (default), plot will be splitted for each marker (\code{facet.by}).
 #' @param facet.by Variable from (from \code{colData(fcs.SCE)}) for plot spliting. Default = \code{NULL}.
 #' @param omit.markers Vector with markers to omit when plotting with \code{color.by = "expression"}. Default = \code{NULL}.
@@ -21,7 +21,7 @@
 #' @import ggplot2
 #' @importFrom grDevices colorRampPalette
 #' @importFrom RColorBrewer brewer.pal
-#' @importFrom data.table melt
+#' @importFrom data.table melt as.data.table
 #' @importFrom scattermore geom_scattermore
 #' @examples
 #' \dontrun{
@@ -42,7 +42,7 @@ dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), co
     drmd <- data
   }
   
-  if(color.by == "expression") drmd <- melt(drmd, measure.vars = no.omit.markers, value.name = "expression", variable.name = "antigen")
+  if(color.by == "expression") drmd <- melt(as.data.table(drmd), measure.vars = no.omit.markers, value.name = "expression", variable.name = "antigen")
 
   g <- ggplot(drmd, aes_string(x = paste0(tolower(plot.dr), dims[1]), y = paste0(tolower(plot.dr), dims[2]), color = color.by)) +
     xlab(paste0(toupper(plot.dr), 1)) + ylab(paste0(toupper(plot.dr), 2)) + ggtitle(title) + 

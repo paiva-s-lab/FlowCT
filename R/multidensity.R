@@ -15,7 +15,7 @@
 #' @import ggplot2
 #' @importFrom SummarizedExperiment colData assay
 #' @importFrom stats median
-#' @importFrom data.table melt
+#' @importFrom data.table melt as.data.table
 #' @importFrom plotly ggplotly
 #' @importFrom ggridges geom_density_ridges
 #' @examples
@@ -33,7 +33,7 @@ multidensity <- function(fcs.SCE, assay.i, show.markers = "all", color.by = NULL
   
   # prepare tables: for plotting and with median values for each marker
   median_df <- data.frame(antigen = show.markers, median = apply(data[,show.markers], 2, median))
-  ggdf <- melt(data2, measure.vars = show.markers, value.name = "expression", variable.name = "antigen")
+  ggdf <- melt(as.data.table(data2), measure.vars = show.markers, value.name = "expression", variable.name = "antigen")
   
   if(length(unique(fcs.SCE$filename)) > ridgeline.lim){
     g <- ggplot(data = ggdf[grepl(paste0(show.markers, collapse = "|"), ggdf$antigen),], 

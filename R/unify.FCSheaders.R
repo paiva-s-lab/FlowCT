@@ -15,7 +15,7 @@
 #' @return If \code{fix = TRUE}, those FCS files with a distinct header from selected frequency will be renamed/reordered, added with the suffix \code{fixed.fcs} and the original ones (unchanged) will be stored in a new \code{original_files} folder. In the case a FCS would have a different number of channels, it will moved to a new folder called \code{discarded_files_because_diffs} and dicarded from downstream analysis (this will be changed in the future).
 #' @export
 #' @importFrom flowCore read.FCS write.FCS
-#' @importFrom data.table melt
+#' @importFrom data.table melt as.data.table
 #' @importFrom progress progress_bar
 #' @importFrom filesstrings file.move
 #' @importFrom utils View
@@ -44,7 +44,7 @@ unify.FCSheaders <- function(filelist = NULL, directory = getwd(), pattern = ".f
     mnames <- append(mnames, paste(colnames(aux), collapse = ", "))
   }
   
-  tm <- melt(table(mnames))
+  tm <- melt(as.data.table(table(mnames)))
   colnames(tm) <- c("names", "freq")
   tm$length <- sapply(tm$names, function(x) length(strsplit(as.character(x), ", ")[[1]]))
   tm <- tm[order(tm$freq, decreasing = T),]

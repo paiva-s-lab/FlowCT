@@ -14,7 +14,7 @@
 #' @export
 #' @import ggplot2
 #' @importFrom stats aggregate median lm
-#' @importFrom data.table melt
+#' @importFrom data.table melt as.data.table
 #' @examples
 #' \dontrun{
 #' dotplot.DE(fcs.SCE = fcs, markers.to.use = c("CD8", "CD27", "CCR4", "CD45RA", "CD4"), clusters.named = "SOM_named")
@@ -28,7 +28,7 @@ dotplot.DE <- function(fcs.SCE, assay.i = "normalized", clusters.named = "SOM_na
     aux_se <- fcs.SCE[,fcs.SCE[[clusters.named]] == i]
     dt <- rbind(dt, data.frame(t(assay(aux_se, i = assay.i)[markers.to.use,]), pop = i))
   }
-  dtm <- melt(dt)
+  dtm <- melt(as.data.table(dt))
   
   dtm2 <- data.frame()
   for(i in unique(dtm$variable)){

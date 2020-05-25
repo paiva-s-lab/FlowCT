@@ -12,7 +12,7 @@
 #' @keywords longitudinal dotplot
 #' @export
 #' @import ggplot2
-#' @importFrom data.table melt
+#' @importFrom data.table melt as.data.table
 #' @importFrom stats aggregate median pairwise.wilcox.test ave
 #' @importFrom matrixTests col_kruskalwallis
 #' @importFrom ggrepel geom_label_repel
@@ -27,7 +27,7 @@ diffdots.cell.clustering <- function(fcs.SCE, assay.i = "normalized", cell.clust
   
   prop_table_md <- merge(fcs.SCE@metadata$reduced_metada, prop_table, by.x = "filename", by.y = "row.names")
   
-  dfm <- melt(prop_table_md, measure.vars = unique(cell.clusters))
+  dfm <- melt(as.data.table(prop_table_md), measure.vars = unique(cell.clusters))
   dfma <- aggregate(dfm$value ~ dfm$variable + dfm[,condition.column], FUN = median)
   colnames(dfma) <- c("variable", condition.column, "value")
   dfma <- transform(dfma, pct = log(ave(dfma$value, dfma[,condition.column], FUN = function(x) x/sum(x)*100))) #transform to percentaje
