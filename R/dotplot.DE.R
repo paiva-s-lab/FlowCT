@@ -21,12 +21,12 @@
 #' }
 
 dotplot.DE <- function(fcs.SCE, assay.i = "normalized", clusters.named = "SOM_named", markers.to.use = "all", psig.cutoff = 0.05, return.stats = F, scale.size = 9){
-  if(markers.to.use == "all") markers.to.use <- rownames(fcs.SCE)
+  if(markers.to.use == "all") markers.to.use2 <- rownames(fcs.SCE) else markers.to.use2 <- markers.to.use
   
   dt <- data.frame()
   for(i in unique(fcs.SCE[[clusters.named]])){
     aux_se <- fcs.SCE[,fcs.SCE[[clusters.named]] == i]
-    dt <- rbind(dt, data.frame(t(assay(aux_se, i = assay.i)[markers.to.use,]), pop = i))
+    dt <- rbind(dt, data.frame(t(assay(aux_se, i = assay.i)[markers.to.use2,]), pop = i))
   }
   dtm <- melt(as.data.table(dt))
   

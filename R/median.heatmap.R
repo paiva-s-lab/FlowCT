@@ -28,16 +28,16 @@ median.heatmap <- function(fcs.SCE, assay.i = "normalized", cell.clusters = NULL
   data <- t(assay(fcs.SCE, i = assay.i))
   metadata <- fcs.SCE@metadata$reduced_metadata
   
-  if(markers.to.use == "all") markers.to.use <- colnames(data)
+  if(markers.to.use == "all") markers.to.use2 <- colnames(data) else markers.to.use2 <- markers.to.use
   
   ## prepare median tables
   if(is.null(cell.clusters)){
     med <- median.values(fcs.SCE, assay.i = assay.i)
   }else{
-    expr_median <- data.frame(cell_clusters = cell.clusters, data[,markers.to.use]) %>%
+    expr_median <- data.frame(cell_clusters = cell.clusters, data[,markers.to.use2]) %>%
       group_by(.data$cell_clusters) %>% summarize_all(list(median)) %>% as.data.frame(.data)
     
-    expr_saturated_median <- data.frame(cell_clusters = cell.clusters, scale.exprs(data[,markers.to.use])) %>%
+    expr_saturated_median <- data.frame(cell_clusters = cell.clusters, scale.exprs(data[,markers.to.use2])) %>%
       group_by(.data$cell_clusters) %>% summarize_all(list(median)) %>% as.data.frame(.data)
   }
   
@@ -46,7 +46,7 @@ median.heatmap <- function(fcs.SCE, assay.i = "normalized", cell.clusters = NULL
     annotation_colors <- col.annot.pheatmap(metadata[,!(colnames(metadata) %in% not.metadata), drop = F])
     color <- colorRampPalette(brewer.pal(n = 9, name = "YlGnBu"))(100)
     
-    print(pheatmap(t(med[,markers.to.use]), color = color, display_numbers = FALSE,
+    print(pheatmap(t(med[,markers.to.use2]), color = color, display_numbers = FALSE,
                    number_color = "black", fontsize_number = 5, clustering_method = "average",
                    annotation = metadata[,!(colnames(metadata) %in% not.metadata), drop = F], 
                    annotation_colors = annotation_colors, 
@@ -57,9 +57,9 @@ median.heatmap <- function(fcs.SCE, assay.i = "normalized", cell.clusters = NULL
     clustering_prop <- round(clustering_table / sum(clustering_table) * 100, 2)
     labels_row <- paste0(expr_saturated_median$cell_clusters, " (", clustering_prop ,"%)")
     
-    d <- dist(expr_median[,markers.to.use], method = "euclidean")
+    d <- dist(expr_median[,markers.to.use2], method = "euclidean")
     cluster_rows <- hclust(d, method = "average")
-    expr_heat <- as.matrix(expr_saturated_median[,markers.to.use])
+    expr_heat <- as.matrix(expr_saturated_median[,markers.to.use2])
     # rownames(expr_heat) <- paste0("c.", expr_saturated_median$cell_clusters) #force rownames to not crash heatmap (??)
     rownames(expr_heat) <- rownames(expr_saturated_median) #force rownames to not crash heatmap (??)
     

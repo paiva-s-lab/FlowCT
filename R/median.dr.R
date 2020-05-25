@@ -24,7 +24,7 @@ median.dr <- function(fcs.SCE, assay.i = "normalized", markers.to.use = "all", d
   data <- t(assay(fcs.SCE, i = assay.i))
   metadata <- fcs.SCE@metadata$reduced_metadata
   
-  if(markers.to.use == "all") markers.to.use <- colnames(data)
+  if(markers.to.use == "all") markers.to.use2 <- colnames(data) else markers.to.use2 <- markers.to.use
   
   ## prepare median tables
   med <- median.values(fcs.SCE, assay.i = assay.i)
@@ -32,7 +32,7 @@ median.dr <- function(fcs.SCE, assay.i = "normalized", markers.to.use = "all", d
   ## dr
   if(!is.null(dr.method)){
     if(grepl("PCA|tSNE|UMAP", dr.method)){
-      invisible(capture.output(dr <- dim.reduction(med, dr.method = dr.method, markers.to.use = markers.to.use, 
+      invisible(capture.output(dr <- dim.reduction(med, dr.method = dr.method, markers.to.use = markers.to.use2, 
                           perplexity.tsne = perplexity.tsne, n.neighbors.umap = n.neighbors.umap)))
       
       ## plotting

@@ -23,14 +23,14 @@
 sc.heatmap <- function(fcs.SCE, assay.i = "normalized", markers.to.use = "all", not.metadata = c("filename", "cell_id", "sample_id"), 
                        clustering.method = "average", subsampling = 100, color = NULL){
   if(!is.null(subsampling)) suppressMessages(fcs.SCE <- sub.samples(fcs.SCE, subsampling = subsampling))
-  if(markers.to.use == "all") markers.to.use <- rownames(fcs.SCE)
+  if(markers.to.use == "all") markers.to.use2 <- rownames(fcs.SCE) else markers.to.use2 <- markers.to.use
   if(is.null(color)) color <- colorRampPalette(brewer.pal(n = 9, name = "YlGnBu"))(100)
   data <- assay(fcs.SCE, i = assay.i)
   metadata <- as.data.frame(colData(fcs.SCE))
     
   annot_col <- col.annot.pheatmap(metadata[,!(colnames(metadata) %in% not.metadata)])
 
-  pheatmap(data[markers.to.use,], 
+  pheatmap(data[markers.to.use2,], 
            annotation_col = metadata[,!(colnames(metadata) %in% not.metadata)], 
            annotation_colors = annot_col, 
            color = color, display_numbers = FALSE, 

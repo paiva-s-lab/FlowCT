@@ -21,14 +21,14 @@
 
 fsom.clustering <- function(fcs.SCE, assay.i = "normalized", markers.to.use = "all", markers.to.plot = NULL, k.metaclustering = NULL, metaclustering.name = NULL){
   set.seed(333)
-
+  
   data <- as.flowSet.SE(fcs.SCE, assay.i)
-  if(markers.to.use == "all") markers.to.use <- rownames(fcs.SCE)
+  if(markers.to.use == "all") markers.to.use2 <- rownames(fcs.SCE) else markers.to.use2 <- markers.to.use
   
   ## FSOM clustering
   cat("Calculating SOM clustering...\n")
   fsom <- suppressMessages(ReadInput(data, transform = FALSE, scale = FALSE)) #read data
-  fsom <- suppressMessages(BuildSOM(fsom, colsToUse = markers.to.use)) #build SOM
+  fsom <- suppressMessages(BuildSOM(fsom, colsToUse = markers.to.use2)) #build SOM
   
   cat("Building MST...\n")
   fsom <- suppressMessages(BuildMST(fsom, tSNE = TRUE, silent = T)) #build MST for visualization of clustering
