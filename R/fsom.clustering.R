@@ -19,7 +19,7 @@
 #' fcs$SOM <- fsom$metaclusters #add SOM information to colData(fcs) as a new column
 #' }
 
-fsom.clustering <- function(fcs.SCE, assay.i = "normalized", markers.to.use = "all", markers.to.plot = NULL, k.metaclustering = 40, metaclustering.name = NULL){
+fsom.clustering <- function(fcs.SCE, assay.i = "normalized", markers.to.use = "all", markers.to.plot = NULL, k.metaclustering = NULL, metaclustering.name = NULL){
   require(FlowSOM)
 
   data <- as.flowSet.SE(fcs.SCE, assay.i)
