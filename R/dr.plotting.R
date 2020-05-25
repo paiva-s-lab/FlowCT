@@ -32,9 +32,9 @@
 
 dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), color.by = "expression", facet.by = NULL, omit.markers = NULL, title = "", label.by = NULL, size = 2, raster = c(T, 1000), return.df = F){
   if(class(data)[1] == "SingleCellExperiment"){
-    if(is.na(match(tolower(plot.dr), tolower(names(data@reducedDims))))) stop('Please, indicate one previously DR calculated: PCA, tSNE or UMAP.\n', call. = F)
-    dr_calculated <- match(tolower(plot.dr), tolower(names(data@reducedDims)))
-    dr <- data@reducedDims@listData[[dr_calculated]][,dims]
+    if(is.na(match(tolower(plot.dr), tolower(names(data@int_colData@listData$reducedDims))))) stop('Please, indicate one previously DR calculated: PCA, tSNE or UMAP.\n', call. = F)
+    dr_calculated <- match(tolower(plot.dr), tolower(names(data@int_colData@listData$reducedDims)))
+    dr <- data@int_colData@listData$reducedDims@listData[[dr_calculated]][,dims]
     
     no.omit.markers <- rownames(data)[!(rownames(data) %in% omit.markers)]
     drmd <- as.data.frame(cbind(colData(data), dr, t(assay(data, i = assay.i))[,no.omit.markers]))

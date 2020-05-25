@@ -29,8 +29,8 @@ export.metaFCS <- function(fcs.SCE, assay.i = "raw", output.name = NULL, output.
     mt <- sapply(colData(fcs.SCE), function(x) as.numeric(as.factor(x)))
     
     # prepare dr object
-    if(length(fcs.SCE@reducedDims) > 0){
-      drs <- as.data.frame(fcs.SCE@reducedDims@listData)
+    if(length(fcs.SCE@int_colData@listData$reducedDims) > 0){
+      drs <- as.data.frame(fcs.SCE@int_colData@listData$reducedDims@listData)
       colnames(drs) <- c(paste0("PCA", 1:2), paste0("tSNE", 1:2), paste0("UMAP", 1:2))
     }else{
       drs <- NULL
@@ -51,8 +51,8 @@ export.metaFCS <- function(fcs.SCE, assay.i = "raw", output.name = NULL, output.
       
       mt <- sapply(colData(aux_fcs.SCE), function(x) as.numeric(as.factor(x)))
       
-      if(length(aux_fcs.SCE@reducedDims) > 0){
-        drs <- as.data.frame(aux_fcs.SCE@reducedDims@listData)
+      if(length(aux_fcs.SCE@int_colData@listData$reducedDims) > 0){
+        drs <- as.data.frame(aux_fcs.SCE@int_colData@listData$reducedDims@listData)
         colnames(drs) <- c(paste0("PCA", 1:2), paste0("tSNE", 1:2), paste0("UMAP", 1:2))
       }else{
         drs <- NULL
