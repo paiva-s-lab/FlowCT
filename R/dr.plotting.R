@@ -31,7 +31,7 @@
 #' }
 
 dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), color.by = "expression", facet.by = NULL, omit.markers = NULL, title = "", label.by = NULL, size = 2, raster = c(T, 1000), return.df = F){
-  if(class(data) == "SingleCellExperiment"){
+  if(class(data)[1] == "SingleCellExperiment"){
     if(is.na(match(tolower(plot.dr), tolower(names(data@reducedDims))))) stop('Please, indicate one previously DR calculated: PCA, tSNE or UMAP.\n', call. = F)
     dr_calculated <- match(tolower(plot.dr), tolower(names(data@reducedDims)))
     dr <- data@reducedDims@listData[[dr_calculated]][,dims]

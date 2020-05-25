@@ -33,7 +33,7 @@ dim.reduction <- function(data, assay.i = "normalized", markers.to.use = "all", 
   
   if(is.null(num.threads)) num.threads <- detectCores()-1
   
-  if(class(data) == "SingleCellExperiment"){
+  if(class(data)[1] == "SingleCellExperiment"){
     if(markers.to.use == "all") markers.to.use2 <- rownames(data) else markers.to.use2 <- markers.to.use
     data1 <- t(assay(data, i = assay.i))[,markers.to.use2]
   }else{
@@ -58,7 +58,7 @@ dim.reduction <- function(data, assay.i = "normalized", markers.to.use = "all", 
     colnames(drs[["UMAP"]]) <- paste0("umap", c(1:2))
   }
   
-  if(class(data) == "SingleCellExperiment"){
+  if(class(data)[1] == "SingleCellExperiment"){
     reducedDims(data) <- drs
     return(data)
   }else{

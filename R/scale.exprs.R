@@ -19,13 +19,13 @@
 #' }
 
 scale.exprs <- function(data, assay.i = "normalized", include.FCS.SCE = F, scaled.matrix.name = "scaled"){
-	if(class(data) == "SingleCellExperiment") data <- t(assay(data, i = assay.i))
+	if(class(data)[1] == "SingleCellExperiment") data <- t(assay(data, i = assay.i))
 	rng <- colQuantiles(data, probs = c(0.01, 0.99))
 	expr01 <- t((t(data) - rng[, 1]) / (rng[, 2] - rng[, 1]))
 	expr01[expr01 < 0] <- 0
 	expr01[expr01 > 1] <- 1
 
-	if(class(data) == "SingleCellExperiment" & include.FCS.SCE){
+	if(class(data)[1] == "SingleCellExperiment" & include.FCS.SCE){
 		assay(fcs.SE, i = scaled.matrix.name) <- expr01
 		return(fcs.SE)
 	}else{
