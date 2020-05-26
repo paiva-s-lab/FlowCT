@@ -5,13 +5,13 @@
 
 ### Environment setting ##################################################################
 ## Load packages and functions
-# Sys.setenv(http_proxy  = "http://proxy.unav.es:8080")
-# Sys.setenv(https_proxy = "http://proxy.unav.es:8080")
-# devtools::install_github("jgarces02/FlowCT@devel", auth_token = "21ea9880f944d42755479e54a5b19ddd00fe17f6")
+Sys.setenv(http_proxy  = "http://proxy.unav.es:8080")
+Sys.setenv(https_proxy = "http://proxy.unav.es:8080")
+devtools::install_github("jgarces02/FlowCT@devel", auth_token = "21ea9880f944d42755479e54a5b19ddd00fe17f6")
+library(FlowCT.v2)
 
-# library(FlowCT.v2)
-sapply(list.files(path = "R/", ".R", full.names = T), source)
-source("../FlowCT.v2_gitControl/load_libraries_onlyTesting.R")
+# sapply(list.files(path = "R/", ".R", full.names = T), source)
+# source("../FlowCT.v2_gitControl/load_libraries_onlyTesting.R")
 
 ## Working directory
 setwd("G:/Mi unidad/Proyectos/FlowCT_Ciro/FlowCT.v2/results/")
