@@ -30,7 +30,7 @@
 #' dr <- dr.plotting(fcs, plot.dr = "PCA", color.by = "SOM", facet.by = "condition", return.df = T)
 #' }
 
-dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), color.by = "expression", facet.by = NULL, omit.markers = NULL, title = "", label.by = NULL, size = 2, raster = c(F, 1000), return.df = F){
+dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), color.by = "expression", facet.by = NULL, omit.markers = NULL, title = "", label.by = NULL, size = 1, raster = c(F, 1000), return.df = F){
   if(class(data)[1] == "SingleCellExperiment"){
     if(is.na(match(tolower(plot.dr), tolower(names(data@int_colData@listData$reducedDims))))) stop('Please, indicate one previously DR calculated: PCA, tSNE or UMAP.\n', call. = F)
     dr_calculated <- match(tolower(plot.dr), tolower(names(data@int_colData@listData$reducedDims)))
@@ -42,7 +42,7 @@ dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), co
     drmd <- data
   }
   
-  if(color.by == "expression") drmd <- melt(as.data.table(drmd), measure.vars = no.omit.markers, value.name = "expression", variable.name = "antigen")
+  if(color.by == "expression") drmd <- as.data.frame(melt(as.data.table(drmd), measure.vars = no.omit.markers, value.name = "expression", variable.name = "antigen"))
 
   g <- ggplot(drmd, aes_string(x = paste0(tolower(plot.dr), dims[1]), y = paste0(tolower(plot.dr), dims[2]), color = color.by)) +
     xlab(paste0(toupper(plot.dr), 1)) + ylab(paste0(toupper(plot.dr), 2)) + ggtitle(title) + 
