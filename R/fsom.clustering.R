@@ -20,20 +20,20 @@
 #' fcs$SOM <- fsom$metaclusters #add SOM information to colData(fcs) as a new column
 #' }
 
-fsom.clustering <- function(fcs.SCE, assay.i = "normalized", markers.to.use = "all", markers.to.plot = NULL, k.metaclustering = NULL, metaclustering.name = NULL){
+fsom.clustering <- function(fcs.SCE, assay.i = "normalized", scale = T, markers.to.use = "all", markers.to.plot = NULL, k.metaclustering = NULL, metaclustering.name = NULL){
   set.seed(333)
-  
+
   data <- as.flowSet.SE(fcs.SCE, assay.i)
   if(length(markers.to.use) == 1 && markers.to.use == "all") markers.to.use <- rownames(data)
 
   ## FSOM clustering
   cat("Calculating SOM clustering...\n")
-  fsom <- suppressMessages(ReadInput(data, transform = FALSE, scale = FALSE)) #read data
+  fsom <- suppressMessages(ReadInput(data, transform = FALSE, scale = scale)) #read data
   fsom <- suppressMessages(BuildSOM(fsom, colsToUse = markers.to.use)) #build SOM
-  
+
   cat("Building MST...\n")
   fsom <- suppressMessages(BuildMST(fsom, tSNE = TRUE, silent = T)) #build MST for visualization of clustering
-  
+
   ## Metaclustering
   if(!is.null(k.metaclustering)){
     cat("Metaclustering...\n")
@@ -49,11 +49,11 @@ fsom.clustering <- function(fcs.SCE, assay.i = "normalized", markers.to.use = "a
                                                   distance = "euclidean", seed = 333, verbose = F))
       unlink("consensus_plots", recursive = TRUE)
     }
-    
+
     #get cluster ids for each cell
     code_clustering1 <- mc[[k.metaclustering]]$consensusClass %>% as.factor()
     cell_clustering1 <- code_clustering1[fsom$map$mapping[,1]]
-    
+
     ## plotting
     #plot the MST to evaluate the marker fluorescence (or general tree) intensity for each SOM
     if(!is.null(markers.to.plot)){
@@ -65,7 +65,7 @@ fsom.clustering <- function(fcs.SCE, assay.i = "normalized", markers.to.use = "a
         for(marker in markers.to.plot) PlotMarker(fsom, marker)
       }
     }
-    
+
     return(list(fsom = fsom, metaclusters = cell_clustering1, plotStars_value = code_clustering1))
   }else{
     return(fsom)
