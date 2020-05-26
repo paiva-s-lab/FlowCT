@@ -1,8 +1,6 @@
 ## INFORMATION ##########################################################################
 # FlowCT version ---> 2.2
 # backbone script version ---> 1.1
-#### Changes:
-# -> Migrate from SummarizedExperiment to SingleCellExperiment
 ##########################################################################################
 
 ### Environment setting ##################################################################
