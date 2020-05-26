@@ -60,7 +60,7 @@ circ.tree <- function(fcs.SCE, assay.i = "normalized", cell.clusters, dist.metho
   hca <- as.phylo(cluster_rowsL)
   hca$tip.label <- rownames(expr_heatL)
   
-  if(nodes == "display"){
+  if(length(nodes) == 1 && nodes == "display"){
     print(ggtree(hca, layout = "fan", branch.length = 1) + geom_text2(aes_string(label = "node"), hjust = -.3) + geom_tiplab())
   }else{
     p1 <- ggtree(hca, layout = "fan", open.angle = open.angle, branch.length = 1) 
