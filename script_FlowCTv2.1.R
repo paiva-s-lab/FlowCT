@@ -1,6 +1,6 @@
 ## INFORMATION ##########################################################################
-# FlowCT version ---> 2.2
-# backbone script version ---> 1.1
+# FlowCT version ---> 2.1
+# backbone script version ---> 1.2
 ##########################################################################################
 
 ### Environment setting ##################################################################
@@ -8,11 +8,13 @@
 # Sys.setenv(http_proxy  = "http://proxy.unav.es:8080")
 # Sys.setenv(https_proxy = "http://proxy.unav.es:8080")
 # devtools::install_github("jgarces02/FlowCT@devel", auth_token = "21ea9880f944d42755479e54a5b19ddd00fe17f6")
-library(FlowCT.v2)
+
+# library(FlowCT.v2)
+sapply(list.files(path = "R/", ".R", full.names = T), source)
+source("../FlowCT.v2_gitControl/load_libraries_onlyTesting.R")
 
 ## Working directory
 setwd("G:/Mi unidad/Proyectos/FlowCT_Ciro/FlowCT.v2/results/")
-# sapply(grep(list.files(path = "../src/", full.names = T), pattern = 'script|README|loading|old', inv = T, value = T), source)
 
 ### unify all FCS nomenclatures ##########################################################
 # unify.FCSheaders(directory = "../data/", pattern = "fcs", fix = F) #bug: update data.table::melt ---> done
@@ -96,9 +98,11 @@ dr.plotting(fcs1000, plot.dr = "PCA", color.by = "SOM", facet.by = "condition")
 export.metaFCS(fcs.SCE = fcs1000, output.name = "hola")
 export.metaFCS(fcs.SCE = fcs1000, separate.fcs = T, output.suffix = "s")
 
-# ++++++++++++++++++++++++++++
-# external step >>> manual analysis in a flow cytometry software to identify clusters >>> Excel file
-# ++++++++++++++++++++++++++++
+## External analysis (flow software) or...
+## ...dotplots
+flowplot(fcs, x.axis = c("FSC_A", "CD4", "CD62L"), y.axis = c("SSC_A", "CD8", "CD45"),
+         color.by = "SOM", densities = T)
+
 
 ## rename and merge clusters according external analysis
 replacedata <- readxl::read_excel("../data/Th_new_clustering.xlsx", col_types = "text")
