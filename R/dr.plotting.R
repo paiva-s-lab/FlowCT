@@ -10,7 +10,7 @@
 #' @param omit.markers Vector with markers to omit when plotting with \code{color.by = "expression"}. Default = \code{NULL}.
 #' @param title Title to add to the plot.
 #' @param label.by Variable from (from \code{colData(fcs.SCE)}) for dots labeling. Default = \code{NULL}.
-#' @param size Point size. Default = \code{0.5}.
+#' @param size Point size. Default = \code{1}.
 #' @param raster Vector indicating if image should be rasterized (logical element) and the number of pixels to consider (numerical element). It is based on \href{https://github.com/exaexa/scattermore}{\code{scattermore} package}. Default = \code{c(FALSE, 1000)}.
 #' @param return.df Logical indicating if built \code{data.frame} with DR information and metadata must be returned. Default = \code{FALSE}.
 #' @keywords dimensional reduction plotting
@@ -35,43 +35,43 @@ dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), co
     if(is.na(match(tolower(plot.dr), tolower(names(data@int_colData@listData$reducedDims))))) stop('Please, indicate one previously DR calculated: PCA, tSNE or UMAP.\n', call. = F)
     dr_calculated <- match(tolower(plot.dr), tolower(names(data@int_colData@listData$reducedDims)))
     dr <- data@int_colData@listData$reducedDims@listData[[dr_calculated]][,dims]
-    
+
     no.omit.markers <- rownames(data)[!(rownames(data) %in% omit.markers)]
     drmd <- as.data.frame(cbind(colData(data), dr, t(assay(data, i = assay.i))[,no.omit.markers]))
   }else{
     drmd <- data
   }
-  
+
   if(color.by == "expression") drmd <- as.data.frame(melt(as.data.table(drmd), measure.vars = no.omit.markers, value.name = "expression", variable.name = "antigen"))
 
   g <- ggplot(drmd, aes_string(x = paste0(tolower(plot.dr), dims[1]), y = paste0(tolower(plot.dr), dims[2]), color = color.by)) +
-    xlab(paste0(toupper(plot.dr), 1)) + ylab(paste0(toupper(plot.dr), 2)) + ggtitle(title) + 
+    xlab(paste0(toupper(plot.dr), 1)) + ylab(paste0(toupper(plot.dr), 2)) + ggtitle(title) +
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
           panel.background = element_blank(), panel.border = element_rect(color = "black", fill = NA))
-  
+
   if(raster[1]){
     g <- g + geom_scattermore(pointsize = size, pixels = rep(raster[2], 2)) #devtools::install_github('exaexa/scattermore')
   }else{
     g <- g + geom_point(aes_string(color = color.by), size = size)
   }
-  
+
   if(is.numeric(drmd[,color.by])){
     g <- g + scale_color_gradientn(colours = colorRampPalette(rev(brewer.pal(n = 11, name = "Spectral")))(50), name = color.by)
   }else{
     g <- g + scale_color_manual(values = div.colors(length(unique(drmd[,color.by]))), name = color.by) +
       guides(color = guide_legend(override.aes = list(size = 4), ncol = 2))
   }
-  
+
   if(!is.null(facet.by)){
     g <- g + facet_wrap(~ eval(parse(text = facet.by)))
   }else if(color.by == "expression" & is.null(facet.by)){
     g <- g + facet_wrap(~ antigen)
   }
-  
+
   if(!is.null(label.by)){
     g <- g + geom_text(aes_string(label = label.by), nudge_y = 0.05)
   }
-  
+
   print(g)
   if(return.df) return(drmd)
 }

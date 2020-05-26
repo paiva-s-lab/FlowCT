@@ -26,7 +26,7 @@ dr.plotting(data, assay.i = "normalized", plot.dr, dims = c(1, 2),
 
 \item{label.by}{Variable from (from \code{colData(fcs.SCE)}) for dots labeling. Default = \code{NULL}.}
 
-\item{size}{Point size. Default = \code{0.5}.}
+\item{size}{Point size. Default = \code{1}.}
 
 \item{raster}{Vector indicating if image should be rasterized (logical element) and the number of pixels to consider (numerical element). It is based on \href{https://github.com/exaexa/scattermore}{\code{scattermore} package}. Default = \code{c(TRUE, 1000)}.}
 
