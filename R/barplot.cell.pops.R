@@ -30,12 +30,10 @@ barplot.cell.pops <- function(fcs.SCE, assay.i = "normalized", cell.clusters, pl
   colors_palette <- div.colors(length(unique(cell.clusters)))
   
   counts_table <- table(cell.clusters, metadata[,count.by])
-  prop_table <- prop.table(counts_table, margin = 2)*100
+  ggdf <- as.data.frame(as.data.table(prop.table(counts_table, margin = 2)*100))
+  colnames(ggdf) <- c("cell.clusters", count.by, "proportion")
   
   if(plot){
-    ggdf <- melt(as.data.table(prop_table), value.name = "proportion")
-    colnames(ggdf)[2] <- count.by
-    
     mm <- match(ggdf[,count.by], metadata[,count.by]) #add other infos
     ggdf <- data.frame(metadata[mm,], ggdf)
     
@@ -46,8 +44,9 @@ barplot.cell.pops <- function(fcs.SCE, assay.i = "normalized", cell.clusters, pl
       scale_fill_manual(values = colors_palette)
     if(is.null(facet.by)) print(g) else print(g + facet_wrap(~ eval(parse(text = facet.by)), scales = "free_x"))
   }
+  
   if(return.mode == "percentage"){
-    return(prop_table)
+    return(prop.table(counts_table, margin = 2)*100)
   }else if(return.mode == "counts"){
     return(counts_table)
   }else{
