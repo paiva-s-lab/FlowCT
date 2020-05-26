@@ -1,4 +1,6 @@
 #' div.colors
+#' @export
+
 div.colors <- function(n, set.seed = 333){
   require(RColorBrewer)
   
