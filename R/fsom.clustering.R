@@ -13,6 +13,7 @@
 #' @export
 #' @import FlowSOM
 #' @importFrom ConsensusClusterPlus ConsensusClusterPlus
+#' @importFrom scales alpha
 #' @examples
 #' \dontrun{
 #' fsom <- fsom.clustering(fcs.SCE = fcs, markers.to.use = c("CD8", "CD27", "CCR4", "CD45RA", "CD4"), k.metaclustering = 20)
@@ -59,7 +60,7 @@ fsom.clustering <- function(fcs.SCE, assay.i = "normalized", markers.to.use = "a
       if(markers.to.plot == "tree"){
         PlotStars(fsom)
       }else if(markers.to.plot == "tree_metaclustering"){
-        PlotStars(fsom, backgroundValues = code_clustering1, backgroundColor = alpha(div.colors(length(code_clustering1)), alpha = 0.7))
+        PlotStars(fsom, backgroundValues = code_clustering1, backgroundColor = alpha(div.colors(length(code_clustering1)), alpha = 0.7), starBg = NULL)
       }else{
         for(marker in markers.to.plot) PlotMarker(fsom, marker)
       }
