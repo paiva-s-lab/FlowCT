@@ -1,5 +1,5 @@
 ## INFORMATION ##########################################################################
-# FlowCT version ---> 2.1
+# FlowCT version ---> 2.2
 # backbone script version ---> 1.1
 #### Changes:
 # -> Migrate from SummarizedExperiment to SingleCellExperiment
@@ -7,23 +7,20 @@
 
 ### Environment setting ##################################################################
 ## Load packages and functions
-Sys.setenv(http_proxy  = "http://proxy.unav.es:8080")
-Sys.setenv(https_proxy = "http://proxy.unav.es:8080")
-devtools::install_github("jgarces02/FlowCT@devel", auth_token = "21ea9880f944d42755479e54a5b19ddd00fe17f6")
-
+# Sys.setenv(http_proxy  = "http://proxy.unav.es:8080")
+# Sys.setenv(https_proxy = "http://proxy.unav.es:8080")
+# devtools::install_github("jgarces02/FlowCT@devel", auth_token = "21ea9880f944d42755479e54a5b19ddd00fe17f6")
 library(FlowCT.v2)
-library(SingleCellExperiment)
-library(SummarizedExperiment)
 
 ## Working directory
 setwd("G:/Mi unidad/Proyectos/FlowCT_Ciro/FlowCT.v2/results/")
-sapply(grep(list.files(path = "../src/", full.names = T), pattern = 'script|README|loading|old', inv = T, value = T), source)
+# sapply(grep(list.files(path = "../src/", full.names = T), pattern = 'script|README|loading|old', inv = T, value = T), source)
 
 ### unify all FCS nomenclatures ##########################################################
-# unify.FCSheaders(directory = "../data/", pattern = "fcs", fix = F) #bug: update data.table::melt
-# unify.FCSheaders(directory = "../data/", pattern = "fcs", fix = T, select.freq = 2)##########
+# unify.FCSheaders(directory = "../data/", pattern = "fcs", fix = F) #bug: update data.table::melt ---> done
+# unify.FCSheaders(directory = "../data/", pattern = "fcs", fix = T, select.freq = 2)
 
-### Prepare metadata and fcs.SCE object #########################################
+### Prepare metadata and fcs.SCE object ##################################################
 (filenames <- list.files(pattern = "fcs", path = "../data/"))
 
 md <- data.frame(filename = filenames, #mandatory
@@ -33,8 +30,8 @@ md <- data.frame(filename = filenames, #mandatory
 (md)
 
 ## FCS reading and transforming
-system.time(fcs <- fcs.SCE(directory = "../data/", pattern = "fcs", events = 10000, metadata = md, 
-                             transf.cofactor = 500, project.name = "paired"))
+system.time(fcs <- fcs.SCE(directory = "../data/", pattern = "fcs", events = 1000, metadata = md,
+                           transf.cofactor = 500, project.name = "paired"))
 
 ## adjust maker names
 marker.names(fcs)
@@ -47,14 +44,15 @@ physical_markers <- c("FSC_A", "SSC_A")
 
 
 ### QC and doublets removal ##############################################################
-fcs <- qc.and.removeDoublets(fcs, physical.markers = c("FSC_A", "FSC_H", "SSC_A", "SSC_H"), return.fcs = F)
+fcs <- qc.and.removeDoublets(fcs, physical.markers = c("FSC_A", "FSC_H", "SSC_A", "SSC_H"),
+                             return.fcs = F)
 
 
 ### Normalization and data alignment #####################################################
-multidensity(fcs.SCE = fcs, assay.i = "transformed", subsampling = 1000)
+multidensity(fcs.SCE = fcs, assay.i = "transformed", subsampling = 100)
 
-fcs <- gauss.norm(fcs.SCE = fcs, marker.to.norm = c("CD62L", "CCR4", "SSC_A")) #bug: compilation error
-# names(fcs.SCE@assays) <- c("raw", "normalized")
+fcs <- normalization.flw(fcs.SCE = fcs, marker.to.norm = c("CCR6", "CCR4"),
+                         norm.method = "warp")
 
 multidensity(fcs.SCE = fcs, assay.i = "normalized", subsampling = 1000)
 multidensity(fcs, assay.i = 2, ridgeline.lim = 10, color.by = "filename",
@@ -73,14 +71,14 @@ median.heatmap(fcs, not.metadata = c("sample_id", "filename"))
 fcs100 <- sub.samples(fcs.SCE = fcs, subsampling = 100)
 
 fcs100 <- dim.reduction(fcs100, dr.method = c("tSNE", "pca"))
-dr.plotting(fcs100, plot.dr = "tsne", color.by = "condition") #bug: install scattermore
+dr.plotting(fcs100, plot.dr = "tsne", color.by = "condition") #bug: install scattermore ---> done
 
-sc.heatmap(fcs100, subsampling = 100, markers.to.use = surface_markers) #bug: Floating point exception (???) ---> RAM?
+sc.heatmap(fcs100, subsampling = 100, markers.to.use = surface_markers) #bug: Floating point exception (???) ---> done!
 
 
 ### Clustering ###########################################################################
 ## FlowSOM
-fsom <- fsom.clustering(fcs.SCE = fcs, markers.to.use = surface_markers, k.metaclustering = 40, 
+fsom <- fsom.clustering(fcs.SCE = fcs, markers.to.use = surface_markers, k.metaclustering = 40,
                         markers.to.plot = "tree_metaclustering") #bug: it's calculating clustering with a fcs.SCE incorrectly generated (w/o "normalized" assay) > why?? It must bring error!
 fcs$SOM <- fsom$metaclusters
 
@@ -107,22 +105,22 @@ export.metaFCS(fcs.SCE = fcs1000, separate.fcs = T, output.suffix = "s")
 ## rename and merge clusters according external analysis
 replacedata <- readxl::read_excel("../data/Th_new_clustering.xlsx", col_types = "text")
 
+fcs$SOM_named <- clusters.rename(fcs$SOM, cluster = replacedata$original_cluster, name = replacedata$new_cluster)
 fcs1000$SOM_named <- clusters.rename(fcs1000$SOM, cluster = replacedata$original_cluster, name = replacedata$new_cluster)
 fsom$plotStars_value_named <- clusters.rename(fsom$plotStars_value, cluster = replacedata$original_cluster, name = replacedata$new_cluster)
 
 ## draw PCA, tSNE, MST and heatmap colored by new merged clusters
 dr.plotting(fcs1000, plot.dr = "UMAP", color.by = "SOM_named")
 
-PlotStars(fsom$fsom, backgroundValues = fsom$plotStars_value_named,  
-          backgroundColor = alpha(div.colors(40), alpha = 0.4))
+PlotStars(fsom$fsom, backgroundValues = fsom$plotStars_value_named,
+          backgroundColor = alpha(div.colors(40), alpha = 0.4), starBg = NULL)
 
 median.heatmap(fcs.SCE = fcs1000, assay.i = "normalized", cell.clusters = fcs1000$SOM_named)
 
 
 ### Subclustering ########################################################################
 ## prepare fcs.SCE object
-fcsL <- fcs1000[,fcs1000$SOM_named == "lymphocytes"]
-metadata(fcsL)$subclustering <- "lymphocytes"
+fcsL <- fcs[,fcs$SOM_named == "lymphocytes"]
 
 ## exploratory analysis
 cell.count.bx(fcsL, assay.i = "normalized", x.axis = "condition")
@@ -136,7 +134,7 @@ fcsL$SOM_L <- fsomL$metaclusters
 median.heatmap(fcs.SCE = fcsL, assay.i = "normalized", cell.clusters = fcsL$SOM_L)
 
 ## DR
-fcs.SCEL <- dim.reduction(fcsL, dr.method = c("tsne", "pca", "umap"), markers.to.use = surface_markers)
+fcsL <- dim.reduction(fcsL, dr.method = c("tsne", "pca", "umap"), markers.to.use = surface_markers)
 
 dr.plotting(fcsL, plot.dr = "Umap")
 dr.plotting(fcsL, plot.dr = "tSNE", color.by = "SOM_L")
@@ -157,14 +155,14 @@ fsomL$plotStars_value_named <- clusters.rename(fsomL$plotStars_value, cluster = 
 ## draw PCA, tSNE, MST and heatmap colored by new merged clusters
 dr.plotting(fcsL, plot.dr = "tSNE", color.by = "SOM_L_named")
 
-PlotStars(fsomL$fsom, backgroundValues = fsomL$plotStars_value_named,  
-          backgroundColor = alpha(div.colors(40), alpha = 0.4))
+PlotStars(fsomL$fsom, backgroundValues = fsomL$plotStars_value_named,
+          backgroundColor = alpha(div.colors(40), alpha = 0.4), starBg = NULL)
 
 median.heatmap(fcs.SCE = fcsL, assay.i = "normalized", cell.clusters = fcsL$SOM_L_named)
 
 ## Circular hyerarchical clustering tree
 circ.tree(fcs.SCE = fcsL, cell.clusters = fcsL$SOM_L_named, nodes = "display")
-circ.tree(fcs.SCE = fcsL, cell.clusters = fcsL$SOM_L_named, nodes = c(29, 37), scale.size = 11)
+circ.tree(fcs.SCE = fcsL, cell.clusters = fcsL$SOM_L_named, nodes = c(29, 37))
 
 ## heatmap for single cells
 sc.heatmap(fcsL, assay.i = "normalized", not.metadata = c("cell_ID", "filename", "SOM", "SOM_named", "SOM_L"))
@@ -183,14 +181,14 @@ fcsL_rm <- remove.pop(fcsL, clusters.named = "SOM_L_named", population = delete_
 
 ## combine clustering and subclustering
 fcs_final <- combine.subclusterings(initial.fcs.SCE = fcs1000, clusters.named = "SOM_named",
-                                       subclustering.fcs.SCE = list(fcsL_rm))
+                                    subclustering.fcs.SCE = list(fcsL_rm))
 
 ## final FCS files with named clusters and DR info
 export.metaFCS(fcs.SCE = fcs_final, output.name = "prueba_final4C.fcs")
 
 ## cellular proportions (or raw counts)
-prop_tableL <- barplot.cell.pops(fcs.SCE = fcs_final, cell.clusters = fcs_final$SOM_named_final, 
-                                 count.by = "sample_id", facet.by = "condition", 
+prop_tableL <- barplot.cell.pops(fcs.SCE = fcs_final, cell.clusters = fcs_final$SOM_named_final,
+                                 count.by = "sample_id", facet.by = "condition",
                                  return.mode = "percentage")
 
 dataset <- data.frame(md, as.data.frame.matrix(t(prop_tableL)))
@@ -204,10 +202,10 @@ write.table(dataset2, file = "results_median.txt", sep = "\t")
 
 ### statistics ###########################################################################
 ## Correlation between (two) conditions
-corplot.conditions(fcs.SCE = fcsL, cell.clusters = fcsL$SOM_L_named, 
+corplot.conditions(fcs.SCE = fcsL, cell.clusters = fcsL$SOM_L_named,
                    condition.column = "condition")
 
-corplot.conditions(fcs.SCE = fcs_final, cell.clusters = fcs_final$SOM_named_final, 
+corplot.conditions(fcs.SCE = fcs_final, cell.clusters = fcs_final$SOM_named_final,
                    condition.column = "condition")
 
 ## boxplot
@@ -217,9 +215,9 @@ sig <- boxplot.cell.clustering(fcs.SCE = fcs_final, cell.clusters = fcs_final$SO
                                return.stats = T)
 
 ## Dumbbell plot
-dumbPlot.cell.clustering(fcs.SCE = fcs_final, cell.clusters = fcs_final$SOM_named_final, 
+dumbPlot.cell.clustering(fcs.SCE = fcs_final, cell.clusters = fcs_final$SOM_named_final,
                          return.stats = F, condition.column = "condition")
 
 ## diffdots plot
-diffdots.cell.clustering(fcs.SCE = fcs_final, cell.clusters = fcs_final$SOM_named_final, 
+diffdots.cell.clustering(fcs.SCE = fcs_final, cell.clusters = fcs_final$SOM_named_final,
                          return.stats = F, condition.column = "condition")
