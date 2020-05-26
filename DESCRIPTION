@@ -11,5 +11,5 @@ License: CC0
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
-Depends: R (>= 2.10), SingleCellExperiment (>= 1.10.1), flowCore (>= 2.0.0), FlowSOM (>= 1.20.0), premessa (>= 0.2.6), flowStats (>= 4.0.0), ggplot
+Depends: R (>= 2.10), SingleCellExperiment (>= 1.10.1), flowCore (>= 2.0.0), FlowSOM (>= 1.20.0), premessa (>= 0.2.6), flowStats (>= 4.0.0), ggplot2
 Imports: Rtsne, uwot, ggrepel
