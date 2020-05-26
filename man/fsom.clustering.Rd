@@ -13,6 +13,8 @@ fsom.clustering(fcs.SCE, assay.i = "normalized",
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate SOM clustering. Default = \code{"normalized"}.}
 
+\item{scale}{Should be data be scale before FSOM clustering?. Default = \code{"TRUE"}.}
+
 \item{markers.to.use}{Markers used for the clustering calculation. Default = \code{"all"}.}
 
 \item{markers.to.plot}{Markers to plot in the final minimum spanning tree (MST). Posible values are \code{NULL} (no plotting), \code{"tree"} (plotting a general MST with all identified clusters), \code{"tree_metaclustering"} (plotting a general MST but colored by metaclustering results) or a vector with markers (and it draws multiple MSTs for each marker indicated).}
