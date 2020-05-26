@@ -20,7 +20,7 @@ combine.subclusterings <- function(initial.fcs.SCE, subclustering.fcs.SCE, clust
   subclusterings <- c()
   rm.cells <- list()
   for(i in subclustering.fcs.SCE){
-    subclusterings <- c(subclusterings, i@metadata$subclustering)
+    sub_pop <- unique(i[[clusters.named]])
     
     md_sub <- colData(i)
     
@@ -31,7 +31,7 @@ combine.subclusterings <- function(initial.fcs.SCE, subclustering.fcs.SCE, clust
     md_sub[,diff2] <- NA
     
     # extract those subclustered samples from original fcs.SCE object
-    mdg <- rbind(mdg[mdg[,clusters.named] != i@metadata$subclustering,], md_sub)
+    mdg <- rbind(mdg[mdg[[clusters.named]] != sub_pop,], md_sub)
     
     # delete removed populations from the (i)th subclustering within the first fcs.SCE object
     if(!is.null(i@metadata$removed_populations)){
