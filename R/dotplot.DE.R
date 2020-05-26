@@ -26,7 +26,7 @@ dotplot.DE <- function(fcs.SCE, assay.i = "normalized", clusters.named = "SOM_na
   dt <- data.frame()
   for(i in unique(fcs.SCE[[clusters.named]])){
     aux_se <- fcs.SCE[,fcs.SCE[[clusters.named]] == i]
-    dt <- rbind(dt, data.frame(t(assay(aux_se, i = assay.i)[markers.to.use2,]), pop = i))
+    dt <- rbind(dt, data.frame(t(assay(aux_se, i = assay.i)[markers.to.use,]), pop = i))
   }
   dtm <- melt(as.data.table(dt))
   

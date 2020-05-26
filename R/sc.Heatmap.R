@@ -30,7 +30,7 @@ sc.heatmap <- function(fcs.SCE, assay.i = "normalized", markers.to.use = "all", 
     
   annot_col <- col.annot.pheatmap(metadata[,!(colnames(metadata) %in% not.metadata)])
 
-  pheatmap(data[markers.to.use2,], 
+  pheatmap(data[markers.to.use,], 
            annotation_col = metadata[,!(colnames(metadata) %in% not.metadata)], 
            annotation_colors = annot_col, 
            color = color, display_numbers = FALSE, 

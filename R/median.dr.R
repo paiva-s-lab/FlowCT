@@ -32,7 +32,7 @@ median.dr <- function(fcs.SCE, assay.i = "normalized", markers.to.use = "all", d
   ## dr
   if(!is.null(dr.method)){
     if(grepl("PCA|tSNE|UMAP", dr.method)){
-      invisible(capture.output(dr <- dim.reduction(med, dr.method = dr.method, markers.to.use = markers.to.use2, 
+      invisible(capture.output(dr <- dim.reduction(med, dr.method = dr.method, markers.to.use = markers.to.use, 
                           perplexity.tsne = perplexity.tsne, n.neighbors.umap = n.neighbors.umap)))
       
       ## plotting
