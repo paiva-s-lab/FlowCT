@@ -23,7 +23,7 @@
 sc.heatmap <- function(fcs.SCE, assay.i = "normalized", markers.to.use = "all", not.metadata = c("filename", "cell_id", "sample_id"), 
                        clustering.method = "average", subsampling = 100, color = NULL){
   if(!is.null(subsampling)) suppressMessages(fcs.SCE <- sub.samples(fcs.SCE, subsampling = subsampling))
-  if(markers.to.use == "all") markers.to.use2 <- rownames(fcs.SCE) else markers.to.use2 <- markers.to.use
+  if(length(markers.to.use) == 1 && markers.to.use == "all") markers.to.use <- rownames(fcs.SCE)
   if(is.null(color)) color <- colorRampPalette(brewer.pal(n = 9, name = "YlGnBu"))(100)
   data <- assay(fcs.SCE, i = assay.i)
   metadata <- as.data.frame(colData(fcs.SCE))

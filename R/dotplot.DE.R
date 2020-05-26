@@ -21,7 +21,7 @@
 #' }
 
 dotplot.DE <- function(fcs.SCE, assay.i = "normalized", clusters.named = "SOM_named", markers.to.use = "all", psig.cutoff = 0.05, return.stats = F, scale.size = 9){
-  if(markers.to.use == "all") markers.to.use2 <- rownames(fcs.SCE) else markers.to.use2 <- markers.to.use
+  if(length(markers.to.use) == 1 && markers.to.use == "all") markers.to.use <- rownames(fcs.SCE)
   
   dt <- data.frame()
   for(i in unique(fcs.SCE[[clusters.named]])){

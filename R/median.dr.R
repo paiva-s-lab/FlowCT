@@ -24,7 +24,7 @@ median.dr <- function(fcs.SCE, assay.i = "normalized", markers.to.use = "all", d
   data <- t(assay(fcs.SCE, i = assay.i))
   metadata <- fcs.SCE@metadata$reduced_metadata
   
-  if(markers.to.use == "all") markers.to.use2 <- colnames(data) else markers.to.use2 <- markers.to.use
+  if(length(markers.to.use) == 1 && markers.to.use == "all") markers.to.use <- colnames(data)
   
   ## prepare median tables
   med <- median.values(fcs.SCE, assay.i = assay.i)

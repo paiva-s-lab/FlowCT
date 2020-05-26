@@ -23,7 +23,6 @@ fsom.clustering <- function(fcs.SCE, assay.i = "normalized", markers.to.use = "a
   set.seed(333)
   
   data <- as.flowSet.SE(fcs.SCE, assay.i)
-  # if(markers.to.use == "all") markers.to.use2 <- rownames(fcs.SCE) else markers.to.use2 <- markers.to.use
   if(length(markers.to.use) == 1 && markers.to.use == "all") markers.to.use <- rownames(data)
 
   ## FSOM clustering
