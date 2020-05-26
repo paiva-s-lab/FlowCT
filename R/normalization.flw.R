@@ -25,10 +25,10 @@ normalization.flw <- function(fcs.SCE, assay.i = "transformed", marker.to.norm, 
     for(i in marker.to.norm){
       cat("Applying normalization to:", i, "\n")
       tryCatch(
-        {invisible(capture.output(data <- gaussNorm(fcs, i, peak.density.thr = 0.001)$flowset))},
+        {invisible(capture.output(data <- gaussNorm(fcs, i, peak.density.thr = 0.001)))},
         error = function(e){
           message(paste0(" !Normalization adjusted to [1] landmark for this marker (", i, ")"))
-          invisible(capture.output(data <- gaussNorm(fcs, i, peak.density.thr = 0.001, max.lms = 1)$flowset))
+          invisible(capture.output(data <- gaussNorm(fcs, i, peak.density.thr = 0.001, max.lms = 1)))
           # return(data)
         }
       )
@@ -36,7 +36,7 @@ normalization.flw <- function(fcs.SCE, assay.i = "transformed", marker.to.norm, 
   }else if(norm.method == "warp"){
     for(i in marker.to.norm){
       cat("Applying normalization to:", i, "\n")
-      invisible(capture.output(data <- warpSet(fcs, i, clipRange = 0.5)$flowset))
+      invisible(capture.output(data <- warpSet(fcs, i)))
     }
   }else{
     cat("Please, indicate a valid normalization method: 'gauss' or 'warp'.")
