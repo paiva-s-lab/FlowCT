@@ -6,7 +6,7 @@
 #' @param y.axis Vector of markers to draw y-axis on the dotplots. Length must be the same of \code{x.axis} because each marker has its parter in \code{x.axis}.
 #' @param densities Logical indicating if densities must be drawn in each plot. Default = \code{TRUE}.
 #' @param color.by Variable from (from \code{colData(fcs.SCE)}) for events coloring.
-#' @param select.values.color Vector of values taken from \code{color.by} option to include in the coloring.
+#' @param select.values.color Vector of values taken from \code{color.by} option to include in the coloring. Default = \code{"all"}.
 #' @param size Point (event) size. Default = \code{0.5}.
 #' @param colors Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).
 #' @keywords scatterplot
