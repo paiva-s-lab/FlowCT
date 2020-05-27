@@ -1,4 +1,4 @@
-# 'median.values
+#' Obtain median values
 #'
 #' It calculates median values according a specfied variable, normaly "filename".
 #' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.

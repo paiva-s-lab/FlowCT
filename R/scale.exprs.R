@@ -1,4 +1,4 @@
-#' scale.exprs
+#' Scale expression
 #'
 #' It scales a matrix expression and fit all values to a range from 0 to 1.
 #' @param data A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}} or a expression table with events in rows and markers in columns.

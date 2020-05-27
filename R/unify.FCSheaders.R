@@ -1,4 +1,4 @@
-#' unify.FCSheaders 
+#' Unify all FCS header for multiple FCS
 #'
 #' It checks if FCS files within a specific folder, or indicated in a vector, have the same header (i.e., same channels nomenclature and order) and offer the possibility to unify them creating new ones.
 #' @param filelist A vector with full path of FCS files to be read, commonly generated through \code{\link[base:list.files]{base::list.files()}}. If \code{NULL}, this file list will be generated as indicated below.

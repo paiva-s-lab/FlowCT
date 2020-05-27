@@ -1,4 +1,4 @@
-#' fsom.clustering
+#' FSOM clustering and metaclustering
 #'
 #' This function calculates a Self-Organizing Map (SOM) clustering and a simultaneous metaclustering from a \code{fcs.SCE} object. For additional information go to \href{https://github.com/SofieVG/FlowSOM}{\code{FlowSOM} package}.
 #' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.

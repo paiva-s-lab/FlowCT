@@ -1,4 +1,4 @@
-#'gauss.norm
+#' Gaussian normalization (it will deprecated soon!)
 #'
 #' It performs a Gaussian normalization based on \code{\link[flowStats:gaussNorm]{flowStats::gaussNorm()}} function.
 #' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.

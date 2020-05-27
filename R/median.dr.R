@@ -1,4 +1,4 @@
-# 'median.dr
+#' Calculate a DR with median values
 #'
 #' This function draws a plot from internally calculated dimensional reduction (DR).
 #' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.

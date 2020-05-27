@@ -1,4 +1,4 @@
-#' div.colors
+#' Create a palette of colors
 #' @export
 
 div.colors <- function(n){

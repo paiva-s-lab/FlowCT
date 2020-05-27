@@ -1,4 +1,4 @@
-# 'dumbPlot.cell.clustering
+#' Dumbbell plot with clusters
 #'
 #' It draws a Dumbbell plot according condition for each cell cluster identified.
 #' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.

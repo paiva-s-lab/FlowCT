@@ -1,4 +1,4 @@
-#' median.heatmap
+#' Heatmap from median expression values
 #'
 #' This function draws a heatmap with median values for each FCS file or for identified cluster with \code{\link[FlowCT.v2:fsom.clustering]{FlowCT.v2::fsom.clustering()}}
 #' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.

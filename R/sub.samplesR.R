@@ -1,4 +1,4 @@
-#' sub.samples
+#' Reduce the nummber of events of a \code{fcs.SCE} object
 #'
 #' It generates reduce randomly the number of events of a fcs.SCE object (it computes this reduction for each FCS file separatelly inside this object). It can generate a new reduced \code{fcs.SCE} object or a simple index position for removing events.
 #' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.

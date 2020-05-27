@@ -1,4 +1,4 @@
-#' circ.tree
+#' Circular dendrogram tree
 #'
 #' This function plots a circular dendrogram and a heatmap according a \code{fcs.SCE}. Every leaf has a different colored point size regarding the cell type and the frequency for each cluster.
 #' For additional information go to \href{https://guangchuangyu.github.io/software/ggtree/documentation/}{\code{ggtree} package}.

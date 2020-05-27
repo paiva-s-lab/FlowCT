@@ -1,4 +1,4 @@
-#' col.annot.pheatmap
+#' Create a palette of colors suitable for doing a heatmap
 #' @export
 
 col.annot.pheatmap <- function(metadata, colors = NULL){

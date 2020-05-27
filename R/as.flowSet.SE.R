@@ -1,4 +1,4 @@
-#'as.flowSet.SE
+#' Transform a \code{fcs.SCE} object into a \code{flowset} object
 #'
 #' It tranforms a \code{fcs.SCE} object into a \href{https://www.rdocumentation.org/packages/flowCore/versions/1.38.2/topics/flowSet-class}{\code{flowset}} object.
 #' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.

@@ -1,4 +1,4 @@
-# 'remove.pop
+#' Delete a population from a \code{fcs.SCE} object
 #'
 #' It removes one or multiple cell populations from a \code{fcs.SCE} object.
 #' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.

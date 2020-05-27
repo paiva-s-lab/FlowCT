@@ -1,4 +1,4 @@
-# 'sc.Heatmap
+#' Heatmap at event-level
 #'
 #' This function draws a heatmap with single-cell fluorescence values.
 #' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.

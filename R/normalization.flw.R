@@ -1,4 +1,4 @@
-#'normalization.flw
+#' Normalization for markers' expression
 #'
 #' It normalizes expression abnormalities within selected markers.
 #' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.

@@ -1,4 +1,4 @@
-# 'clusters.rename
+#' Rename clusters from numeric to cell name
 #'
 #' It renames the numerical clusters detected through \code{\link[FlowCT.v2:fsom.clustering]{FlowCT.v2::fsom.clustering()}} to specific cell populations identified by flow cytometry user.
 #' @param x Vector with numeric values corresponding to clusters detected with \code{\link[FlowCT.v2:fsom.clustering]{FlowCT.v2::fsom.clustering()}}.

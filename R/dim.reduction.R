@@ -1,4 +1,4 @@
-#' dim.reduction
+#' Calculate dimensional reductions
 #'
 #' It calculates a dimensional reduction (DR) from a \code{fcs.SCE} object (or an expression table). Three different DR methods are available: Principal Component Analsis (PCA), t-Distributed Stochastic Neighbor Embedding (t-SNE) and  Uniform Manifold Approximation and Projection (UMAP).
 #' @param data A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}} or a expression table with events in rows and markers in columns.

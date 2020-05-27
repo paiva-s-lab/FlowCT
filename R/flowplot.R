@@ -1,4 +1,4 @@
-# 'flowplot
+#' Draw expression dotplots
 #'
 #' It draws the classical flow cytometry dotplot faceting two markers. Multiple dot plots can be plotted if \code{x.axis} and \code{y.axis} are specified with multiple markers.
 #' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}. By default, the matrix used is the \code{arcsinh} transformed.

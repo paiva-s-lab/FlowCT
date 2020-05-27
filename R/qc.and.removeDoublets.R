@@ -1,4 +1,4 @@
-#' qc.and.removeDoublets
+#' Perform quality control and remove doublets
 #'
 #' This function performs a quality control based on a double-step procedure in all FCS files contained within a \code{fcs.SCE} object or a folder specified by user:\enumerate{
 #'    \item It executes a quality control based in \href{http://bioconductor.org/packages/release/bioc/vignettes/flowAI/inst/doc/flowAI.html}{\code{flowAI::flow_auto_qc()}},

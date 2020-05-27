@@ -1,4 +1,4 @@
-#' cor.plot.conditions
+#' Draw a correlation heatmap between two conditions
 #'
 #' It draws a correlation plot (between two specified conditions within a \code{fcs.SCE} object.
 #' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.

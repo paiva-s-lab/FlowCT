@@ -1,4 +1,4 @@
-# 'marker.names
+#' Show and change markers names
 #'
 #' It shows marker names of a \code{fcs.SCE} object and renames them accordin a new vector provided by the user.
 #' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.

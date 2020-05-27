@@ -1,4 +1,4 @@
-# 'dotplot.DE
+#' Differential expression plot to identify populations within clusters
 #'
 #' It draws dotplot for each cell cluster identified and each marker to facilitate identification of cell populations in each cell cluster.
 #' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.

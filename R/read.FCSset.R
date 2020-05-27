@@ -1,4 +1,4 @@
-#' read.FCSset
+#' Load multiple FCS files
 #'
 #' It reads multiple FCS files (in a computationaly-distributed way) contained in a specific folder or given through a vector.
 #' @param filelist A vector with full path of FCS files to be read, commonly generated through \code{\link[base:list.files]{base::list.files()}}. If \code{NULL}, this file list will be generated as indicated below.

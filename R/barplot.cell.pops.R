@@ -1,4 +1,4 @@
-#' barplot.cell.pops
+#' Stacked barplot with cell clusters
 #'
 #' This function calculates cluster proportions (or raw counts) for each identified cluster and plot them on a stacked barplot.
 #' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.

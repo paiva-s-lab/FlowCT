@@ -1,4 +1,4 @@
-#' cell.count.bx
+#' Boxplot according according metadata
 #'
 #' This function draws a boxplot according to the cell count for a specified condition.
 #' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.

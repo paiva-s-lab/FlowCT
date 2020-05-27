@@ -1,4 +1,4 @@
-# 'boxplot.cell.clustering
+#' Boxplots for identified clusters
 #'
 #' It draws a boxplot with cell clusters identified through \code{\link[FlowCT.v2:fsom.clustering]{FlowCT.v2::fsom.clustering()}}.
 #' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.
