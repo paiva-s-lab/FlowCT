@@ -15,6 +15,7 @@
 #' @param show.stats Significances should be added to boxplots? Default = \code{TRUE}.
 #' @param return.stats Logical indicating if calculated statistics should be returned in a new variable. Default = \code{TRUE}.
 #' @param plot.only.sig Vector indicating if only significant cell clusters should be displayed (logical element) and the P-value cutoff for selecting those ones (numerical element). Default = \code{c(FALSE, 0.05)}.
+#' @param colors Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).
 #' @keywords differential boxplot
 #' @keywords cell clusters distributions
 #' @export boxplot.cell.clustering
@@ -38,7 +39,7 @@
 boxplot.cell.clustering <- function(fcs.SCE, assay.i = "normalized", cell.clusters, condition.column = "condition", 
                                     pvalue.cutoffs = list(cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, 1), symbols = c("xxxx", "***", "**", "*", "ns")), 
                                     color.by = condition.column, geom.point = T, facet = F, facet.free.scale = "free_x", shape.by = NULL, y.limits = NULL,
-                                    show.stats = T, return.stats = T, plot.only.sig = c(F, 0.05)){
+                                    show.stats = T, return.stats = T, plot.only.sig = c(F, 0.05), colors = NULL){
   ## prepare tables
   prop_table <- as.data.frame.matrix(t(barplot.cell.pops(fcs.SCE = fcs.SCE, assay.i,
                                                          cell.clusters = cell.clusters, count.by = "filename", plot = F)))
@@ -58,7 +59,7 @@ boxplot.cell.clustering <- function(fcs.SCE, assay.i = "normalized", cell.cluste
   }
   
   ## plotting
-  colors_palette <- div.colors(length(unique(prop_table_md[,condition.column])), set.seed = 3)
+  if(is.null(colors)) colors <- div.colors(length(unique(prop_table_md[,condition.column])), set.seed = 3)
   
   if(plot.only.sig[1]){
     prop_table_mdm <- prop_table_mdm[prop_table_mdm$cell_cluster %in% KWsig,]
@@ -85,7 +86,7 @@ boxplot.cell.clustering <- function(fcs.SCE, assay.i = "normalized", cell.cluste
   
   if(show.stats) g <- g + stat_compare_means(label = "p.signif", symnum.args = pvalue.cutoffs)
   
-  print(g + scale_fill_manual(values = colors_palette) + scale_color_manual(values = colors_palette))
+  print(g + scale_fill_manual(values = colors) + scale_color_manual(values = colors))
   
   if(return.stats & length(unique(prop_table_md[,condition.column])) > 2){
     return(list(kruskal_results = resultskw, kw_posthoc_results = kw_posthoc))

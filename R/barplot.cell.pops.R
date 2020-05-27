@@ -8,6 +8,7 @@
 #' @param count.by Variable name (from \code{colData(fcs.SCE)}) for calculating proportions (or counts) and drawing the x-axis in the stacked bar plotting.
 #' @param facet.by Variable name (from \code{colData(fcs.SCE)}) for splitting the stacked bar plotting. Default = \code{NULL}.
 #' @param return.mode String for specifying if final resuls should be proportions ("percentage", default) or raw counts ("counts").
+#' @param colors Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).
 #' @keywords proportions
 #' @keywords barplot
 #' @export barplot.cell.pops
@@ -24,10 +25,10 @@
 #'     count.by = "condition", return.mode = "counts")
 #' }
 
-barplot.cell.pops <- function(fcs.SCE, assay.i = "normalized", cell.clusters, plot = T, count.by, facet.by = NULL, return.mode = "percentage"){
+barplot.cell.pops <- function(fcs.SCE, assay.i = "normalized", cell.clusters, plot = T, count.by, facet.by = NULL, return.mode = "percentage", colors = NULL){
   data <- t(assay(fcs.SCE, i = assay.i))
   metadata <- colData(fcs.SCE)
-  colors_palette <- div.colors(length(unique(cell.clusters)))
+  if(is.null(colors)) colors <- div.colors(length(unique(cell.clusters)))
   
   counts_table <- table(cell.clusters, metadata[,count.by])
   ggdf <- as.data.frame(as.data.table(prop.table(counts_table, margin = 2)*100))
@@ -41,7 +42,7 @@ barplot.cell.pops <- function(fcs.SCE, assay.i = "normalized", cell.clusters, pl
       geom_bar(stat = "identity") +
       theme_minimal() +
       theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-      scale_fill_manual(values = colors_palette)
+      scale_fill_manual(values = colors)
     if(is.null(facet.by)) print(g) else print(g + facet_wrap(~ eval(parse(text = facet.by)), scales = "free_x"))
   }
   

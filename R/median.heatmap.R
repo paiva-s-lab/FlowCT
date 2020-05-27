@@ -6,6 +6,7 @@
 #' @param cell.clusters A vector with clusters identified through \code{\link[FlowCT.v2:fsom.clustering]{FlowCT.v2::fsom.clustering()}} (and, normaly, later renamed). Default = \code{NULL} (i.e., median values will be calculated for each FCS file).
 #' @param markers.to.use Vector with markers to use. Default = \code{"all"}.
 #' @param not.metadata Vector with variable names (from \code{colData(fcs.SCE)}) for not including in the heatmap annotation. Default = \code{"filename"}.
+#' @param colors Vector with colors for plotting (if provided, it must be as long as the number of unique elements in the longer metadata field). Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).
 #' @keywords heatmap
 #' @keywords cell cluster percentages
 #' @keywords median expression values
@@ -24,7 +25,7 @@
 #' median.heatmap(fcs.SCE = fcs, assay.i = "normalized", cell.clusters = fcs$SOM)
 #' }
 
-median.heatmap <- function(fcs.SCE, assay.i = "normalized", cell.clusters = NULL, markers.to.use = "all", not.metadata = "filename"){
+median.heatmap <- function(fcs.SCE, assay.i = "normalized", cell.clusters = NULL, markers.to.use = "all", not.metadata = "filename", colors = NULL){
   data <- t(assay(fcs.SCE, i = assay.i))
   metadata <- fcs.SCE@metadata$reduced_metadata
   
@@ -43,7 +44,7 @@ median.heatmap <- function(fcs.SCE, assay.i = "normalized", cell.clusters = NULL
   
   ## heatmap
   if(is.null(cell.clusters)){
-    annotation_colors <- col.annot.pheatmap(metadata[,!(colnames(metadata) %in% not.metadata), drop = F])
+    annotation_colors <- col.annot.pheatmap(metadata[,!(colnames(metadata) %in% not.metadata), drop = F], colors = colors)
     color <- colorRampPalette(brewer.pal(n = 9, name = "YlGnBu"))(100)
     
     print(pheatmap(t(med[,markers.to.use]), color = color, display_numbers = FALSE,
@@ -66,7 +67,7 @@ median.heatmap <- function(fcs.SCE, assay.i = "normalized", cell.clusters = NULL
     ## annot colors
     annot_row <- expr_saturated_median[,"cell_clusters", drop = F]
     # rownames(annot_row) <- paste0("c.", rownames(annot_row)) #force rownames to not crash heatmap (??)
-    annotation_colors <- col.annot.pheatmap(expr_saturated_median[,"cell_clusters", drop = F])
+    annotation_colors <- col.annot.pheatmap(expr_saturated_median[,"cell_clusters", drop = F], colors = colors)
     color <- colorRampPalette(brewer.pal(n = 9, name = "YlGnBu"))(100)
     legend_breaks <- seq(from = 0, to = 1, by = 0.1)
     

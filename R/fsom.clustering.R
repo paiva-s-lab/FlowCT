@@ -8,6 +8,7 @@
 #' @param markers.to.plot Markers to plot in the final minimum spanning tree (MST). Posible values are \code{NULL} (no plotting), \code{"tree"} (plotting a general MST with all identified clusters), \code{"tree_metaclustering"} (plotting a general MST but colored by metaclustering results) or a vector with markers (and it draws multiple MSTs for each marker indicated).
 #' @param k.metaclustering Number of metaclusters to calculate in the metaclustering step. Default = \code{40}.
 #' @param metaclustering.name Name for PDF with metaclustering results (see \href{https://bioconductor.org/packages/release/bioc/vignettes/ConsensusClusterPlus/inst/doc/ConsensusClusterPlus.pdf}{\code{ConsensusClusterPlus} package} for interpretation help). Default = \code{NULL}.
+#' @param colors Vector with colors for plotting (only for \code{"tree_metaclustering"}). Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).
 #' @keywords SOM clustering
 #' @keywords SOM metaclustering
 #' @keywords minimum spanning tree MST
@@ -61,7 +62,8 @@ fsom.clustering <- function(fcs.SCE, assay.i = "normalized", scale = FALSE, mark
       if(markers.to.plot == "tree"){
         PlotStars(fsom)
       }else if(markers.to.plot == "tree_metaclustering"){
-        PlotStars(fsom, backgroundValues = code_clustering1, backgroundColor = alpha(div.colors(length(code_clustering1)), alpha = 0.7), starBg = NULL)
+        if(is.null(colors)) colors <- div.colors(length(unique(code_clustering1)))
+        PlotStars(fsom, backgroundValues = code_clustering1, backgroundColor = alpha(colors), alpha = 0.7), starBg = NULL)
       }else{
         for(marker in markers.to.plot) PlotMarker(fsom, marker)
       }

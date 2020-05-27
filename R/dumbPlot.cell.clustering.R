@@ -7,6 +7,7 @@
 #' @param condition.column Column name from the \code{colData(fcs.SCE)} object which contains condition information.
 #' @param psig.cutoff P-value cutoff. Default = \code{0.05}.
 #' @param return.stats Logical indicating if calculated statistics should be returned in a new variable. Default = \code{TRUE}.
+#' @param colors Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).
 #' @keywords differential dotplot
 #' @keywords Dumbbell plot
 #' @keywords longitudinal dotplot
@@ -20,7 +21,7 @@
 #' diffDots.cell.clustering(fcs.SCE = fcs, cell.clusters = fcs$SOM_named, return.stats = F)
 #' }
 
-dumbPlot.cell.clustering <- function(fcs.SCE, assay.i = "normalized", cell.clusters, condition.column, psig.cutoff = 0.05, return.stats = T){
+dumbPlot.cell.clustering <- function(fcs.SCE, assay.i = "normalized", cell.clusters, condition.column, psig.cutoff = 0.05, return.stats = T, colors = NULL){
   ## prepare tables
   prop_table <- as.data.frame.matrix(t(barplot.cell.pops(fcs.SCE, cell.clusters, count.by = "filename", plot = F, assay.i = assay.i)))
   
@@ -51,12 +52,13 @@ dumbPlot.cell.clustering <- function(fcs.SCE, assay.i = "normalized", cell.clust
   # }
   
   ## plotting
+  if(is.null(colors)) colors <- div.colors(length(unique(prop_table_md[,condition.column])))
+
   print(ggplot(dfma, aes_string(x = "pct", y = "variable", fill = condition.column, color = "sig")) + 
           geom_line(aes_string(group = "variable"), size = 1) +
           scale_color_manual(values = c("gray63", "brown1"), labels = c("no sig.", "sig.")) +
           geom_point(size = 4, shape = 21, color = "white") +
-          scale_fill_manual(values = div.colors(length(unique(prop_table_md[,condition.column])), set.seed = 3), 
-                            labels = unique(prop_table_md[,condition.column])) +
+          scale_fill_manual(values = colors, labels = unique(prop_table_md[,condition.column])) +
           # guides(color = guide_legend(ncol = 1)) + #display legend in one-column format
           theme(panel.background = element_blank(), legend.key = element_blank(),
                 panel.grid.major.x = element_line(colour = "gray73", linetype = "dashed", size = 0.3),

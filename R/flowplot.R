@@ -8,6 +8,7 @@
 #' @param color.by Variable from (from \code{colData(fcs.SCE)}) for events coloring.
 #' @param select.values.color Vector of values taken from \code{color.by} option to include in the coloring.
 #' @param size Point (event) size. Default = \code{0.5}.
+#' @param colors Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).
 #' @keywords scatterplot
 #' @keywords dotplot
 #' @keywords marker
@@ -23,7 +24,7 @@
 #'     color.by = "SOM", select.values.color = 1:10)
 #' }
 
-flowplot <- function(fcs.SCE, x.axis, y.axis, densities = T, color.by, select.values.color = "all", size = 0.5){
+flowplot <- function(fcs.SCE, x.axis, y.axis, densities = T, color.by, select.values.color = "all", size = 0.5, colors = NULL){
   data <- as.data.frame(cbind(colData(fcs.SCE), t(assay(fcs.SCE, "transformed"))))
 
   ## filter data
@@ -31,24 +32,25 @@ flowplot <- function(fcs.SCE, x.axis, y.axis, densities = T, color.by, select.va
   data <- data[data[,color.by] %in% select.values.color,]
 
   ## plotting
+  if(is.null(colors)) colors <- div.colors(length(select.values.color))
   combos <- cbind(as.data.frame(x.axis), as.data.frame(y.axis))
 
   gglist <- list()
   for(i in 1:nrow(combos)){
     g1 <- ggplot(data, aes_string(x = combos[i,1], y = combos[i,2], color = color.by)) +
       geom_point(size = size) +
-      scale_color_manual(values = div.colors(length(select.values.color))) +
+      scale_color_manual(values = colors) +
       theme_bw() + guides(color = guide_legend(ncol = 3))
     legend <- get_legend(g1)
 
     if(densities){
       xdens <- axis_canvas(g1, axis = "x")+ #histogram along x axis
-        scale_fill_manual(values = div.colors(length(select.values.color))) +
+        scale_fill_manual(values = colors) +
         geom_density(data = data, aes_string(x = combos[i,1], fill = color.by),
                      alpha = 0.7, size = 0.2)
 
       ydens <- axis_canvas(g1, axis = "y", coord_flip = TRUE) + #histogram along y axis
-        scale_fill_manual(values = div.colors(length(select.values.color))) +
+        scale_fill_manual(values = colors) +
         geom_density(data = data, aes_string(x = combos[i,2], fill = color.by), alpha = 0.7, size = 0.2)+
         coord_flip()
 

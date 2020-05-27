@@ -7,6 +7,7 @@
 #' @param color.by Variable name (from \code{colData(fcs.SCE)}) for coloring the plot. Default = \code{x.axis} (i.e., the same specfied in \code{x.axis}).
 #' @param label.by Variable from (from \code{colData(fcs.SCE)}) for labeling. Default = \code{NULL}.
 #' @param limits Numeric vector with limits for plotting (minimum, maximum). Default = \code{NULL} (i.e., automatically calculated from data).
+#' @param colors Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).
 #' @keywords cell count
 #' @keywords boxplot
 #' @export
@@ -17,16 +18,17 @@
 #' @examples
 #' \dontrun{cell.count.bx(fcsL, assay.i = "normalized", x.axis = "condition")}
 
-cell.count.bx <- function(fcs.SCE, assay.i = "normalized", x.axis, color.by = x.axis, label.by = NULL, limits = NULL){
+cell.count.bx <- function(fcs.SCE, assay.i = "normalized", x.axis, color.by = x.axis, label.by = NULL, limits = NULL, colors = NULL){
   data <- cbind(colData(fcs.SCE), t(assay(fcs.SCE, i = assay.i)))
   ggdf <- data.frame(data[!duplicated(data[,"filename"]),], cell_counts = as.numeric(table(data[,"filename"])))
   
   if(is.null(limits)) limits <- c(min(ggdf$cell_counts), max(ggdf$cell_counts))
-  
+  if(is.null(colors)) colors <- div.colors(length(unique(ggdf[,color.by])))
+
   g <- ggboxplot(ggdf, x = x.axis, y = "cell_counts", fill = color.by) +
     stat_compare_means(label.x = 1.7, label.y = max(ggdf$cell_counts)) +
     scale_y_continuous(limits = limits) + 
-    scale_fill_manual(values = div.colors(length(unique(ggdf[,color.by]))), drop = FALSE) +
+    scale_fill_manual(values = colors), drop = FALSE) +
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),panel.background = element_blank(),
           axis.line = element_line(colour = "black"))+
     geom_jitter(shape=16, position=position_jitter(0.2))

@@ -11,6 +11,7 @@
 #' @param open.angle Angle aperture circular layout. Default = \code{100}.
 #' @param dendro.labels Logical whether adding labels to dendrogram. Default = \code{FALSE}.
 #' @param scale.size Numerical value indicating how much scale points in the dendogram terminal nodes. Default = \code{10}.
+#' @param colors Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).
 #' @keywords circular tree
 #' @keywords dendrogram
 #' @keywords nodes
@@ -34,10 +35,10 @@
 #' }
 
 circ.tree <- function(fcs.SCE, assay.i = "normalized", cell.clusters, dist.method = "euclidean", hclust.method = "average", 
-                      nodes = "display", open.angle = 100, dendro.labels = FALSE, scale.size = 10){
+                      nodes = "display", open.angle = 100, dendro.labels = FALSE, scale.size = 10, colors = NULL){
   exprs <- t(assay(fcs.SCE, i = assay.i))
   exprs_01 <- scale.exprs(exprs)
-  colors_palette <- div.colors(length(cell.clusters))
+  if(is.null(colors)) colors <- div.colors(length(unique(cell.clusters)))
   
   ## Circular hyerarchical clustering tree
   #median expression of each marker for each cell population
@@ -68,9 +69,9 @@ circ.tree <- function(fcs.SCE, assay.i = "normalized", cell.clusters, dist.metho
     p1 <- p1 %<+% clustering_propL #add dataframe for geom_point level
     
     for(i in nodes){
-      p1 <- p1 + geom_hilight(node = i, fill = sample(colors_palette, 1), alpha = .6) +
+      p1 <- p1 + geom_hilight(node = i, fill = sample(colors, 1), alpha = .6) +
         geom_point(aes_string(color = "cell_cluster", size = "Freq")) +
-        scale_size_area(max_size = scale.size) + scale_color_manual(values = colors_palette) + 
+        scale_size_area(max_size = scale.size) + scale_color_manual(values = colors) + 
         theme(legend.position = "right")
     }
     

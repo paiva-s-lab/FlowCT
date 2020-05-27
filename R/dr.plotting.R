@@ -13,6 +13,7 @@
 #' @param size Point size. Default = \code{1}.
 #' @param raster Vector indicating if image should be rasterized (logical element) and the number of pixels to consider (numerical element). It is based on \href{https://github.com/exaexa/scattermore}{\code{scattermore} package}. Default = \code{c(FALSE, 1000)}.
 #' @param return.df Logical indicating if built \code{data.frame} with DR information and metadata must be returned. Default = \code{FALSE}.
+#' @param colors Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).
 #' @keywords dimensional reduction plotting
 #' @keywords tSNE
 #' @keywords PCA
@@ -30,7 +31,7 @@
 #' dr <- dr.plotting(fcs, plot.dr = "PCA", color.by = "SOM", facet.by = "condition", return.df = T)
 #' }
 
-dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), color.by = "expression", facet.by = NULL, omit.markers = NULL, title = "", label.by = NULL, size = 1, raster = c(F, 1000), return.df = F){
+dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), color.by = "expression", facet.by = NULL, omit.markers = NULL, title = "", label.by = NULL, size = 1, raster = c(F, 1000), return.df = F, colors = NULL){
   if(class(data)[1] == "SingleCellExperiment"){
     if(is.na(match(tolower(plot.dr), tolower(names(data@int_colData@listData$reducedDims))))) stop('Please, indicate one previously DR calculated: PCA, tSNE or UMAP.\n', call. = F)
     dr_calculated <- match(tolower(plot.dr), tolower(names(data@int_colData@listData$reducedDims)))
@@ -43,7 +44,8 @@ dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), co
   }
 
   if(color.by == "expression") drmd <- as.data.frame(melt(as.data.table(drmd), measure.vars = no.omit.markers, value.name = "expression", variable.name = "antigen"))
-
+  if(is.null(colors)) colors <- div.colors(length(unique(drmd[,color.by])))
+    
   g <- ggplot(drmd, aes_string(x = paste0(tolower(plot.dr), dims[1]), y = paste0(tolower(plot.dr), dims[2]), color = color.by)) +
     xlab(paste0(toupper(plot.dr), 1)) + ylab(paste0(toupper(plot.dr), 2)) + ggtitle(title) +
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
@@ -58,7 +60,7 @@ dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), co
   if(is.numeric(drmd[,color.by])){
     g <- g + scale_color_gradientn(colours = colorRampPalette(rev(brewer.pal(n = 11, name = "Spectral")))(50), name = color.by)
   }else{
-    g <- g + scale_color_manual(values = div.colors(length(unique(drmd[,color.by]))), name = color.by) +
+    g <- g + scale_color_manual(values = colors), name = color.by) +
       guides(color = guide_legend(override.aes = list(size = 4), ncol = 2))
   }
 
