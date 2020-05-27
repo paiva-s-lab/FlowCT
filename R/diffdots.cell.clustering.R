@@ -6,6 +6,7 @@
 #' @param cell.clusters A vector with clusters identified through \code{\link[FlowCT.v2:fsom.clustering]{FlowCT.v2::fsom.clustering()}} (and, normaly, later renamed).
 #' @param condition.column Column name from the \code{colData(fcs.SCE)} object which contains condition information. De
 #' @param psig.cutoff P-value cutoff. Default = \code{0.05}.
+#' @param colors Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).
 #' @param return.stats Logical indicating if calculated statistics should be returned in a new variable. Default = \code{TRUE}.
 #' @keywords differential dotplot
 #' @keywords Dumbbell plot
@@ -21,13 +22,13 @@
 #' diffDots.cell.clustering(fcs.SCE = fcs, cell.clusters = fcs$SOM_named, return.stats = F)
 #' }
 
-diffdots.cell.clustering <- function(fcs.SCE, assay.i = "normalized", cell.clusters, condition.column, psig.cutoff = 0.05, return.stats = T){
+diffdots.cell.clustering <- function(fcs.SCE, assay.i = "normalized", cell.clusters, condition.column, psig.cutoff = 0.05, return.stats = T, colors = NULL){
   ## prepare tables
   prop_table <- as.data.frame.matrix(t(barplot.cell.pops(fcs.SCE, cell.clusters, count.by = "filename", plot = F, assay.i = "normalized")))
   
   prop_table_md <- merge(fcs.SCE@metadata$reduced_metada, prop_table, by.x = "filename", by.y = "row.names")
   
-  dfm <- as.data.frame(melt(as.data.table(prop_table_md), measure.vars = unique(cell.clusters)))
+  dfm <- as.data.frame(melt(as.data.table(prop_table_md), measure.vars = as.vector(unique(cell.clusters))))
   dfma <- aggregate(dfm$value ~ dfm$variable + dfm[,condition.column], FUN = median)
   colnames(dfma) <- c("variable", condition.column, "value")
   dfma <- transform(dfma, pct = log(ave(dfma$value, dfma[,condition.column], FUN = function(x) x/sum(x)*100))) #transform to percentaje
@@ -45,16 +46,15 @@ diffdots.cell.clustering <- function(fcs.SCE, assay.i = "normalized", cell.clust
   }
   
   ## plotting
+  if(is.null(colors)) colors <- div.colors(length(unique(cell.clusters)))
   print(ggplot(dfma, aes_string(x = "condition", y = "pct", fill = "variable")) + 
           geom_line(aes_string(group = "variable", color = "sig"), size = 1) + 
-          geom_point(size = 3, shape = 21, color = "gray63") + 
-          # scale_color_manual(values = div.colors(30)) + 
           scale_colour_manual(values = c("gray63", "brown1"), labels = c("no sig.", "sig.")) + 
-          # geom_label(data = subset(dfma, dfma$sig == 1 & dfma$condition == conditions[1]), 
-          #            aes(x = 1, y = pct, label = variable, fill = variable), nudge_x = -0.1) +
+          geom_point(size = 3, shape = 21, color = "gray63") + 
+          scale_fill_manual(values = colors) +
           geom_label_repel(data = subset(dfma, dfma$sig == 1 & dfma$condition == conditions[1]),
-                     aes_string(x = 1, y = "pct", label = "variable", fill = "variable"), 
-                     nudge_x = -0.1, show.legend = F) +
+                           aes_string(x = 1, y = "pct", label = "variable", fill = "variable"), 
+                           nudge_x = -0.1, show.legend = F) +
           theme(panel.background = element_blank(), axis.line = element_line(color = "black")) + 
           labs(x = "\nCondition", y = "% of cells (log-transf.)\n", color = "", fill = "Cell clusters"))
   
