@@ -1,7 +1,7 @@
 #' div.colors
 #' @export
 
-div.colors <- function(n, set.seed = 333){
+div.colors <- function(n){
   require(RColorBrewer)
 
   if (n < 74) { # maximum number of unique colors combining all palettes
