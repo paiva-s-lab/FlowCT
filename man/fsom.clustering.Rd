@@ -4,16 +4,16 @@
 \alias{fsom.clustering}
 \title{fsom.clustering}
 \usage{
-fsom.clustering(fcs.SCE, assay.i = "normalized",
+fsom.clustering(fcs.SCE, assay.i = "normalized", scale = FALSE,
   markers.to.use = "all", markers.to.plot = NULL,
-  k.metaclustering = 40, metaclustering.name = NULL)
+  k.metaclustering = 40, metaclustering.name = NULL, colors = NULL)
 }
 \arguments{
 \item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate SOM clustering. Default = \code{"normalized"}.}
 
-\item{scale}{Should be data be scale before FSOM clustering?. Default = \code{"TRUE"}.}
+\item{scale}{Should be data be scale before FSOM clustering?. Default = \code{"FALSE"}.}
 
 \item{markers.to.use}{Markers used for the clustering calculation. Default = \code{"all"}.}
 
@@ -22,6 +22,8 @@ fsom.clustering(fcs.SCE, assay.i = "normalized",
 \item{k.metaclustering}{Number of metaclusters to calculate in the metaclustering step. Default = \code{40}.}
 
 \item{metaclustering.name}{Name for PDF with metaclustering results (see \href{https://bioconductor.org/packages/release/bioc/vignettes/ConsensusClusterPlus/inst/doc/ConsensusClusterPlus.pdf}{\code{ConsensusClusterPlus} package} for interpretation help). Default = \code{NULL}.}
+
+\item{colors}{Vector with colors for plotting (only for \code{"tree_metaclustering"}). Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).}
 }
 \description{
 This function calculates a Self-Organizing Map (SOM) clustering and a simultaneous metaclustering from a \code{fcs.SCE} object. For additional information go to \href{https://github.com/SofieVG/FlowSOM}{\code{FlowSOM} package}.

@@ -5,7 +5,7 @@
 \title{It draws a differential dot plot (longitudinaly) according condition for each cell cluster identified.}
 \usage{
 diffdots.cell.clustering(fcs.SCE, assay.i = "normalized", cell.clusters,
-  condition.column, psig.cutoff = 0.05, return.stats = T)
+  condition.column, psig.cutoff = 0.05, return.stats = T, colors = NULL)
 }
 \arguments{
 \item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}
@@ -17,6 +17,8 @@ diffdots.cell.clustering(fcs.SCE, assay.i = "normalized", cell.clusters,
 \item{condition.column}{Column name from the \code{colData(fcs.SCE)} object which contains condition information. De}
 
 \item{psig.cutoff}{P-value cutoff. Default = \code{0.05}.}
+
+\item{colors}{Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).}
 
 \item{return.stats}{Logical indicating if calculated statistics should be returned in a new variable. Default = \code{TRUE}.}
 }

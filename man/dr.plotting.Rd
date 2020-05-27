@@ -6,8 +6,8 @@
 \usage{
 dr.plotting(data, assay.i = "normalized", plot.dr, dims = c(1, 2),
   color.by = "expression", facet.by = NULL, omit.markers = NULL,
-  title = "", label.by = NULL, size = 2, raster = c(T, 1000),
-  return.df = F)
+  title = "", label.by = NULL, size = 2, raster = c(FALSE, 1000),
+  return.df = FALSE, colors = NULL)
 }
 \arguments{
 \item{data}{A object with DR generated with \code{\link[FlowCT.v2:dim.reduction]{FlowCT.v2::dim.reduction()}} or a \code{data.frame} with DR, expression and metadata information (like the first element list of the object generated with \code{\link[FlowCT.v2:dim.reduction]{FlowCT.v2::dim.reduction()}}).}
@@ -28,11 +28,13 @@ dr.plotting(data, assay.i = "normalized", plot.dr, dims = c(1, 2),
 
 \item{size}{Point size. Default = \code{1}.}
 
-\item{raster}{Vector indicating if image should be rasterized (logical element) and the number of pixels to consider (numerical element). It is based on \href{https://github.com/exaexa/scattermore}{\code{scattermore} package}. Default = \code{c(TRUE, 1000)}.}
+\item{raster}{Vector indicating if image should be rasterized (logical element) and the number of pixels to consider (numerical element). It is based on \href{https://github.com/exaexa/scattermore}{\code{scattermore} package}. Default = \code{c(FALSE, 1000)}.}
 
 \item{return.df}{Logical indicating if built \code{data.frame} with DR information and metadata must be returned. Default = \code{FALSE}.}
 
 \item{n.dims}{Vector indicating the two DR components to plot. Default = \code{c(1,2)}.}
+
+\item{colots}{Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).}
 }
 \description{
 This function plots the indicated dimensional reduction (DR) from a previously calculated \code{\link[FlowCT.v2:dim.reduction]{FlowCT.v2::dim.reduction()}} object.

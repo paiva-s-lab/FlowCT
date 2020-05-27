@@ -4,7 +4,7 @@
 \alias{col.annot.pheatmap}
 \title{col.annot.pheatmap}
 \usage{
-col.annot.pheatmap(metadata, colors.palette = NULL)
+col.annot.pheatmap(metadata, colors = NULL)
 }
 \description{
 col.annot.pheatmap

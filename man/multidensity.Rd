@@ -5,7 +5,7 @@
 \title{multidensity}
 \usage{
 multidensity(fcs.SCE, assay.i, show.markers = "all", color.by = NULL,
-  subsampling = NULL, interactive = F, ridgeline.lim = 15)
+  subsampling = NULL, interactive = F, ridgeline.lim = 15, colors = NULL)
 }
 \arguments{
 \item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}
@@ -21,6 +21,8 @@ multidensity(fcs.SCE, assay.i, show.markers = "all", color.by = NULL,
 \item{interactive}{Logical indicating if the user can interact with the (only overlapping-lines) plot. Default = \code{FALSE}.}
 
 \item{ridgeline.lim}{Numeric value specifying the limit for shifting from ridgeline-mode to overlapping-lines plot. Default = \code{15}.}
+
+\item{colors}{Vector with colors for plotting (only available for no-ridgeline plot). Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).}
 }
 \description{
 This function draws multidensity plot with all FCS files included in a \code{fcs.SCE} object. If there are more files than limit specified in \code{ridgeline.lim}, instead of plottting density in a ridge-way all density lines will be overlapped.

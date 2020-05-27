@@ -4,9 +4,9 @@
 \alias{barplot.cell.pops}
 \title{barplot.cell.pops}
 \usage{
-\method{barplot}{cell.pops}(fcs.SCE, assay.i = "normalized",
+barplot.cell.pops(fcs.SCE, assay.i = "normalized",
   cell.clusters, plot = T, count.by, facet.by = NULL,
-  return.mode = "percentage")
+  return.mode = "percentage", colors = NULL)
 }
 \arguments{
 \item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}
@@ -22,6 +22,8 @@
 \item{facet.by}{Variable name (from \code{colData(fcs.SCE)}) for splitting the stacked bar plotting. Default = \code{NULL}.}
 
 \item{return.mode}{String for specifying if final resuls should be proportions ("percentage", default) or raw counts ("counts").}
+
+\item{colors}{Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).}
 }
 \description{
 This function calculates cluster proportions (or raw counts) for each identified cluster and plot them on a stacked barplot.

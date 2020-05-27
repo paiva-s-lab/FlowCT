@@ -6,7 +6,7 @@
 \usage{
 \method{median}{heatmap}(fcs.SCE, assay.i = "normalized",
   cell.clusters = NULL, markers.to.use = "all",
-  not.metadata = "filename")
+  not.metadata = "filename", colors = NULL)
 }
 \arguments{
 \item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}
@@ -18,6 +18,8 @@
 \item{markers.to.use}{Vector with markers to use. Default = \code{"all"}.}
 
 \item{not.metadata}{Vector with variable names (from \code{colData(fcs.SCE)}) for not including in the heatmap annotation. Default = \code{"filename"}.}
+
+\item{colors}{Vector with colors for plotting (if provided, it must be as long as the number of unique elements in the longer metadata field). Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).}
 }
 \description{
 This function draws a heatmap with median values for each FCS file or for identified cluster with \code{\link[FlowCT.v2:fsom.clustering]{FlowCT.v2::fsom.clustering()}}

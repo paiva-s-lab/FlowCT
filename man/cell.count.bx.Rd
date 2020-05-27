@@ -5,7 +5,7 @@
 \title{cell.count.bx}
 \usage{
 cell.count.bx(fcs.SCE, assay.i = "normalized", x.axis,
-  color.by = x.axis, label.by = NULL, limits = NULL)
+  color.by = x.axis, label.by = NULL, limits = NULL, colors = NULL)
 }
 \arguments{
 \item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}
@@ -19,6 +19,8 @@ cell.count.bx(fcs.SCE, assay.i = "normalized", x.axis,
 \item{label.by}{Variable from (from \code{colData(fcs.SCE)}) for labeling. Default = \code{NULL}.}
 
 \item{limits}{Numeric vector with limits for plotting (minimum, maximum). Default = \code{NULL} (i.e., automatically calculated from data).}
+
+\item{colors}{Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).}
 }
 \description{
 This function draws a boxplot according to the cell count for a specified condition.

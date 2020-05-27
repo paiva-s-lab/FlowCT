@@ -4,8 +4,7 @@
 \alias{flowplot}
 \title{flowplot}
 \usage{
-  flowplot(fcs, x.axis = c("FSC_A", "CD4", "CD62L"), y.axis = c("SSC_A", "CD8", "CD45"),
-        color.by = "SOM", select.values.color = 1:10)
+  flowplot(fcs.SCE, x.axis, y.axis, densities = TRUE, color.by, select.values.color = "all", colors = NULL)
 }
 \arguments{
   \item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}. By default, the matrix used is the \code{arcsinh} transformed.}
@@ -18,9 +17,11 @@
 
   \item{color.by}{Variable from (from \code{colData(fcs.SCE)}) for events coloring.}
 
-  \item{select.values.color}{Vector of values taken from \code{color.by} option to include in the coloring.}
+  \item{select.values.color}{Vector of values taken from \code{color.by} option to include in the coloring. Default = \code{"all"}.}
 
   \item{size}{Point (event) size. Default = \code{0.5}.}
+  
+  \item{colors}{Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).}
 }
 \description{
   It draws the classical flow cytometry dotplot faceting two markers. Multiple dot plots can be plotted if \code{x.axis} and \code{y.axis} are specified with multiple markers.

@@ -7,7 +7,7 @@
 circ.tree(fcs.SCE, assay.i = "normalized", cell.clusters,
   dist.method = "euclidean", hclust.method = "average",
   nodes = "display", open.angle = 100, dendro.labels = FALSE,
-  scale.size = 10)
+  scale.size = 10, colors = NULL)
 }
 \arguments{
 \item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}
@@ -27,6 +27,8 @@ circ.tree(fcs.SCE, assay.i = "normalized", cell.clusters,
 \item{dendro.labels}{Logical whether adding labels to dendrogram. Default = \code{FALSE}.}
 
 \item{scale.size}{Numerical value indicating how much scale points in the dendogram terminal nodes. Default = \code{10}.}
+
+\item{colors}{Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).}
 }
 \description{
 This function plots a circular dendrogram and a heatmap according a \code{fcs.SCE}. Every leaf has a different colored point size regarding the cell type and the frequency for each cluster.

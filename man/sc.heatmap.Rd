@@ -6,7 +6,7 @@
 \usage{
 sc.heatmap(fcs.SCE, assay.i = "normalized", markers.to.use = "all",
   not.metadata = c("filename", "cell_id", "sample_id"),
-  clustering.method = "average", subsampling = 100, color = NULL)
+  clustering.method = "average", subsampling = 100, color.expression = NULL, colors = NULL)
 }
 \arguments{
 \item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}
@@ -21,7 +21,9 @@ sc.heatmap(fcs.SCE, assay.i = "normalized", markers.to.use = "all",
 
 \item{subsampling}{Numeric value indicating how many events use to draw heatmap and speed up plotting. Default = \code{100}.}
 
-\item{color}{Color vector for coloring expression values within the heatmap. Default = \code{NULL} (i.e., scale "YlGnBu" from \code{RColorBrewer}).}
+\item{color.expression}{Color vector for coloring expression values within the heatmap. Default = \code{NULL} (i.e., scale "YlGnBu" from \code{RColorBrewer}).}
+
+\item{colors}{Vector with colors for plotting (if provided, it must be as long as the number of unique elements in the longer metadata field). Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).}
 }
 \description{
 This function draws a heatmap with single-cell fluorescence values.
