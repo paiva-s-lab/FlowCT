@@ -60,7 +60,7 @@ dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), co
   if(is.numeric(drmd[,color.by])){
     g <- g + scale_color_gradientn(colours = colorRampPalette(rev(brewer.pal(n = 11, name = "Spectral")))(50), name = color.by)
   }else{
-    g <- g + scale_color_manual(values = colors), name = color.by) +
+    g <- g + scale_color_manual(values = colors, name = color.by) +
       guides(color = guide_legend(override.aes = list(size = 4), ncol = 2))
   }
 
