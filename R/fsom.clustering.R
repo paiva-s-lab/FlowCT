@@ -63,7 +63,7 @@ fsom.clustering <- function(fcs.SCE, assay.i = "normalized", scale = FALSE, mark
         PlotStars(fsom)
       }else if(markers.to.plot == "tree_metaclustering"){
         if(is.null(colors)) colors <- div.colors(length(unique(code_clustering1)))
-        PlotStars(fsom, backgroundValues = code_clustering1, backgroundColor = alpha(colors), alpha = 0.7), starBg = NULL)
+        PlotStars(fsom, backgroundValues = code_clustering1, backgroundColor = alpha(colors, alpha = 0.7), starBg = NULL)
       }else{
         for(marker in markers.to.plot) PlotMarker(fsom, marker)
       }
