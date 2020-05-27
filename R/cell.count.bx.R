@@ -28,7 +28,7 @@ cell.count.bx <- function(fcs.SCE, assay.i = "normalized", x.axis, color.by = x.
   g <- ggboxplot(ggdf, x = x.axis, y = "cell_counts", fill = color.by) +
     stat_compare_means(label.x = 1.7, label.y = max(ggdf$cell_counts)) +
     scale_y_continuous(limits = limits) + 
-    scale_fill_manual(values = colors), drop = FALSE) +
+    scale_fill_manual(values = colors) +
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),panel.background = element_blank(),
           axis.line = element_line(colour = "black"))+
     geom_jitter(shape=16, position=position_jitter(0.2))
