@@ -59,7 +59,7 @@ boxplot.cell.clustering <- function(fcs.SCE, assay.i = "normalized", cell.cluste
   }
   
   ## plotting
-  if(is.null(colors)) colors <- div.colors(length(unique(prop_table_md[,condition.column])), set.seed = 3)
+  if(is.null(colors)) colors <- div.colors(length(unique(prop_table_md[,condition.column])))
   
   if(plot.only.sig[1]){
     prop_table_mdm <- prop_table_mdm[prop_table_mdm$cell_cluster %in% KWsig,]
