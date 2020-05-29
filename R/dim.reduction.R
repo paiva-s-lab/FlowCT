@@ -30,9 +30,9 @@
 
 dim.reduction <- function(data, assay.i = "normalized", markers.to.use = "all", dr.method, num.threads = NULL, perplexity.tsne = 100, n.neighbors.umap = 50){
   if(!all(grepl("^pca$|^tsne$|^umap$", tolower(dr.method)))) stop('The available reduction methods are: PCA, tSNE and/or UMAP.\n', call. = F)
-  
+
   if(is.null(num.threads)) num.threads <- detectCores()-1
-  
+
   if(class(data)[1] == "SingleCellExperiment"){
     if(length(markers.to.use) == 1 && markers.to.use == "all") markers.to.use <- rownames(data)
     data1 <- t(assay(data, i = assay.i))[,markers.to.use]
@@ -40,7 +40,7 @@ dim.reduction <- function(data, assay.i = "normalized", markers.to.use = "all", 
     if(length(markers.to.use) == 1 && markers.to.use == "all") markers.to.use <- rownames(data)
     data1 <- data[,markers.to.use]
   }
-  
+
   drs <- list()
   if("pca" %in% tolower(dr.method)){
     cat(">>> PCA calculation...\n")
@@ -49,15 +49,24 @@ dim.reduction <- function(data, assay.i = "normalized", markers.to.use = "all", 
   }
   if("tsne" %in% tolower(dr.method)){
     cat(">>> tSNE calculation...\n")
-    drs[["tSNE"]] <- Rtsne(data1, num_threads = num.threads, check_duplicates = FALSE, pca = FALSE, perplexity.tsne = perplexity.tsne)$Y
-    colnames(drs[["tSNE"]]) <- paste0("tsne", c(1:2))
-  } 
+    drname <- paste0("tSNE.px", perplexity.tsne)
+    drs[[drname]] <- Rtsne(data1, num_threads = num.threads, check_duplicates = FALSE, pca = FALSE, perplexity.tsne = perplexity.tsne)$Y
+    colnames(drs[[drname]]) <- paste0("tsne", c(1:2))
+
+  }
   if("umap" %in% tolower(dr.method)){
     cat(">>> UMAP calculation...\n")
-    drs[["UMAP"]] <- tumap(data1, n_neighbors = n.neighbors.umap, init = "random", n_threads = num.threads, verbose = F)
-    colnames(drs[["UMAP"]]) <- paste0("umap", c(1:2))
+    drname <- paste0("UMAP.neig", n.neighbors.umap)
+    drs[[drname]] <- tumap(data1, n_neighbors = n.neighbors.umap, init = "random", n_threads = num.threads, verbose = F)
+    colnames(drs[[drname]]) <- paste0("umap", c(1:2))
   }
-  
+
+  ## combine DRs if another DR has been calculated
+  if(length(names(data@int_colData@listData$reducedDims)) != 0){
+    isecDR <- intersect(names(drs), names(data@int_colData@listData$reducedDims))
+    drs <- c(as.list(data@int_colData@listData$reducedDims), drs[!grepl(paste(isecDR, collapse = "|"), names(drs))])
+  }
+
   if(class(data)[1] == "SingleCellExperiment"){
     reducedDims(data) <- drs
     return(data)
