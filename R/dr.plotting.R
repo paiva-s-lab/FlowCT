@@ -36,6 +36,7 @@ dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), co
     if(is.na(match(tolower(plot.dr), tolower(names(data@int_colData@listData$reducedDims))))) stop('Please, indicate one previously DR calculated: PCA, tSNE or UMAP.\n', call. = F)
     dr_calculated <- match(tolower(plot.dr), tolower(names(data@int_colData@listData$reducedDims)))
     dr <- data@int_colData@listData$reducedDims@listData[[dr_calculated]][,dims]
+    colnames(dr) <- paste0("dr", dims)
 
     no.omit.markers <- rownames(data)[!(rownames(data) %in% omit.markers)]
     drmd <- as.data.frame(cbind(colData(data), dr, t(assay(data, i = assay.i))[,no.omit.markers]))
@@ -45,8 +46,8 @@ dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), co
 
   if(color.by == "expression") drmd <- as.data.frame(melt(as.data.table(drmd), measure.vars = no.omit.markers, value.name = "expression", variable.name = "antigen"))
   if(is.null(colors)) colors <- div.colors(length(unique(drmd[,color.by])))
-    
-  g <- ggplot(drmd, aes_string(x = paste0(tolower(plot.dr), dims[1]), y = paste0(tolower(plot.dr), dims[2]), color = color.by)) +
+
+  g <- ggplot(drmd, aes_string(x = paste0("dr", dims[1]), y = paste0("dr", dims[2]), color = color.by)) +
     xlab(paste0(toupper(plot.dr), 1)) + ylab(paste0(toupper(plot.dr), 2)) + ggtitle(title) +
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
           panel.background = element_blank(), panel.border = element_rect(color = "black", fill = NA))
