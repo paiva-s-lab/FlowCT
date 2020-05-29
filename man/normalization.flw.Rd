@@ -11,9 +11,11 @@ normalization.flw(fcs.SE, marker.to.norm)
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"transformed"}.}
 
-\item{norm.method}{Methodology to perform each marker normalization. Possible values are \code{gauss} and \code{warp}.}
-
 \item{marker.to.norm}{Marker name(s) to normalize (based on visual inspection with \code{\link[FlowCT:multidensity]{FlowCT::multidensity()}}).}
+
+\item{norm.method}{Methodology to perform each marker normalization. Possible values are "gauss" or "warp" (from \code{flowStats} package) or "harmony" (from \code{harmony} package for single-cell).}
+
+\item{var.to.use}{Variable from \code{colData(fcs.SCE)} for calculating the normalization (only if \code{norm.method = "harmony}).}
 
 \item{norm.matrix.name}{New normalized matrix name (it will stored within the \code{FCS.SE} object). Default = \code{"normalized"}.}
 }
@@ -24,8 +26,12 @@ It normalizes expression abnormalities within selected markers.
 \dontrun{
  fcs_gauss <- normalization.flw(fcs.SCE = fcs, marker.to.norm = c("CD62L", "CCR4", "SSC_A"), norm.method = "gauss")
  fcs_warp <- normalization.flw(fcs.SCE = fcs, marker.to.norm = c("CD62L", "CCR4", "SSC_A"), norm.method = "warp")
+ fcs_harmony <- normalization.flw(fcs.SCE = fcs, norm.method = "harmony", var.to.use = "condition")
 }
 }
 \keyword{alignment}
 \keyword{marker}
 \keyword{normalization}
+\keyword{gaussian}
+\keyword{warp}
+\keyword{harmony}
