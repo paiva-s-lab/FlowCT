@@ -2,7 +2,7 @@
 % Please edit documentation in R/median.dr.R
 \name{median.dr}
 \alias{median.dr}
-\title{This function draws a plot from internally calculated dimensional reduction (DR).}
+\title{This function draws a plot from internally calculated K-means and dimensional reduction (DR).}
 \usage{
  median.dr(fcs.SCE, assay.i = "normalized",
   markers.to.use = "all", dr.method = "kmeans", num.k = 3, perplexity.tsne = 15,
@@ -15,15 +15,19 @@
 
 \item{markers.to.use}{Vector with markers to use. Default = \code{"all"}.}
 
-\item{dr.method}{DR method to calculate. Possible values are "PCA", "tSNE", "UMAP" or "kmeans". Take into account the number of samples for this DR, for few samples t-SNE and UMAP are useless. Default = \code{"kmeans"}.}
+\item{dr.method}{DR method to calculate. Possible values are "PCA", "tSNE" or "UMAP". Take into account the number of samples for this DR, for few samples t-SNE and UMAP are useless. Default = \code{"PCA"}.}
 
 \item{num.k}{Number of clusters if \code{dr.method = kmeans}. Default = \code{3}.}
+
+\item{kmeans.frame}{Should kmeans cluster be sorrunded by a circular frame within the DR plot?. Default = \code{TRUE}.}
 
 \item{perplexity.tsne}{Value for perplexity parameter in tSNE calculation (\href{https://distill.pub/2016/misread-tsne/}{more information}). For little number of samples this DR (t-SNE) cannot be calculated because preplexity restrictions. Default = \code{15}.}
 
 \item{n.neighbors.umap}{Value for neighbors parameter in UMAP calculation (\href{https://www.math.upenn.edu/~jhansen/2018/05/04/UMAP/}{more information}). Default = \code{50}.}
 
-\item{color.by}{Variable name (from \code{colData(fcs.SCE)}) for lines coloring. Default = \code{"filename"}.}
+\item{color.by}{Variable name (from \code{colData(fcs.SCE)}) for dots coloring. Default = \code{"filename"}.}
+
+\item{shape.by}{Variable name (from \code{colData(fcs.SCE)}) for dots shaping. Default = \code{"NULL"}.}
 
 \item{label.by}{Variable name (from \code{colData(fcs.SCE)}) for labelling. Default = \code{NULL}.}
 
@@ -32,7 +36,7 @@
 \item{return.DR.info}{Final data combining metadata and DR info should be returned. Default = \code{FALSE}.}
 }
 \description{
-This function draws a plot from internally calculated dimensional reduction (DR).
+This function draws a plot from internally calculated K-means and dimensional reduction (DR).
 }
 \examples{
 \dontrun{
