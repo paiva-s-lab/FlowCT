@@ -15,7 +15,7 @@ normalization.flw(fcs.SE, marker.to.norm)
 
 \item{norm.method}{Methodology to perform each marker normalization. Possible values are "gauss" or "warp" (from \code{flowStats} package) or "harmony" (from \code{harmony} package for single-cell).}
 
-\item{var.to.use}{Variable from \code{colData(fcs.SCE)} for calculating the normalization (only if \code{norm.method = "harmony}).}
+\item{var.to.use}{Variable from \code{colData(fcs.SCE)} for calculating the normalization (only if \code{norm.method = "harmony"}).}
 
 \item{norm.matrix.name}{New normalized matrix name (it will stored within the \code{FCS.SE} object). Default = \code{"normalized"}.}
 }
