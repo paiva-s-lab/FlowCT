@@ -22,24 +22,30 @@
 #' fcs2 <- read.FCSset(directory = "../data", pattern = ".LMD", num.threads = 4)
 #' }
 
-read.FCSset <- function(filelist = NULL, directory = getwd(), pattern = ".fcs$", 
+read.FCSset <- function(filelist = NULL, directory = getwd(), pattern = ".fcs$",
                         events = "all", dataset = 1, num.threads = NULL){
   set.seed(333)
   if(is.null(filelist)) print(filelist <- list.files(path = directory, pattern = pattern, full.names = T))
-  
+
   if(Sys.info()[1] == "Windows") require(parallelsugar) #devtools::github_install('nathanvan/parallelsugar')
-  if(events == "all"){
-  	fcs <- as.flowSet(read.ncdfFlowSet(filelist, emptyValue = FALSE, transformation = FALSE, truncate_max_range = FALSE, 
-                                which.lines = NULL, dataset = dataset, mc.cores = num.threads))
-  	}else{
-	fcs <- as.flowSet(read.ncdfFlowSet(filelist, emptyValue = FALSE, transformation = FALSE, truncate_max_range = FALSE, 
-                                which.lines = events, dataset = dataset, mc.cores = num.threads))
-  	}
+  suppressMessages(fcs <- as.flowSet(read.ncdfFlowSet(filelist, emptyValue = FALSE, transformation = FALSE, truncate_max_range = FALSE,
+                                                      which.lines = NULL, dataset = dataset, mc.cores = num.threads)))
+
+  ## downsample FCS
+  if(events != "all"){
+    for(i in fcs@phenoData@data$name){
+      if(nrow(fcs[[i]]) < events){
+        warning("Filename", i, "has a lower number of events than specified through 'events', all will be read!", call. = F, immediate. = T)
+      }else{
+        fcs[[i]] <- fcs[[i]][sample(nrow(fcs[[i]]), events)]
+      }
+    }
+  }
 
   ## check if any FCS files is wrongly read...
   wrong <- fsApply(fcs, function(x) sum(apply(exprs(x), 2, is.na)))[,1]
   wrong <- names(wrong)[wrong != 0]
-    
+
   if(length(wrong) != 0){
     cat("These files had some troubles in being read, please check them!:", paste(wrong, collapse = ","))
     fcs <- fcs[!grepl(paste(wrong, collapse = "|"), sampleNames(fcs))]
