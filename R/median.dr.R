@@ -16,7 +16,8 @@
 #' @keywords median expression values
 #' @keywords kmeans
 #' @export median.dr
-#' @import ggfortify
+#' @import ggplot2
+#' @importFrom ggfortify autoplot
 #' @importFrom SummarizedExperiment assay
 #' @importFrom utils capture.output
 #' @importFrom stats kmeans
