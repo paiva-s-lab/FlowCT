@@ -35,7 +35,7 @@ read.FCSset <- function(filelist = NULL, directory = getwd(), pattern = ".fcs$",
   if(events != "all"){
     for(i in fcs@phenoData@data$name){
       if(nrow(fcs[[i]]) < events){
-        warning("Filename", i, "has a lower number of events than specified through 'events', all will be read!", call. = F, immediate. = T)
+        warning("Filename: ", i, " has a lower number of events than specified through 'events', all will be read!", call. = F, immediate. = T)
       }else{
         fcs[[i]] <- fcs[[i]][sample(nrow(fcs[[i]]), events)]
       }
