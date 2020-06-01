@@ -37,7 +37,7 @@ dim.reduction <- function(data, assay.i = "normalized", markers.to.use = "all", 
     if(length(markers.to.use) == 1 && markers.to.use == "all") markers.to.use <- rownames(data)
     data1 <- t(assay(data, i = assay.i))[,markers.to.use]
   }else{
-    if(length(markers.to.use) == 1 && markers.to.use == "all") markers.to.use <- rownames(data)
+    if(length(markers.to.use) == 1 && markers.to.use == "all") markers.to.use <- colnames(data)
     data1 <- data[,markers.to.use]
   }
 
@@ -61,13 +61,13 @@ dim.reduction <- function(data, assay.i = "normalized", markers.to.use = "all", 
     colnames(drs[[drname]]) <- paste0("umap", c(1:2))
   }
 
-  ## combine DRs if another DR has been calculated
-  if(length(names(data@int_colData@listData$reducedDims)) != 0){
-    isecDR <- intersect(names(drs), names(data@int_colData@listData$reducedDims))
-    drs <- c(as.list(data@int_colData@listData$reducedDims), drs[!grepl(paste(isecDR, collapse = "|"), names(drs))])
-  }
-
   if(class(data)[1] == "SingleCellExperiment"){
+    ## combine DRs if another DR has been calculated
+    if(length(names(data@int_colData@listData$reducedDims)) != 0){
+      isecDR <- intersect(names(drs), names(data@int_colData@listData$reducedDims))
+      drs <- c(as.list(data@int_colData@listData$reducedDims), drs[!grepl(paste(isecDR, collapse = "|"), names(drs))])
+    }
+
     reducedDims(data) <- drs
     return(data)
   }else{
