@@ -33,8 +33,8 @@
 
 dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), color.by = "expression", facet.by = NULL, omit.markers = NULL, title = "", label.by = NULL, size = 1, raster = c(F, 1000), return.df = F, colors = NULL){
   if(class(data)[1] == "SingleCellExperiment"){
-    if(is.na(match(tolower(plot.dr), tolower(names(data@int_colData@listData$reducedDims))))) stop('Please, indicate one previously DR calculated: PCA, tSNE or UMAP.\n', call. = F)
-    dr_calculated <- match(tolower(plot.dr), tolower(names(data@int_colData@listData$reducedDims)))
+    if(!any(grepl(tolower(plot.dr), tolower(names(data@int_colData@listData$reducedDims))))) stop('Please, indicate one previously DR calculated: PCA, tSNE or UMAP.\n', call. = F)
+    dr_calculated <- names(data@int_colData@listData$reducedDims)[grepl(tolower(plot.dr), tolower(names(data@int_colData@listData$reducedDims)))]
     dr <- data@int_colData@listData$reducedDims@listData[[dr_calculated]][,dims]
     colnames(dr) <- paste0("dr", dims)
 
