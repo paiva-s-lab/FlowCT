@@ -9,6 +9,8 @@
 \arguments{
   \item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}. By default, the matrix used is the \code{arcsinh} transformed.}
 
+  \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.}
+
   \item{x.axis}{Vector of markers to draw x-axis on the dotplots. Length must be the same of \code{y.axis} because each marker has its parter in \code{y.axis}.}
 
   \item{y.axis}{Vector of markers to draw y-axis on the dotplots. Length must be the same of \code{x.axis} because each marker has its parter in \code{x.axis}.}
@@ -20,7 +22,7 @@
   \item{select.values.color}{Vector of values taken from \code{color.by} option to include in the coloring. Default = \code{"all"}.}
 
   \item{size}{Point (event) size. Default = \code{0.5}.}
-  
+
   \item{colors}{Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).}
 }
 \description{

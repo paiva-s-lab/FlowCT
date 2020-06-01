@@ -2,6 +2,7 @@
 #'
 #' It draws the classical flow cytometry dotplot faceting two markers. Multiple dot plots can be plotted if \code{x.axis} and \code{y.axis} are specified with multiple markers.
 #' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}. By default, the matrix used is the \code{arcsinh} transformed.
+#' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.
 #' @param x.axis Vector of markers to draw x-axis on the dotplots. Length must be the same of \code{y.axis} because each marker has its parter in \code{y.axis}.
 #' @param y.axis Vector of markers to draw y-axis on the dotplots. Length must be the same of \code{x.axis} because each marker has its parter in \code{x.axis}.
 #' @param densities Logical indicating if densities must be drawn in each plot. Default = \code{TRUE}.
@@ -24,8 +25,8 @@
 #'     color.by = "SOM", select.values.color = 1:10)
 #' }
 
-flowplot <- function(fcs.SCE, x.axis, y.axis, densities = T, color.by, select.values.color = "all", size = 0.5, colors = NULL){
-  data <- as.data.frame(cbind(colData(fcs.SCE), t(assay(fcs.SCE, "transformed"))))
+flowplot <- function(fcs.SCE, assay.i = "normalized", x.axis, y.axis, densities = T, color.by, select.values.color = "all", size = 0.5, colors = NULL){
+  data <- as.data.frame(cbind(colData(fcs.SCE), t(assay(fcs.SCE, assay.i))))
 
   ## filter data
   if(length(select.values.color) == 1 && select.values.color == "all") select.values.color <- unique(data[,color.by])
