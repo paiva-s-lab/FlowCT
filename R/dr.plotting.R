@@ -6,6 +6,7 @@
 #' @param plot.dr String indicating the desired DR to plot (this indicated DR should be prevoulsy calculated to being plotted).
 #' @param n.dims Vector indicating the two DR components to plot. Default = \code{c(1,2)} (by now, these are the only dims allowed).
 #' @param color.by Variable from (from \code{colData(fcs.SCE)}) for dots coloring. If \code{color.by = "expression"} (default), plot will be splitted for each marker (\code{facet.by}).
+#' @param shape.by Variable from (from \code{colData(fcs.SCE)}) for dots shaping. Default = \code{NULL}.
 #' @param facet.by Variable from (from \code{colData(fcs.SCE)}) for plot spliting. Default = \code{NULL}.
 #' @param omit.markers Vector with markers to omit when plotting with \code{color.by = "expression"}. Default = \code{NULL}.
 #' @param title Title to add to the plot.
@@ -31,7 +32,7 @@
 #' dr <- dr.plotting(fcs, plot.dr = "PCA", color.by = "SOM", facet.by = "condition", return.df = T)
 #' }
 
-dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), color.by = "expression", facet.by = NULL, omit.markers = NULL, title = "", label.by = NULL, size = 1, raster = c(F, 1000), return.df = F, colors = NULL){
+dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), color.by = "expression", shape.by = NULL, facet.by = NULL, omit.markers = NULL, title = "", label.by = NULL, size = 1, raster = c(F, 1000), return.df = F, colors = NULL){
   if(class(data)[1] == "SingleCellExperiment"){
     if(!any(grepl(tolower(plot.dr), tolower(names(data@int_colData@listData$reducedDims))))) stop('Please, indicate one previously DR calculated: PCA, tSNE or UMAP.\n', call. = F)
     dr_calculated <- names(data@int_colData@listData$reducedDims)[grepl(tolower(plot.dr), tolower(names(data@int_colData@listData$reducedDims)))]

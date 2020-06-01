@@ -5,7 +5,7 @@
 \title{dr.plotting}
 \usage{
 dr.plotting(data, assay.i = "normalized", plot.dr, dims = c(1, 2),
-  color.by = "expression", facet.by = NULL, omit.markers = NULL,
+  color.by = "expression", shape.by = NULL, facet.by = NULL, omit.markers = NULL,
   title = "", label.by = NULL, size = 2, raster = c(FALSE, 1000),
   return.df = FALSE, colors = NULL)
 }
@@ -17,6 +17,8 @@ dr.plotting(data, assay.i = "normalized", plot.dr, dims = c(1, 2),
 \item{plot.dr}{String indicating the desired DR to plot (this indicated DR should be prevoulsy calculated to being plotted).}
 
 \item{color.by}{Variable from (from \code{colData(fcs.SCE)}) for dots coloring. If \code{color.by = "expression"} (default), plot will be splitted for each marker (\code{facet.by}).}
+
+\item{shape.by}{Variable from (from \code{colData(fcs.SCE)}) for dots shaping. Default = \code{NULL}.}
 
 \item{facet.by}{Variable from (from \code{colData(fcs.SCE)}) for plot spliting. Default = \code{NULL}.}
 
