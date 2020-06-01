@@ -64,11 +64,24 @@ dim.reduction <- function(data, assay.i = "normalized", markers.to.use = "all", 
   if(class(data)[1] == "SingleCellExperiment"){
     ## combine DRs if another DR has been calculated
     if(length(names(data@int_colData@listData$reducedDims)) != 0){
-      isecDR <- intersect(names(drs), names(data@int_colData@listData$reducedDims))
-      drs <- c(as.list(data@int_colData@listData$reducedDims), drs[!grepl(paste(isecDR, collapse = "|"), names(drs))])
-    }
+      if(data@int_colData@listData$reducedDims@metadata$DR_assay != assay.i){
+        warning("You are using a different assay.i than previous calculated DR, results will be overwritten with this new assay")
+        reducedDims(data) <- NULL
+        reducedDims(data) <- drs
+        data@int_colData@listData$reducedDims@metadata$DR_assay <- assay.i #assay used for DR
 
+        return(data)
+      }
+      isecDR <- intersect(names(drs), names(data@int_colData@listData$reducedDims))
+      if(length(isecDR) == 0){
+        drs <- c(as.list(data@int_colData@listData$reducedDims), drs)
+      }else{
+        drs <- c(as.list(data@int_colData@listData$reducedDims), drs[!grepl(paste(isecDR, collapse = "|"), names(drs))])
+      }
+    }
     reducedDims(data) <- drs
+    data@int_colData@listData$reducedDims@metadata$DR_assay <- assay.i #assay used for DR
+
     return(data)
   }else{
     return(drs)
