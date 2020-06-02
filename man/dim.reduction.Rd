@@ -5,7 +5,7 @@
 \title{dim.reduction}
 \usage{
 \method{dim}{reduction}(data, assay.i = "normalized",
-  markers.to.use = "all", dr.method, num.threads = NULL,
+  markers.to.use = "all", dr.method, dr.suffix = "default", num.threads = NULL,
   perplexity.tsne = 100, n.neighbors.umap = 50)
 }
 \arguments{
@@ -17,7 +17,9 @@
 
 \item{dr.method}{DR method to calculate. Possible values are "PCA", "tSNE" and/or "UMAP".}
 
-\item{num.threads}{Number of threads for DR calculus. If \code{NULL} (default), all cores available minus one will be used.}
+\item{dr.suffix}{Suffix to add to DR calculation and avoid results overwritting. If \code{dr.suffix = "default"} (default option), an additional tag with DR internal parameters will be added to DR name (e.g., "tSNE.px100" would refer to tSNE calculation with a perplexity value of 100); if \code{dr.suffix = "none"}, only DR name will be kept, and if user specifies a suffix, it will be added to DR name in a similar way to "default" option.}
+
+\item{num.threads}{Number of threads for DR calculus. If \code{NULL} (default), all cores available minus one will be used. If this option is enable, reproducibility could be comprised.}
 
 \item{perplexity.tsne}{Value for perplexity parameter in tSNE calculation (\href{https://distill.pub/2016/misread-tsne/}{more information}). Default = \code{100}.}
 
