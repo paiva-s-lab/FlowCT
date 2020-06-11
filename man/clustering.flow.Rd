@@ -26,7 +26,6 @@
   \item{seurat.dims}{Number of dimensions to calculated with Seurat's method. Default = \code{1:10}.}
 }
 
-}
 \description{
   This function offers multiple automatic clustering methods for a \code{FCS.SCE} object. Those methods available are: \enumerate{
   \item SOM: Self-Organizing Map (SOM) based on \href{https://github.com/SofieVG/FlowSOM}{\code{FlowSOM} package}.
