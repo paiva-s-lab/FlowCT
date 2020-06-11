@@ -17,8 +17,8 @@
 #' @export clustering.flow
 #' @import FlowSOM
 #' @import Seurat
-#' @import Rphenograph
 #' @import reticulate
+#' @importFrom Rphenograph Rphenograph
 #' @importFrom ConsensusClusterPlus ConsensusClusterPlus
 #' @importFrom SummarizedExperiment colData assay
 #' @examples
