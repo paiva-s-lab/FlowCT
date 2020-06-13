@@ -1,4 +1,4 @@
-Package: FlowCT.v2
+Package: FlowCT.devel
 Type: Package
 Title: A semi-automated workflow for deconvolution of immunophenotypic data and objective reporting on large datasets
 Version: 2.1
