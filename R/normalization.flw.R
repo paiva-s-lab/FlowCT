@@ -44,6 +44,7 @@ normalization.flw <- function(fcs.SCE, assay.i = "transformed", marker.to.norm, 
     }
     norm_data <- t(fsApply(data, exprs))
   }else if(norm.method == "harmony"){
+    require(harmony)
     norm_data <- HarmonyMatrix(data_mat = assay(fcs.SCE, assay.i), meta_data = colData(fcs.SCE),
                                vars_use = var.to.use, do_pca = F, verbose = F)
   }else{
