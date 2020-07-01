@@ -30,7 +30,7 @@ multidensity <- function(fcs.SCE, assay.i, show.markers = "all", color.by = NULL
   if(!is.null(subsampling)) suppressMessages(fcs.SCE <- sub.samples(fcs.SCE, subsampling = subsampling))
 
   data <- t(assay(fcs.SCE, i = assay.i))
-  data2 <- merge(data, colData(fcs.SCE), by = "row.names")[,-1]
+  data2 <- cbind(data, colData(fcs.SCE))
 
   # prepare tables: for plotting and with median values for each marker
   median_df <- data.frame(antigen = show.markers, median = apply(data[,show.markers], 2, median))
