@@ -44,7 +44,7 @@ unify.FCSheaders <- function(filelist = NULL, directory = getwd(), pattern = ".f
     mnames <- append(mnames, paste(colnames(aux), collapse = ", "))
   }
   
-  tm <- melt(as.data.table(table(mnames)))
+  tm <- as.data.frame(table(mnames))
   colnames(tm) <- c("names", "freq")
   tm$length <- sapply(tm$names, function(x) length(strsplit(as.character(x), ", ")[[1]]))
   tm <- tm[order(tm$freq, decreasing = T),]
