@@ -14,7 +14,7 @@
 #' @return The final output if \code{fix = F} is a table with three columns: \code{names} for channels, \code{freq} for frequency of apparition of these channel names and \code{length} for number of channels within that frequency.
 #' @return If \code{fix = TRUE}, those FCS files with a distinct header from selected frequency will be renamed/reordered, added with the suffix \code{fixed.fcs} and the original ones (unchanged) will be stored in a new \code{original_files} folder. In the case a FCS would have a different number of channels, it will moved to a new folder called \code{discarded_files_because_diffs} and dicarded from downstream analysis (this will be changed in the future).
 #' @export
-#' @importFrom flowCore read.FCS write.FCS
+#' @importFrom flowCore read.FCS write.FCS colnames
 #' @importFrom data.table melt as.data.table
 #' @importFrom progress progress_bar
 #' @importFrom filesstrings file.move
