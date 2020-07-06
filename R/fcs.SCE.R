@@ -1,6 +1,6 @@
 #' Read multiple FCS files and create a \code{fcs.SCE} object
 #'
-#' It reads and creates a \code{fcs.SCE} object (based on the \href{https://www.bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html}{\code{SummarizedExperiment} class}) from FCS files in a specific folder or indicated in a vector.
+#' It reads and creates a \code{fcs.SCE} object (based on the \href{https://www.bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html}{\code{SummarizedExperiment} class}) from FCS files in a specific folder or indicated in a vector. Important note: all files should have an identicar header (i.e., same name and markers order), if not only those common will be read (you can use \code{\link[FlowCT.v2:unify.FCSheaders]{FlowCT.v2::unify.FCSheaders()}} for doing that).
 #' @param filelist A vector with full path of FCS files to be read, commonly generated through \code{\link[base:list.files]{base::list.files()}}. If \code{NULL}, this file list will be generated as indicated below.
 #' @param directory If \code{filelist = NULL}, those files stored in this location will be read. Default = \code{getwd()} (current directory).
 #' @param pattern Pattern for reading files within \code{directory}. Default = \code{"fcs"}.
@@ -39,25 +39,25 @@ fcs.SCE <- function(filelist = NULL, directory = getwd(), pattern = ".fcs$", eve
   fcs <- suppressMessages(read.FCSset(filelist, directory, pattern, events = events, dataset, num.threads))
   raw_data <- fsApply(fcs, exprs)
   colnames(raw_data) <- paste0(fcs[[1]]@parameters@data$name, ":", fcs[[1]]@parameters@data$desc)
-  
+
   # build sc metada
   col_data <- suppressMessages(scMetadata.fromFCS(fcs, metadata, add.exprs = F))
-  
+
   # transformation
   if(!is.null(transformation)){
     if(transformation != "arcsinh"){
       cat("Sorry, the only transformation method available (yet) is 'arcsinh'")
     }
     transf_data <- asinh(raw_data/transf.cofactor)
-    colnames(transf_data) <- paste0(fcs[[1]]@parameters@data$name, ":", fcs[[1]]@parameters@data$desc)      
+    colnames(transf_data) <- paste0(fcs[[1]]@parameters@data$name, ":", fcs[[1]]@parameters@data$desc)
   }
-  
+
   # build SingleCellExperiment object
-  fcs.SCE <- SingleCellExperiment(assays = list(raw = t(raw_data), transformed = t(transf_data)), colData = col_data, 
+  fcs.SCE <- SingleCellExperiment(assays = list(raw = t(raw_data), transformed = t(transf_data)), colData = col_data,
                           # additional info
-                          metadata = list(project_name = project.name, 
-                                          input_fcs = as.vector(unique(fcs@phenoData@data$name)), 
+                          metadata = list(project_name = project.name,
+                                          input_fcs = as.vector(unique(fcs@phenoData@data$name)),
                                           reduced_metadata = metadata))
- 
-  return(fcs.SCE)  
+
+  return(fcs.SCE)
 }

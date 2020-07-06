@@ -21,7 +21,7 @@ read.FCSset(filelist = NULL, directory = getwd(), pattern = ".fcs$",
 \item{num.threads}{Number of threads for reading the FCS files. For Windows users, you should to install \code{parallelsugar} package from (\href{https:https://github.com/nathanvan/parallelsugar}{Nathanvan's GitHub}). Defult = \code{NULL} (i.e., not parallelization).}
 }
 \description{
-It reads multiple FCS files (in a computationaly-distributed way) contained in a specific folder or given through a vector.
+It reads multiple FCS files (in a computationaly-distributed way) contained in a specific folder or given through a vector. Important note: all files should have an identicar header (i.e., same name and markers order), if not only those common will be read (you can use \code{\link[FlowCT.v2:unify.FCSheaders]{FlowCT.v2::unify.FCSheaders()}} for doing that).
 }
 \examples{
 \dontrun{

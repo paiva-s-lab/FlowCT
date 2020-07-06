@@ -31,7 +31,7 @@ fcs.SCE(filelist = NULL, directory = getwd(), pattern = ".fcs$",
 \item{project.name}{String naming the \code{fcs.SCE} generated. Default = \code{"noname"}.}
 }
 \description{
-It reads and creates a \code{fcs.SCE} object (based on the \href{https://www.bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html}{\code{SummarizedExperiment} class}) from FCS files in a specific folder or indicated in a vector.
+It reads and creates a \code{fcs.SCE} object (based on the \href{https://www.bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html}{\code{SummarizedExperiment} class}) from FCS files in a specific folder or indicated in a vector. Important note: all files should have an identicar header (i.e., same name and markers order), if not only those common will be read (you can use \code{\link[FlowCT.v2:unify.FCSheaders]{FlowCT.v2::unify.FCSheaders()}} for doing that).
 }
 \examples{
 \dontrun{
