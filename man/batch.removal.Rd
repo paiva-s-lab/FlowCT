@@ -5,7 +5,7 @@
 \title{Remove batch effect}
 \usage{
   batch.removal(fcs.SCE, assay.i = "transformed", method, batch,
-  new.matrix.name = "normalized", nfeatures = 10, dims = 1:10,
+  new.matrix.name = "normalized", harmony.params = NULL, seurat.params = NULL,
   threads = NULL)
 
 }
@@ -14,28 +14,31 @@
 
   \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"transformed"}.}
 
-  \item{method}{Methodology to perform batch correction. Possible values are "CCA" or "harmony".}
+  \item{method}{Methodology to perform batch correction. Possible values are "Seurat" or "harmony".}
 
   \item{batch}{Variable name from \code{colData(FCS.SCE)} object to remove batch effect.}
 
   \item{new.matrix.name}{New normalized matrix name (it will stored within the \code{FCS.SE} object). Default = \code{"normalized"}.}
 
-  \item{nfeatures}{Number of features (markers) to select as top variable features. Default = \code{10}.}
+  \item{harmony.params}{List with those options from original \code{\link[harmony:HarmonyMatrix]{harmony::HarmonyMatrix()}} function that user wants to customize. Default, harmony's default ones.}
 
-  \item{dims}{Number of dimensions to calculated with CCA's method. Default = \code{1:10}.}
+  \item{seurat.params}{List with those options from original \code{\link[Seurat:FindIntegrationAnchors]{Seurat::FindIntegrationAnchors()}} function that user wants to customize. Default, Seurat's default ones except \code{dims = 1:10} and \code{reduction = "rpca"} (the other option is "cca", but slower for typical flow cytometry dataset sizes).}
 
   \item{threads}{Number of threads for multithreading. Default = \code{NULL} (i.e., all cores minus one).}
 }
 \description{
   It removes posible batch effects present in multiple FCS stored in a \code{FCS.SCE} object. It based on: \enumerate{
-    \item Seurat's Canonical Correlation Analysis (CCA), see the \href{https://satijalab.org/seurat/Seurat_AlignmentTutorial.html}{tutorial} for more information.
+    \item Seurat's Canonical Correlation Analysis (CCA) or Reciprocal PCA (RPCA), see the \href{https://satijalab.org/seurat/Seurat_AlignmentTutorial.html}{tutorial} for more information (another \href{https://satijalab.org/seurat/v3.0/integration.html}{one}).
     \item \href{https://portals.broadinstitute.org/harmony/}{Harmony}'s methodology.}
 }
 \examples{
 \dontrun{
 fcs <- batch.removal(fcs, method = "harmony", batch = "patient_id", new.matrix.name = "harmony")
-fcs <- batch.removal(fcs, method = "cca", batch = "patient_id", new.matrix.name = "cca")
-}
+fcs <- batch.removal(fcs, method = "harmony", batch = "patient_id", new.matrix.name = "harmony",
+            harmony.params = list(plot_convergence = T)) #to see optimal number of iterations in harmony
+fcs <- batch.removal(fcs, method = "seurat", batch = "patient_id", seurat.params = list(reduction = "cca"))
+fcs <- batch.removal(fcs, method = "seurat", batch = "patient_id",
+            seurat.params = list(reduction = "cca", dims = 1:50))
 }
 \keyword{alignment}
 \keyword{dataset}
