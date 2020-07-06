@@ -40,6 +40,7 @@ fcs <- batch.removal(fcs, method = "seurat", batch = "patient_id", seurat.params
 fcs <- batch.removal(fcs, method = "seurat", batch = "patient_id",
             seurat.params = list(reduction = "cca", dims = 1:50))
 }
+}
 \keyword{alignment}
 \keyword{dataset}
 \keyword{canonical}
