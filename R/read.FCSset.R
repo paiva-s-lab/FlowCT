@@ -25,7 +25,8 @@
 read.FCSset <- function(filelist = NULL, directory = getwd(), pattern = ".fcs$",
                         events = "all", dataset = 1, num.threads = NULL){
   set.seed(333)
-  if(is.null(filelist)) print(filelist <- list.files(path = directory, pattern = pattern, full.names = T))
+  if(is.null(filelist)) filelist <- list.files(path = directory, pattern = pattern, full.names = T)
+  print(basename(filelist))
 
   if(Sys.info()[1] == "Windows") require(parallelsugar) #devtools::github_install('nathanvan/parallelsugar')
   suppressMessages(fcs <- as.flowSet(read.ncdfFlowSet(filelist, emptyValue = FALSE, transformation = FALSE, truncate_max_range = FALSE,
