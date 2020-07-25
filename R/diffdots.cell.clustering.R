@@ -22,17 +22,21 @@
 #' diffDots.cell.clustering(fcs.SCE = fcs, cell.clusters = fcs$SOM_named, return.stats = F)
 #' }
 
-diffdots.cell.clustering <- function(fcs.SCE, assay.i = "normalized", cell.clusters, condition.column, psig.cutoff = 0.05, return.stats = T, colors = NULL){
+diffdots.cell.clustering <- function(fcs.SCE.SCE, assay.i = "normalized", cell.clusters, condition.column, psig.cutoff = 0.05, return.stats = T, colors = NULL){
   ## prepare tables
-  prop_table <- as.data.frame.matrix(t(barplot.cell.pops(fcs.SCE, cell.clusters, count.by = "filename", plot = F, assay.i = "normalized")))
+  prop_table <- as.data.frame.matrix(t(barplot.cell.pops(fcs.SCE, cell.clusters, count.by = "filename", plot = F, assay.i = assay.i)))
   
   prop_table_md <- merge(fcs.SCE@metadata$reduced_metada, prop_table, by.x = "filename", by.y = "row.names")
   
   dfm <- as.data.frame(melt(as.data.table(prop_table_md), measure.vars = as.vector(unique(cell.clusters))))
   dfma <- aggregate(dfm$value ~ dfm$variable + dfm[,condition.column], FUN = median)
-  colnames(dfma) <- c("variable", condition.column, "value")
+  colnames(dfma) <- c("variable", "condition", "value")
   dfma <- transform(dfma, pct = log(ave(dfma$value, dfma[,condition.column], FUN = function(x) x/sum(x)*100))) #transform to percentaje
   
+  ## keep original factor order for plotting
+  dfma$condition <- factor(dfma$condition, levels = levels(fcs.SCE[[condition.column]]))
+  dfma$variable <- factor(dfma$variable, levels = levels(cell.clusters))
+
   conditions <- unique(dfma[,condition.column])
   
   ## statistics table
