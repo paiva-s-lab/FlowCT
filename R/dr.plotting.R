@@ -5,7 +5,7 @@
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.
 #' @param plot.dr String indicating the desired DR to plot (this indicated DR should be prevoulsy calculated to being plotted).
 #' @param n.dims Vector indicating the two DR components to plot. Default = \code{c(1,2)} (by now, these are the only dims allowed).
-#' @param color.by Variable from (from \code{colData(fcs.SCE)}) for dots coloring. If \code{color.by = "expression"} (default), plot will be splitted for each marker (\code{facet.by}).
+#' @param color.by Variable from (from \code{colData(fcs.SCE)}) for dots coloring. If \code{color.by = "expression"} (default), plot will be automatically splitted for each marker.
 #' @param shape.by Variable from (from \code{colData(fcs.SCE)}) for dots shaping. Default = \code{NULL}.
 #' @param facet.by Variable from (from \code{colData(fcs.SCE)}) for plot spliting. Default = \code{NULL}.
 #' @param omit.markers Vector with markers to omit when plotting with \code{color.by = "expression"}. Default = \code{NULL}.
@@ -21,6 +21,7 @@
 #' @keywords UMAP
 #' @export
 #' @import ggplot2
+#' @import cowplot
 #' @importFrom grDevices colorRampPalette
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom data.table melt as.data.table
@@ -46,38 +47,54 @@ dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), co
     drmd <- data
   }
 
-  if(color.by == "expression") drmd <- as.data.frame(melt(as.data.table(drmd), measure.vars = no.omit.markers, value.name = "expression", variable.name = "antigen"))
-  if(is.null(colors)) colors <- div.colors(length(unique(drmd[,color.by])))
+  if(color.by != "expression"){
+    if(is.null(colors)) colors <- div.colors(length(unique(drmd[,color.by])))
+    g <- ggplot(drmd, aes_string(x = paste0("dr", dims[1]), y = paste0("dr", dims[2]), color = color.by)) +
+      xlab(paste0(toupper(plot.dr), "-1")) + ylab(paste0(toupper(plot.dr), "-2")) + ggtitle(title) +
+      theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+            panel.background = element_blank(), panel.border = element_rect(color = "black", fill = NA))
 
-  g <- ggplot(drmd, aes_string(x = paste0("dr", dims[1]), y = paste0("dr", dims[2]), color = color.by)) +
-    xlab(paste0(toupper(plot.dr), "-1")) + ylab(paste0(toupper(plot.dr), "-2")) + ggtitle(title) +
-    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-          panel.background = element_blank(), panel.border = element_rect(color = "black", fill = NA))
+    if(raster[1]){
+      g <- g + geom_scattermore(pointsize = size, pixels = rep(raster[2], 2)) #devtools::install_github('exaexa/scattermore')
+    }else{
+      g <- g + geom_point(aes_string(color = color.by), size = size)
+    }
 
-  if(raster[1]){
-    g <- g + geom_scattermore(pointsize = size, pixels = rep(raster[2], 2)) #devtools::install_github('exaexa/scattermore')
+    if(is.numeric(drmd[,color.by])){
+      g <- g + scale_color_gradientn(colours = colorRampPalette(rev(brewer.pal(n = 11, name = "Spectral")))(50), name = color.by)
+    }else{
+      g <- g + scale_color_manual(values = colors, name = color.by) +
+        guides(color = guide_legend(override.aes = list(size = 4), ncol = 2))
+    }
+
+    if(!is.null(facet.by)) g <- g + facet_wrap(~ eval(parse(text = facet.by)))
+
+    if(!is.null(label.by)){
+      g <- g + geom_text(aes_string(label = label.by), nudge_y = 0.05)
+    }
   }else{
-    g <- g + geom_point(aes_string(color = color.by), size = size)
+    drmd <- as.data.frame(melt(as.data.table(drmd), measure.vars = no.omit.markers, value.name = "expression", variable.name = "antigen"))
+    glist <- lapply(unique(drmd$antigen), function(x){
+      g <- ggplot(drmd[drmd$antigen == x,], aes_string(x = paste0("dr", dims[1]), y = paste0("dr", dims[2]), color = "expression")) +
+        labs(x = NULL, y = NULL) + ggtitle(x) +
+        theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+              panel.background = element_blank(), panel.border = element_rect(color = "black", fill = NA))
+
+      if(raster[1]){
+        g + geom_scattermore(pointsize = size, pixels = rep(raster[2], 2)) +
+          scale_color_gradientn(colours = colorRampPalette(rev(brewer.pal(n = 11, name = "Spectral")))(50), name = NULL)
+      }else{
+        g + geom_point(aes_string(color = color.by), size = size) +
+          scale_color_gradientn(colours = colorRampPalette(rev(brewer.pal(n = 11, name = "Spectral")))(50), name = NULL)
+      }
+
+    })
+    g <- do.call(plot_grid, glist)
+    ## add general title
+    title <- ggdraw() + draw_label(plot.dr, fontface = 'bold', x = 0, hjust = 0) +
+      theme(plot.margin = margin(0, 0, 0, 7))
+    g <- plot_grid(title, g, ncol = 1, rel_heights = c(0.1, 1.5))
   }
 
-  if(is.numeric(drmd[,color.by])){
-    g <- g + scale_color_gradientn(colours = colorRampPalette(rev(brewer.pal(n = 11, name = "Spectral")))(50), name = color.by)
-  }else{
-    g <- g + scale_color_manual(values = colors, name = color.by) +
-      guides(color = guide_legend(override.aes = list(size = 4), ncol = 2))
-  }
-
-  if(!is.null(facet.by)){
-    g <- g + facet_wrap(~ eval(parse(text = facet.by)))
-  }else if(color.by == "expression" & is.null(facet.by)){
-    g <- g + facet_wrap(~ antigen)
-  }
-
-  if(!is.null(label.by)){
-    g <- g + geom_text(aes_string(label = label.by), nudge_y = 0.05)
-  }
-
-  print(g)
-  if(return.df) return(drmd)
+  if(return.df) return(list(data = drmd, plot = g)) else return(g)
 }
-

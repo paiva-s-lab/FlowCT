@@ -16,7 +16,7 @@ dr.plotting(data, assay.i = "normalized", plot.dr, dims = c(1, 2),
 
 \item{plot.dr}{String indicating the desired DR to plot (this indicated DR should be prevoulsy calculated to being plotted).}
 
-\item{color.by}{Variable from (from \code{colData(fcs.SCE)}) for dots coloring. If \code{color.by = "expression"} (default), plot will be splitted for each marker (\code{facet.by}).}
+\item{color.by}{Variable from (from \code{colData(fcs.SCE)}) for dots coloring. If \code{color.by = "expression"} (default), plot will be automatically splitted for each marker.}
 
 \item{shape.by}{Variable from (from \code{colData(fcs.SCE)}) for dots shaping. Default = \code{NULL}.}
 
