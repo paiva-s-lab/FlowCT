@@ -50,16 +50,16 @@ median.dr <- function(fcs.SCE, assay.i = "normalized", markers.to.use = "all", d
     # drmd <- merge(mdk, dr[[1]], by = "row.names")[-1]
     drmd <- cbind(mdk, dr[[1]])
     if(!kmeans.frame){
-      dr.plotting(drmd, plot.dr = dr.method, color.by = color.by, shape.by = shape.by, label.by = label.by,
+      g <- dr.plotting(drmd, plot.dr = dr.method, color.by = color.by, shape.by = shape.by, label.by = label.by,
                   size = size, raster = F)
     }else{
-      print(ggplot(drmd, aes_string("dr1", "dr2", color = paste0("kmeans", ".k", num.k), shape = shape.by)) +
+      g <- ggplot(drmd, aes_string("dr1", "dr2", color = paste0("kmeans", ".k", num.k), shape = shape.by)) +
               geom_point() +
               stat_ellipse(geom = "polygon", alpha = 1/4, type = "t", level = 0.8,
                            inherit.aes = F, aes_string("dr1", "dr2", fill = paste0("kmeans", ".k", num.k),
                                                        color = paste0("kmeans", ".k", num.k))) +
               theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-                    panel.background = element_blank(), panel.border = element_rect(color = "black", fill = NA)))
+                    panel.background = element_blank(), panel.border = element_rect(color = "black", fill = NA))
     }
   }else{
     stop("Please, specify a valid reduction method: PCA, tSNE, UMAP or kmeans.", call. = F)
@@ -67,6 +67,8 @@ median.dr <- function(fcs.SCE, assay.i = "normalized", markers.to.use = "all", d
 
   if(return.DR.info){
     colnames(drmd)[grepl("dr", colnames(drmd))] <- paste0(dr.method, 1:length(grep("dr", colnames(drmd))))
-    return(drmd)
+    return(list(data = drmd, plot = g))
+  }else{
+    return(g)
   }
 }

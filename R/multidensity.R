@@ -49,13 +49,13 @@ multidensity <- function(fcs.SCE, assay.i, show.markers = "all", color.by = NULL
       theme_minimal() + theme(axis.text.x = element_text(angle = 90, hjust = 1),
                               strip.text = element_text(size = 7), axis.text = element_text(size = 5))
 
-    if(interactive) ggplotly(g) else print(g)
+    if(interactive) ggplotly(g) else return(g)
   }else{
-    suppressMessages(print(ggplot(ggdf, aes_string(x = "expression", y = "filename")) +
-                             geom_density_ridges(alpha = 0.7) +
-                             facet_wrap(~ antigen, scales = "free") +
-                             geom_vline(data = median_df, aes(xintercept = median), linetype = 2, color = "gray55") +
-                             theme_minimal() + theme(axis.text.x = element_text(angle = 90, hjust = 1),
-                                                     strip.text = element_text(size = 7), axis.text = element_text(size = 7))))
+    return(ggplot(ggdf, aes_string(x = "expression", y = "filename")) +
+             geom_density_ridges(alpha = 0.7) +
+             facet_wrap(~ antigen, scales = "free") +
+             geom_vline(data = median_df, aes(xintercept = median), linetype = 2, color = "gray55") +
+             theme_minimal() + theme(axis.text.x = element_text(angle = 90, hjust = 1),
+                                     strip.text = element_text(size = 7), axis.text = element_text(size = 7)))
   }
 }

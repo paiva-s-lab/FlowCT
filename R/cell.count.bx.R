@@ -21,21 +21,19 @@
 cell.count.bx <- function(fcs.SCE, assay.i = "normalized", x.axis, color.by = x.axis, label.by = NULL, limits = NULL, colors = NULL){
   data <- cbind(colData(fcs.SCE), t(assay(fcs.SCE, i = assay.i)))
   ggdf <- data.frame(data[!duplicated(data[,"filename"]),], cell_counts = as.numeric(table(data[,"filename"])))
-  
+
   if(is.null(limits)) limits <- c(min(ggdf$cell_counts), max(ggdf$cell_counts))
   if(is.null(colors)) colors <- div.colors(length(unique(ggdf[,color.by])))
 
   g <- ggboxplot(ggdf, x = x.axis, y = "cell_counts", fill = color.by) +
     stat_compare_means(label.x = 1.7, label.y = max(ggdf$cell_counts)) +
-    scale_y_continuous(limits = limits) + 
+    scale_y_continuous(limits = limits) +
     scale_fill_manual(values = colors) +
-    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),panel.background = element_blank(),
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(),
           axis.line = element_line(colour = "black"))+
-    geom_jitter(shape=16, position=position_jitter(0.2))
-  
-  if(!is.null(label.by)){
-    print(g + geom_label_repel(aes(label = eval(parse(text = label.by))), alpha=0.75, fontface = 'bold', color = 'black'))
-  }else{
-    print(g)
-  }
+    geom_jitter(shape = 16, position = position_jitter(0.2))
+
+  if(!is.null(label.by)) g <- g + geom_label_repel(aes(label = eval(parse(text = label.by))), alpha = 0.75, fontface = 'bold', color = 'black')
+
+  return(g)
 }
