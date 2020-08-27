@@ -74,7 +74,7 @@ clustering.flow <- function(fcs.SCE, assay.i = "normalized", method, scale = FAL
     p <- import("parc")
     pres <- p$PARC(t(assay(fcs.SCE, assay.i)))
     pres$run_PARC()
-    fcs.SCE$PARC <- unlist(pres$labels)
+    fcs.SCE$PARC <- as.factor(unlist(pres$labels))
     return(fcs.SCE)
   }else{
     stop("Please, indicate a valid method: SOM, Seurat, Phenograph or PARC", call. = F)
