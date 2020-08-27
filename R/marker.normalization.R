@@ -21,28 +21,26 @@
 #' }
 
 marker.normalization <- function(fcs.SCE, assay.i = "transformed", method, marker, new.matrix.name = "normalized"){
-  fcs <- as.flowSet.SE(fcs.SCE, assay.i = assay.i)
+  fcs1 <- as.flowSet.SE(fcs.SCE, assay.i = assay.i)
   if(method == "gauss"){
     for(i in marker){
       cat("Applying normalization to:", i, "\n")
       tryCatch(
-        {invisible(capture.output(data <- gaussNorm(fcs, i, peak.density.thr = 0.001)))},
+        {invisible(capture.output(fcs1 <- gaussNorm(fcs1, i, peak.density.thr = 0.001)$flowset))},
         error = function(e){
           message(paste0(" !Normalization adjusted to [1] landmark for this marker (", i, ")"))
-          invisible(capture.output(data <- gaussNorm(fcs, i, peak.density.thr = 0.001, max.lms = 1)))
+          invisible(capture.output(fcs1 <- gaussNorm(fcs1, i, peak.density.thr = 0.001, max.lms = 1)$flowset))
         }
       )
     }
-    norm_data <- t(fsApply(data, exprs))
   }else if(method == "warp"){
     for(i in marker){
       cat("Applying normalization to:", i, "\n")
-      invisible(capture.output(data <- warpSet(fcs, i)))
+      invisible(capture.output(fcs1 <- warpSet(fcs1, i)))
     }
-    norm_data <- t(fsApply(data, exprs))
   }else{
     stop("Please, indicate a valid normalization method: gauss or warp.", call. = F)
   }
-  assay(fcs.SCE, i = new.matrix.name) <- norm_data
+  assay(fcs.SCE, i = new.matrix.name) <- t(fsApply(fcs1, exprs))
   return(fcs.SCE)
 }
