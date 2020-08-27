@@ -27,40 +27,39 @@ export.metaFCS <- function(fcs.SCE, assay.i = "raw", output.name = NULL, output.
   if(!separate.fcs){
     # metadata adjusting
     mt <- sapply(colData(fcs.SCE), function(x) as.numeric(as.factor(x)))
-    
+
     # prepare dr object
     if(length(fcs.SCE@int_colData@listData$reducedDims) > 0){
       drs <- as.data.frame(fcs.SCE@int_colData@listData$reducedDims@listData)
     }else{
       drs <- NULL
     }
-    
+
     # combine all together
     to_export <- cbind(t(assay(fcs.SCE, i = assay.i)), mt, drs)
-    
+
     ## create FCS
     if(is.null(output.name)) output.name <- fcs.SCE@metadata$project_name
-    
-    write.FCS(as_flowFrame(as.matrix(to_export)), paste0(output.folder, "/", output.name, ".fcs", extension))
+    extension <- tail(strsplit(fcs.SCE@metadata$input_fcs[1], "\\.")[[1]], 1)
+
+    write.FCS(as_flowFrame(as.matrix(to_export)), paste0(output.folder, "/", output.name, ".", extension))
   }else{
     for(i in unique(fcs.SCE$filename)){
-      
       aux_fcs.SCE <- fcs.SCE[,fcs.SCE$filename == i]
-      
       mt <- sapply(colData(aux_fcs.SCE), function(x) as.numeric(as.factor(x)))
-      
+
       if(length(aux_fcs.SCE@int_colData@listData$reducedDims) > 0){
         drs <- as.data.frame(aux_fcs.SCE@int_colData@listData$reducedDims@listData)
       }else{
         drs <- NULL
       }
-      
+
       to_export <- cbind(t(assay(aux_fcs.SCE, i = assay.i)), mt, drs)
-      
-      
-      filename <- strsplit(basename(i), "\\.")[[1]][1]
-      cat("Saving new: ", filename, ".meta.fcs", extension, "\n", sep = "")
+      extension <- tail(strsplit(basename(i), "\\.")[[1]], 1)
+      filename <- gsub(paste0(".", extension), "", basename(i))
+
+      cat("Saving new: ", filename, ".meta.", extension, "\n", sep = "")
       write.FCS(as_flowFrame(as.matrix(to_export)), paste0(output.folder, "/", filename, ".", output.suffix, ".", extension))
     }
   }
-}                                             
+}
