@@ -61,7 +61,7 @@ clustering.flow <- function(fcs.SCE, assay.i = "normalized", method, scale = FAL
     s <- FindNeighbors(s, dims = seurat.dims)
     s <- FindClusters(s, resolution = seurat.res)
 
-    colData(fcs.SCE)[,paste0("seurat.r", seurat.res)] <- s$seurat_clusters
+    colData(fcs.SCE)[,paste0("seurat.r", seurat.res)] <- as.factor(as.numeric(as.character(s$seurat_clusters))+1)
     return(fcs.SCE)
   }else if(tolower(method) == "phenograph"){
     data <- as.matrix(t(assay(fcs.SCE, assay.i)))
@@ -74,7 +74,7 @@ clustering.flow <- function(fcs.SCE, assay.i = "normalized", method, scale = FAL
     p <- import("parc")
     pres <- p$PARC(t(assay(fcs.SCE, assay.i)))
     pres$run_PARC()
-    fcs.SCE$PARC <- as.factor(unlist(pres$labels))
+    fcs.SCE$PARC <- as.factor(as.numeric(as.character(unlist(pres$labels)))+1)
     return(fcs.SCE)
   }else{
     stop("Please, indicate a valid method: SOM, Seurat, Phenograph or PARC", call. = F)
