@@ -31,7 +31,7 @@ The final output if \code{fix = F} is a table with three columns: \code{names} f
 If \code{fix = TRUE}, those FCS files with a distinct header from selected frequency will be renamed/reordered, added with the suffix \code{fixed.fcs} and the original ones (unchanged) will be stored in a new \code{original_files} folder. In the case a FCS would have a different number of channels, it will moved to a new folder called \code{discarded_files_because_diffs} and dicarded from downstream analysis (this will be changed in the future).
 }
 \description{
-It checks if FCS files within a specific folder, or indicated in a vector, have the same header (i.e., same channels nomenclature and order) and offer the possibility to unify them creating new ones.
+It checks if FCS files within a specific folder, or indicated in a vector, have the same header (i.e., same channels:markers nomenclature and order) and offer the possibility to unify them creating new ones.
 }
 \examples{
 \dontrun{
