@@ -1,6 +1,6 @@
 #' Unify all FCS header for multiple FCS
 #'
-#' It checks if FCS files within a specific folder, or indicated in a vector, have the same header (i.e., same channels nomenclature and order) and offer the possibility to unify them creating new ones.
+#' It checks if FCS files within a specific folder, or indicated in a vector, have the same header (i.e., same channels:markers nomenclature and order) and offer the possibility to unify them creating new ones.
 #' @param filelist A vector with full path of FCS files to be read, commonly generated through \code{\link[base:list.files]{base::list.files()}}. If \code{NULL}, this file list will be generated as indicated below.
 #' @param directory If \code{filelist = NULL}, those files stored in this location will be read. Default = \code{getwd()} (current directory).
 #' @param pattern Pattern for reading files within \code{directory}. Default = \code{"fcs"}.
@@ -31,7 +31,8 @@
 #' }
 
 unify.FCSheaders <- function(filelist = NULL, directory = getwd(), pattern = ".fcs$", dataset = 1, fix = T, select.freq = 1, events = "all", view = F){
-  
+  require(filesstrings)
+
   if(is.null(filelist)) filelist <- list.files(path = directory, pattern = pattern, full.names = T)
   if(!is.null(filelist)) directory <- ""
   if(events == "all") events <- NULL
@@ -41,7 +42,7 @@ unify.FCSheaders <- function(filelist = NULL, directory = getwd(), pattern = ".f
   mnames <- c()
   for(i in 1:length(filelist)){
     aux <- read.FCS(filelist[i], dataset = dataset, emptyValue = FALSE, transformation = FALSE, truncate_max_range = FALSE, which.lines = 1)
-    mnames <- append(mnames, paste(colnames(aux), collapse = ", "))
+    mnames <- append(mnames, paste(paste0(aux@parameters@data[,1],":",aux@parameters@data[,2]), collapse = ", "))
   }
   
   tm <- as.data.frame(table(mnames))
@@ -55,15 +56,11 @@ unify.FCSheaders <- function(filelist = NULL, directory = getwd(), pattern = ".f
     if(nrow(tm) == 1){
       return(cat("All files are correctly and uniformly named!\n"))
     }else{
-      cat("--------------------------\nTable with frequency of differently named FCSs:\n")
-      if(view) View(tm) else print(tm)
+      cat(">>> Channels:makers pattern selected for correcting:\n")
+      print(as.character(tm$names[select.freq]))
       
-      if(select.freq == "ask"){
-        select.freq <- as.numeric(readline("Select a number for establishing a common marker order: "))
-        o <- strsplit(as.character(tm$names[select.freq]), ", ")[[1]]
-      }else{
-        o <- strsplit(as.character(tm$names[select.freq]), ", ")[[1]]
-      }
+      o <- list(channels = sapply(strsplit(as.character(tm$names[select.freq]), ", ")[[1]], function(x) strsplit(x, ":")[[1]][1]), 
+              markers = sapply(strsplit(as.character(tm$names[select.freq]), ", ")[[1]], function(x) strsplit(x, ":")[[1]][2]))
     } 
     
     ## detect files that not keep more abundant order and reorder/rename them
@@ -71,21 +68,21 @@ unify.FCSheaders <- function(filelist = NULL, directory = getwd(), pattern = ".f
     
     for(i in 1:length(filelist)){
       pb$tick()
-      # diff_files <- c()
       aux <- read.FCS(filelist[i], dataset = dataset, emptyValue = FALSE, transformation = FALSE, truncate_max_range = FALSE, which.lines = events)
       
-      if(!identical(o, colnames(aux))){
-        if(length(colnames(aux)) != length(o)){
+      if(!identical(paste0(o$channels, ":", o$markers), paste0(aux@parameters@data[,1],":",aux@parameters@data[,2]))){
+        if(length(colnames(aux)) != length(o$channels)){
           cat("\nFile", filelist[i], "has a some different markers or channels, it cannot be included in the analysis. Moved to 'discarded_files_because_diffs/'\n")
           dir.create(paste0(directory, "discarded_files_because_diffs"))
           suppressMessages(file.move(filelist[i], paste0(directory, "discarded_files_because_diffs")))
-          # diff_files <- append(diff_files, filelist[i])
         }else{
           dir.create(paste0(directory, "original_files"), showWarnings = F) #move files
           suppressMessages(file.move(filelist[i], paste0(directory, "original_files")))
           
-          aux@parameters@data <- aux@parameters@data[match(o, aux@parameters@data$name),] #reorder
-          colnames(aux) <- o
+          aux@parameters@data <- aux@parameters@data[match(o$channels, aux@parameters@data$name),] #reorder
+          colnames(aux) <- o$channels
+
+      aux@parameters@data$desc <- o$markers #correct marker names (once ordered)
           
           extension <- strsplit(filelist[i], "\\.")
           extension <- extension[[1]][length(extension[[1]])]
@@ -94,6 +91,7 @@ unify.FCSheaders <- function(filelist = NULL, directory = getwd(), pattern = ".f
       }
       Sys.sleep(1/100)
     }
+  
   }else{
     if(view) View(tm) else print(tm)
   }
