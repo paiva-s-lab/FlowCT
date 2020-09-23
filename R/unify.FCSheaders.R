@@ -78,9 +78,10 @@ unify.FCSheaders <- function(filelist = NULL, directory = getwd(), pattern = ".f
           suppressMessages(file.move(filelist[i], paste0(directory, "original_files")))
           
           aux@parameters@data <- aux@parameters@data[match(o$channels, aux@parameters@data$name),] #reorder
+          aux@exprs <- aux@exprs[,o$channels]
           colnames(aux) <- o$channels
 
-      aux@parameters@data$desc <- o$markers #correct marker names (once ordered)
+          aux@parameters@data$desc <- o$markers #correct marker names (once ordered)
           
           extension <- strsplit(filelist[i], "\\.")
           extension <- extension[[1]][length(extension[[1]])]
