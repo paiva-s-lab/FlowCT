@@ -31,8 +31,6 @@
 #' }
 
 unify.FCSheaders <- function(filelist = NULL, directory = getwd(), pattern = ".fcs$", dataset = 1, fix = T, select.freq = 1, events = "all", view = F){
-  require(filesstrings)
-
   if(is.null(filelist)) filelist <- list.files(path = directory, pattern = pattern, full.names = T)
   if(!is.null(filelist)) directory <- ""
   if(events == "all") events <- NULL
