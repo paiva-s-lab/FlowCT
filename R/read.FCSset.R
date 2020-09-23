@@ -24,6 +24,9 @@
 
 read.FCSset <- function(filelist = NULL, directory = getwd(), pattern = ".fcs$",
                         events = "all", dataset = 1, num.threads = NULL){
+  require(ncdfFlow)
+  require(flowCore)
+
   set.seed(333)
   if(is.null(filelist)) filelist <- list.files(path = directory, pattern = pattern, full.names = T)
   print(basename(filelist))
@@ -43,13 +46,16 @@ read.FCSset <- function(filelist = NULL, directory = getwd(), pattern = ".fcs$",
     }
   }
 
-  ## check if any FCS files is wrongly read...
+  ## check NA events because previous flow cytometer exporting errors
   wrong <- fsApply(fcs, function(x) sum(apply(exprs(x), 2, is.na)))[,1]
   wrong <- names(wrong)[wrong != 0]
 
-  if(length(wrong) != 0){
-    cat("These files had some troubles in being read, please check them!:", paste(wrong, collapse = ","))
-    fcs <- fcs[!grepl(paste(wrong, collapse = "|"), sampleNames(fcs))]
+  for(i in wrong){
+    aux <- fcs[[i]]
+    if(sum(apply(exprs(aux), 2, is.na))!= 0)
+      cat("File", i, ">", sum(apply(exprs(aux), 2, is.na))/ncol(aux), "NA events deleted (flow cytometer exporting errors)\n")
+  exprs(aux) <- exprs(aux)[complete.cases(exprs(aux)),]
+  fcs[[i]] <- aux
   }
 
   return(fcs)
