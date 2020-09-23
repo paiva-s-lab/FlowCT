@@ -48,7 +48,7 @@ qc.and.removeDoublets <- function(fcs.SCE = NULL, filelist = NULL, directory = g
     for(file in filenames){
       fcs[[file]]@description$FILENAME <- file #requirements for flow_auto_qc
       
-      invisible(capture.output(idx1 <- flow_auto_qc(fcs[[file]], ChExcludeFS = physical.markers, fcs_QC = FALSE, output = 3, html_report = F, folder_results = F, mini_report = F)[[1]]))
+      invisible(capture.output(idx1 <- flow_auto_qc(fcs[[file]], ChExcludeFS = physical.markers, fcs_QC = FALSE, output = 3, html_report = F, folder_results = F, mini_report = "miniQC")[[1]]))
       
       # doublet removal
       FSCA <- grep("FS.*.A", physical.markers, value = T)
