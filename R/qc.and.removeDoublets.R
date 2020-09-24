@@ -68,7 +68,11 @@ qc.and.removeDoublets <- function(fcs.SCE = NULL, filelist = NULL, directory = g
         extension <- tolower(strsplit(filenames[1], split="\\.")[[1]][-1])
         idx_fcs <- unique(rownames(exprs(fcs[[file]]))[c(idx1, idx2)])
 
-        file_return <- as_flowFrame(exprs(fcs[[file]])[-match(idx_fcs, rownames(exprs(fcs[[file]]))),])
+        exp_matrix <- exprs(fcs[[file]])
+        colnames(exp_matrix) <- sapply(fcs.SCE@metadata$raw_channel_names, function(x) strsplit(x, split = ":")[[1]][1])
+        file_return <- as_flowFrame(exp_matrix[-match(idx_fcs, rownames(exp_matrix)),])
+        file_return@parameters@data$desc <- sapply(fcs.SCE@metadata$raw_channel_names, function(x) strsplit(x, split = ":")[[1]][2])
+                                                   
         write.FCS(file_return, paste0(output.folder, "/", gsub(extension, "", file), output.suffix, ".", extension))
       }
     }
