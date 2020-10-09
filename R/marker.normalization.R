@@ -41,6 +41,6 @@ marker.normalization <- function(fcs.SCE, assay.i = "transformed", method, marke
   }else{
     stop("Please, indicate a valid normalization method: gauss or warp.", call. = F)
   }
-  assay(fcs.SCE, i = new.matrix.name) <- t(fsApply(fcs1, exprs))
+  assay(fcs.SCE, i = new.matrix.name, withDimnames = F) <- t(fsApply(fcs1, exprs))
   return(fcs.SCE)
 }
