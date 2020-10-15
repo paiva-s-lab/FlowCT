@@ -49,6 +49,6 @@ dotplot.DE <- function(fcs.SCE, assay.i = "normalized", clusters.named = "SOM_na
     scale_size_area(max_size = scale.size, name = "Median\nfluorescence") +
     labs(x = "", y = "") + theme_bw() + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-  if(return.stats) return(list(stats = dtm2, plot = g))
+  if(return.stats) return(list(stats = dtm2, plot = g)) else return(g)
 }
 
