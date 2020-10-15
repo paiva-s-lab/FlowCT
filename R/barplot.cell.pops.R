@@ -7,7 +7,7 @@
 #' @param plot Logical indicating whether plotting stacked barplot. Default = \code{TRUE}.
 #' @param count.by Variable name (from \code{colData(fcs.SCE)}) for calculating proportions (or counts) and drawing the x-axis in the stacked bar plotting.
 #' @param facet.by Variable name (from \code{colData(fcs.SCE)}) for splitting the stacked bar plotting. Default = \code{NULL}.
-#' @param return.mode String for specifying if final resuls should be proportions ("percentage", default) or raw counts ("counts").
+#' @param return.mode String for specifying if final resuls should be proportions ("percentage") or raw counts ("counts"). Default = \code{NULL}.
 #' @param colors Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).
 #' @keywords proportions
 #' @keywords barplot
@@ -25,32 +25,34 @@
 #'     count.by = "condition", return.mode = "counts")
 #' }
 
-barplot.cell.pops <- function(fcs.SCE, assay.i = "normalized", cell.clusters, plot = T, count.by, facet.by = NULL, return.mode = "percentage", colors = NULL){
+barplot.cell.pops <- function(fcs.SCE, assay.i = "normalized", cell.clusters, plot = T, count.by, facet.by = NULL, return.mode = NULL, colors = NULL){
   data <- t(assay(fcs.SCE, i = assay.i))
   metadata <- colData(fcs.SCE)
-  if(is.null(colors)) colors <- div.colors(length(unique(cell.clusters)))
   
-  counts_table <- table(cell.clusters, metadata[,count.by])
-  ggdf <- as.data.frame(as.data.table(prop.table(counts_table, margin = 2)*100))
-  colnames(ggdf) <- c("cell.clusters", count.by, "proportion")
-  
+  counts_table <- table(metadata[,cell.clusters], metadata[,count.by])
+
   if(plot){
-    mm <- match(ggdf[,count.by], metadata[,count.by]) #add other infos
-    ggdf <- data.frame(metadata[mm,], ggdf)
-    
-    g <- ggplot(ggdf, aes_string(x = count.by, y = "proportion", fill = "cell.clusters")) +
-      geom_bar(stat = "identity") +
-      theme_minimal() +
-      theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+	if(is.null(colors)) colors <- div.colors(length(unique(metadata[,cell.clusters])))
+
+  	ggdf <- as.data.frame(metadata) %>% 
+		select(count.by, facet.by, cell.clusters) %>% 
+		add_count(x = ., eval(parse(text = cell.clusters)), eval(parse(text = count.by)))
+
+	ggdf <- aggregate(n ~ ., ggdf[,-c(ncol(ggdf)-1, ncol(ggdf)-2)], FUN = unique)
+
+    g <- ggplot(ggdf, aes_string(x = count.by, y = "n", fill = cell.clusters)) +
+      geom_bar(stat = "identity", position = "fill") +
+      theme_minimal() + theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
       scale_fill_manual(values = colors)
-    if(is.null(facet.by)) print(g) else print(g + facet_wrap(~ eval(parse(text = facet.by)), scales = "free_x"))
+
+    if(!is.null(facet.by)) g <- g + facet_wrap(~ eval(parse(text = facet.by)), scales = "free_x")
+
+    print(g)
   }
   
   if(return.mode == "percentage"){
     return(prop.table(counts_table, margin = 2)*100)
-  }else if(return.mode == "counts"){
+  }else(return.mode == "counts"){
     return(counts_table)
-  }else{
-    cat("Please, specify a valid 'return.mode' value, i.e.: counts or percentage")
   }
 }
