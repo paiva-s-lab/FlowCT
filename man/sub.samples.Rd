@@ -9,21 +9,26 @@ sub.samples(fcs.SCE, subsampling = 1000, index = F)
 \arguments{
 \item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}
 
-\item{subsampling}{Number of events to keep. Default = 1000.}
+\item{subsampling}{Number of events to keep (in each FCS file contained within the \code{fcs.SCE} object). If indicated value is between 0 and 1, it will considered as a percentage to keep instead an absolute number. Default = 1000.}
 
 \item{index}{Logical indicating if returning an fcs.SCE object or a index vector. Default = \code{FALSE}.}
+  
+\item{unbalanced}{If indicated, subsampling will be applied in a "unbalanced" way, i.e., only in the specified element in a given column. Its format is a vector containing the column name to reduce and the element within that column to be subsampled. It is very IMPORTANT keep in mind this subsampling is only for visualization purposes, not for downstream statistical analysis. Default = \code{NULL}.}
 }
 \description{
 It generates reduce randomly the number of events of a fcs.SCE object (it computes this reduction for each FCS file separatelly inside this object). It can generate a new reduced \code{fcs.SCE} object or a simple index position for removing events.
 }
 \examples{
 \dontrun{
-# option 1
+# option 1, simple subsampling
 fcs_red <- sub.samples(data = fcs, subsampling = 1000)
 
-# option 2
+# option 2, return the subsampling index
 keep_red <- sub.samples(data = fcs, subsampling = 1000, index = T)
 fcs_red <- fcs[,keep_red]
+  
+# option 3, unbalanced subsampling (in percentaje way)
+fcs_red <- sub.samples(data = fcs, subsampling = 0.3, unbalanced = c("condition", "not_progressed")
 }
 }
 \keyword{subsampling}
