@@ -32,7 +32,7 @@ combine.subclusterings <- function(initial.fcs.SCE, subclustering.fcs.SCE, clust
     
     # extract those subclustered samples from original fcs.SCE object
     mdg <- rbind(mdg[mdg[[clusters.named]] != sub_pop,], md_sub)
-    
+
     # delete removed populations from the (i)th subclustering within the first fcs.SCE object
     if(!is.null(i@metadata$removed_populations)){
       for(j in names(i@metadata$removed_populations))
@@ -44,16 +44,17 @@ combine.subclusterings <- function(initial.fcs.SCE, subclustering.fcs.SCE, clust
     }
   }
   
-  # create final named_cluster col ---> beta, this will bring problems with multiple subclusterings!
+  # create final named_cluster col
+  named_var <- c()
   diff <- setdiff(colnames(mdg), colnames(colData(initial.fcs.SCE)))
+  
   for(i in diff){
-    if(suppressWarnings(sum(is.na(as.numeric(as.character(mdg[,i])))) == nrow(mdg))){ #detect names_clusters cols in subclustering
-      mdg$tmp <- ifelse(is.na(mdg[,i]), as.character(mdg[,clusters.named]), 
-                        as.character(mdg[,i]))
-    }
-    mdg[,i] <- ifelse(is.na(mdg[,i]), 0, mdg[,i]) #replace NAs by 0 to avoid FCS wrong building
+    if(suppressWarnings(sum(is.na(as.numeric(as.character(unique(mdg[,i])))))) > length(subclustering.fcs.SCE)){ #detect names_clusters cols in subclustering
+      named_var <- append(named_var, i)
+    }else mdg[,i] <- ifelse(is.na(mdg[,i]), 0, mdg[,i]) #replace NAs by 0 to avoid FCS wrong building
   }
-  colnames(mdg)[ncol(mdg)] <- paste0(clusters.named, "_final")
+  mdg$final_clustering <- do.call(coalesce, mdg[,c(named_var, clusters.named)])
+  mdg$final_clustering <- droplevels(mdg$final_clustering)
   
   colData(initial.fcs.SCE) <- mdg
   initial.fcs.SCE@metadata$subclusterings$populations <- paste(subclusterings, collapse = " + ")
