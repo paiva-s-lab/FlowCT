@@ -53,10 +53,9 @@ combine.subclusterings <- function(initial.fcs.SCE, subclustering.fcs.SCE, clust
       named_var <- append(named_var, i)
     }else mdg[,i] <- ifelse(is.na(mdg[,i]), 0, mdg[,i]) #replace NAs by 0 to avoid FCS wrong building
   }
-  mdg$final_clustering <- do.call(coalesce, mdg[,c(named_var, clusters.named)])
-  mdg$final_clustering <- droplevels(mdg$final_clustering)
+  mdg$final_clustering <- factor(do.call(dplyr::coalesce, mdg[,c(named_var, clusters.named)]))
   
-  colData(initial.fcs.SCE) <- mdg
+  colData(initial.fcs.SCE) <- mdg[match(initial.fcs.SCE$cell_id, mdg$cell_id),] # same cell_id order than initial fcs.SCE
   initial.fcs.SCE@metadata$subclusterings$populations <- paste(subclusterings, collapse = " + ")
   initial.fcs.SCE@metadata$subclusterings$removed_populations <- rm.cells
   
