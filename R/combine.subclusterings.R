@@ -20,7 +20,7 @@ combine.subclusterings <- function(initial.fcs.SCE, subclustering.fcs.SCE, clust
   subclusterings <- c()
   rm.cells <- list()
   for(i in subclustering.fcs.SCE){
-    sub_pop <- unique(i[[clusters.named]])
+    sub_pop <- as.character(unique(i[[clusters.named]]))
     
     md_sub <- colData(i)
     
