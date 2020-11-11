@@ -12,7 +12,7 @@
 #' @param title Title to add to the plot.
 #' @param label.by Variable from (from \code{colData(fcs.SCE)}) for dots labeling. Default = \code{NULL}.
 #' @param size Point size. Default = \code{1}.
-#' @param raster Vector indicating if image should be rasterized (logical element) and the number of pixels to consider (numerical element). It is based on \href{https://github.com/exaexa/scattermore}{\code{scattermore} package}. Default = \code{c(FALSE, 1000)}.
+#' @param raster Number of pixels to consider for rastering image, if none indicated, not rasterization will performed. It is based on \href{https://github.com/exaexa/scattermore}{\code{scattermore} package}.
 #' @param return.df Logical indicating if built \code{data.frame} with DR information and metadata must be returned. Default = \code{FALSE}.
 #' @param colors Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).
 #' @keywords dimensional reduction plotting
@@ -33,7 +33,7 @@
 #' dr <- dr.plotting(fcs, plot.dr = "PCA", color.by = "SOM", facet.by = "condition", return.df = T)
 #' }
 
-dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), color.by = "expression", shape.by = NULL, facet.by = NULL, omit.markers = NULL, title = "", label.by = NULL, size = 1, raster = c(F, 1000), return.df = F, colors = NULL){
+dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), color.by = "expression", shape.by = NULL, facet.by = NULL, omit.markers = NULL, title = "", label.by = NULL, size = 1, raster, return.df = F, colors){
   if(class(data)[1] == "SingleCellExperiment"){
     pos <- match(tolower(plot.dr), tolower(names(data@int_colData@listData$reducedDims)))
     if(is.na(pos)) stop('The DR indicated has not been calculated yet or is differently named (please, check the output of reducedDimNames(data) to see the correct DR name).\n', call. = F)
@@ -48,14 +48,14 @@ dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), co
   }
 
   if(color.by != "expression"){
-    if(is.null(colors)) colors <- div.colors(length(unique(drmd[,color.by])))
+    if(missing(colors)) colors <- div.colors(length(unique(drmd[,color.by])))
     g <- ggplot(drmd, aes_string(x = paste0("dr", dims[1]), y = paste0("dr", dims[2]), color = color.by)) +
       xlab(paste0(toupper(plot.dr), "-1")) + ylab(paste0(toupper(plot.dr), "-2")) + ggtitle(title) +
       theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
             panel.background = element_blank(), panel.border = element_rect(color = "black", fill = NA))
 
-    if(raster[1]){
-      g <- g + geom_scattermore(pointsize = size, pixels = rep(raster[2], 2)) #devtools::install_github('exaexa/scattermore')
+    if(!missing(raster)){
+      g <- g + geom_scattermore(pointsize = size, pixels = rep(raster, 2)) #devtools::install_github('exaexa/scattermore')
     }else{
       g <- g + geom_point(aes_string(color = color.by), size = size)
     }
@@ -80,8 +80,8 @@ dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), co
         theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
               panel.background = element_blank(), panel.border = element_rect(color = "black", fill = NA))
 
-      if(raster[1]){
-        g + geom_scattermore(pointsize = size, pixels = rep(raster[2], 2)) +
+      if(missing(raster)){
+        g + geom_scattermore(pointsize = size, pixels = rep(raster, 2)) +
           scale_color_gradientn(colours = colorRampPalette(rev(brewer.pal(n = 11, name = "Spectral")))(50), name = NULL)
       }else{
         g + geom_point(aes_string(color = color.by), size = size) +
