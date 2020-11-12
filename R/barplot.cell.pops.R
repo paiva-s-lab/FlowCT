@@ -25,20 +25,20 @@
 #'     count.by = "condition", return.mode = "counts")
 #' }
 
-barplot.cell.pops <- function(fcs.SCE, assay.i = "normalized", cell.clusters, plot = T, count.by, facet.by = NULL, return.mode = NULL, colors = NULL){
+barplot.cell.pops <- function(fcs.SCE, assay.i = "normalized", cell.clusters, plot = T, count.by, facet.by = NULL, return.mode, colors = NULL){
   data <- t(assay(fcs.SCE, i = assay.i))
   metadata <- colData(fcs.SCE)
   
   counts_table <- table(metadata[,cell.clusters], metadata[,count.by])
 
   if(plot){
-	if(is.null(colors)) colors <- div.colors(length(unique(metadata[,cell.clusters])))
+  if(is.null(colors)) colors <- div.colors(length(unique(metadata[,cell.clusters])))
 
-  	ggdf <- as.data.frame(metadata) %>% 
-		select(count.by, facet.by, cell.clusters) %>% 
-		add_count(x = ., eval(parse(text = cell.clusters)), eval(parse(text = count.by)))
+  ggdf <- as.data.frame(metadata) %>% 
+  select(count.by, facet.by, cell.clusters) %>% 
+  add_count(x = ., eval(parse(text = cell.clusters)), eval(parse(text = count.by)))
 
-	ggdf <- aggregate(n ~ ., ggdf[,-c(ncol(ggdf)-1, ncol(ggdf)-2)], FUN = unique)
+  ggdf <- aggregate(n ~ ., ggdf[,-c(ncol(ggdf)-1, ncol(ggdf)-2)], FUN = unique)
 
     g <- ggplot(ggdf, aes_string(x = count.by, y = "n", fill = cell.clusters)) +
       geom_bar(stat = "identity", position = "fill") +
@@ -50,9 +50,13 @@ barplot.cell.pops <- function(fcs.SCE, assay.i = "normalized", cell.clusters, pl
     print(g)
   }
   
-  if(return.mode == "percentage"){
-    return(prop.table(counts_table, margin = 2)*100)
-  }else(return.mode == "counts"){
-    return(counts_table)
+  if(!missing(return.mode)){
+    if(return.mode == "percentage"){
+      return(prop.table(counts_table, margin = 2)*100)
+    }else if(return.mode == "counts"){
+      return(counts_table)
+    }else{
+      cat("Please, indicate a valid return mode: 'percentage' or 'counts'")
+    } 
   }
 }
