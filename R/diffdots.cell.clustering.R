@@ -22,25 +22,25 @@
 #' diffDots.cell.clustering(fcs.SCE = fcs, cell.clusters = fcs$SOM_named, return.stats = F)
 #' }
 
-diffdots.cell.clustering <- function(fcs.SCE.SCE, assay.i = "normalized", cell.clusters, condition.column, psig.cutoff = 0.05, return.stats = T, colors = NULL){
+diffdots.cell.clustering <- function(fcs.SCE, assay.i = "normalized", cell.clusters, condition.column, psig.cutoff = 0.05, return.stats = T, colors = NULL, return.mode = "percentage"){
   ## prepare tables
-  prop_table <- as.data.frame.matrix(t(barplot.cell.pops(fcs.SCE, cell.clusters, count.by = "filename", plot = F, assay.i = assay.i)))
+  prop_table <- as.data.frame.matrix(t(barplot.cell.pops(fcs.SCE, cell.clusters, count.by = "filename", plot = F, assay.i = assay.i, return.mode = return.mode)))
 
   prop_table_md <- merge(fcs.SCE@metadata$reduced_metada, prop_table, by.x = "filename", by.y = "row.names")
 
-  dfm <- as.data.frame(melt(as.data.table(prop_table_md), measure.vars = as.vector(unique(cell.clusters))))
+  dfm <- as.data.frame(melt(as.data.table(prop_table_md), measure.vars = as.vector(unique(fcs.SCE[[cell.clusters]]))))
   dfma <- aggregate(dfm$value ~ dfm$variable + dfm[,condition.column], FUN = median)
   colnames(dfma) <- c("variable", "condition", "value")
-  dfma <- transform(dfma, pct = log(ave(dfma$value, dfma[,condition.column], FUN = function(x) x/sum(x)*100))) #transform to percentaje
+  dfma <- transform(dfma, pct = log(ave(dfma$value, dfma$condition, FUN = function(x) x/sum(x)*100))) #transform to percentaje
 
   ## keep original factor order for plotting
-  dfma$condition <- factor(dfma$condition, levels = levels(fcs.SCE[[condition.column]]))
-  dfma$variable <- factor(dfma$variable, levels = levels(cell.clusters))
+  if(class(fcs.SCE[[condition.column]]) == "factor") dfma$condition <- factor(dfma$condition, levels = levels(fcs.SCE[[condition.column]]))
+  if(class(fcs.SCE[[condition.column]]) == "factor") dfma$variable <- factor(dfma$variable, levels = levels(fcs.SCE[[cell.clusters]]))
 
   conditions <- unique(dfma[,condition.column])
 
   ## statistics table
-  resultskw <- col_kruskalwallis(prop_table_md[,as.character(unique(cell.clusters))], prop_table_md[,condition.column])
+  resultskw <- col_kruskalwallis(prop_table_md[,as.character(unique(fcs.SCE[[cell.clusters]]))], prop_table_md[,condition.column])
   KWsig <- rownames(resultskw[resultskw$pvalue < psig.cutoff,])
   dfma$sig <- ifelse(dfma$variable %in% KWsig, "1", "0")
 
@@ -50,17 +50,19 @@ diffdots.cell.clustering <- function(fcs.SCE.SCE, assay.i = "normalized", cell.c
   }
 
   ## plotting
-  if(is.null(colors)) colors <- div.colors(length(unique(cell.clusters)))
+  if(is.null(colors)) colors <- div.colors(length(unique(fcs.SCE[[cell.clusters]])))
   g <- ggplot(dfma, aes_string(x = "condition", y = "pct", fill = "variable")) +
           geom_line(aes_string(group = "variable", color = "sig"), size = 1) +
           scale_colour_manual(values = c("gray63", "brown1"), labels = c("no sig.", "sig.")) +
           geom_point(size = 3, shape = 21, color = "gray63") +
           scale_fill_manual(values = colors) +
-          geom_label_repel(data = subset(dfma, dfma$sig == 1 & dfma$condition == conditions[1]),
-                           aes_string(x = 1, y = "pct", label = "variable", fill = "variable"),
-                           nudge_x = -0.1, show.legend = F) +
           theme(panel.background = element_blank(), axis.line = element_line(color = "black")) +
           labs(x = "\nCondition", y = "% of cells (log-transf.)\n", color = "", fill = "Cell clusters")
+
+  if(sum(dfma$sig == 1) != 0) g <- g + geom_label_repel(data = subset(dfma, dfma$sig == 1 & dfma$condition == conditions[1]),
+                        aes_string(x = 1, y = "pct", label = "variable", fill = "variable"),
+                        nudge_x = -0.1, show.legend = F) +
+
 
   if(return.stats & length(unique(prop_table_md[,condition.column])) > 2){
     return(list(kruskal_results = resultskw, kw_posthoc_results = kw_posthoc, plot = g))
