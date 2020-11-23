@@ -21,6 +21,8 @@ diffdots.cell.clustering(fcs.SCE, assay.i = "normalized", cell.clusters,
 \item{colors}{Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).}
 
 \item{return.stats}{Logical indicating if calculated statistics should be returned in a new variable. Default = \code{TRUE}.}
+  
+\item{hide.nosig}{Logical indicating whether hiding non-significal cell populations. Default = \code{FALSE}.}
 }
 \description{
 It draws a differential dot plot (longitudinaly) according condition for each cell cluster identified.
