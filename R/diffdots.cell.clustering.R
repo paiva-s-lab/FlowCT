@@ -8,6 +8,7 @@
 #' @param psig.cutoff P-value cutoff. Default = \code{0.05}.
 #' @param colors Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).
 #' @param return.stats Logical indicating if calculated statistics should be returned in a new variable. Default = \code{TRUE}.
+#' @param hide.nosig Logical indicating whether hiding non-significal cell populations. Default = \code{FALSE}.
 #' @keywords differential dotplot
 #' @keywords Dumbbell plot
 #' @keywords longitudinal dotplot
@@ -22,7 +23,7 @@
 #' diffDots.cell.clustering(fcs.SCE = fcs, cell.clusters = fcs$SOM_named, return.stats = F)
 #' }
 
-diffdots.cell.clustering <- function(fcs.SCE, assay.i = "normalized", cell.clusters, condition.column, psig.cutoff = 0.05, return.stats = T, colors = NULL, return.mode = "percentage"){
+diffdots.cell.clustering <- function(fcs.SCE, assay.i = "normalized", cell.clusters, condition.column, psig.cutoff = 0.05, return.stats = T, colors = NULL, return.mode = "percentage", hide.nosig = F){
   ## prepare tables
   prop_table <- as.data.frame.matrix(t(barplot.cell.pops(fcs.SCE, cell.clusters, count.by = "filename", plot = F, assay.i = assay.i, return.mode = return.mode)))
 
@@ -52,16 +53,18 @@ diffdots.cell.clustering <- function(fcs.SCE, assay.i = "normalized", cell.clust
   ## plotting
   if(is.null(colors)) colors <- div.colors(length(unique(fcs.SCE[[cell.clusters]])))
   g <- ggplot(dfma, aes_string(x = "condition", y = "pct", fill = "variable")) +
-          geom_line(aes_string(group = "variable", color = "sig"), size = 1) +
           scale_colour_manual(values = c("gray63", "brown1"), labels = c("no sig.", "sig.")) +
-          geom_point(size = 3, shape = 21, color = "gray63") +
-          scale_fill_manual(values = colors) +
+          scale_fill_manual(values = colors, na.value  = "gray63") +
           theme(panel.background = element_blank(), axis.line = element_line(color = "black")) +
           labs(x = "\nCondition", y = "% of cells (log-transf.)\n", color = "", fill = "Cell clusters")
 
-  if(sum(dfma$sig == 1) != 0) g <- g + geom_label_repel(data = subset(dfma, dfma$sig == 1 & dfma$condition == conditions[1]),
+  if(hide.nosig) g <- g + geom_line(aes_string(group = "variable", color = "sig"), size = 1) +
+                          geom_point(data = subset(dfma, dfma$sig == 0), size = 3, shape = 21, color = "gray63", fill = "gray63") + 
+                          geom_point(data = subset(dfma, dfma$sig == 1), size = 3, shape = 21, color = "gray63")
+
+  if(sum(dfma$sig == 1) != 0) g <- g + geom_label_repel(data = subset(dfma, dfma$sig == 1 & dfma$condition == conditions[length(conditions)]),
                         aes_string(x = 1, y = "pct", label = "variable", fill = "variable"),
-                        nudge_x = -0.1, show.legend = F) +
+                        nudge_x = -0.1, show.legend = F)
 
 
   if(return.stats & length(unique(prop_table_md[,condition.column])) > 2){
