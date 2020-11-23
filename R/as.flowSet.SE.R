@@ -12,11 +12,7 @@
 #' @examples
 
 as.flowSet.SE <- function(fcs.SCE, assay.i){
-  df_flowset <- list()
-  for(i in unique(fcs.SCE$filename)){
-    aux_fcsSE <- fcs.SCE[,fcs.SCE$filename == i]
-    df_flowset[[i]] <- as_flowFrame(t(assay(aux_fcsSE, i = assay.i)))
-  }
+  df_flowset <- lapply(unique(fcs.SCE$filename), function(x) as_flowFrame(t(assay(fcs.SCE[,fcs.SCE$filename == x], i = assay.i))))
   names(df_flowset) <- fcs.SCE@metadata$input_fcs
   df_flowset <- as(df_flowset, "flowSet")
   return(df_flowset)
