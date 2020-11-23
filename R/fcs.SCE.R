@@ -57,7 +57,8 @@ fcs.SCE <- function(filelist = NULL, directory = getwd(), pattern = ".fcs$", eve
                           # additional info
                           metadata = list(project_name = project.name,
                                           input_fcs = as.vector(unique(fcs@phenoData@data$name)),
-                                          reduced_metadata = metadata))
+                                          reduced_metadata = metadata,
+                                          raw_channel_names = paste0(fcs[[1]]@parameters@data$name, ":", fcs[[1]]@parameters@data$desc)))
 
   return(fcs.SCE)
 }
