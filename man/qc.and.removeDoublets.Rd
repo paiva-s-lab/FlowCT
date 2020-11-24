@@ -7,7 +7,7 @@
 qc.and.removeDoublets(fcs.SCE = NULL, filelist = NULL,
   directory = getwd(), pattern = "fcs", physical.markers,
   output.folder = directory, output.suffix = "qc",
-  return.idx = FALSE, return.fcs = FALSE)
+  return.idx = FALSE, return.fcs = FALSE, keep.QCfile = FALSE)
 }
 \arguments{
 \item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}. If \code{NULL} (default), this function will search for FCS files within current working directory.}
@@ -27,6 +27,8 @@ qc.and.removeDoublets(fcs.SCE = NULL, filelist = NULL,
 \item{return.idx}{Logical indicating whether output is a new \code{fcs.SCE} object without low-quality events or an index with this positions (without removing them from original \code{fcs.SCE}). This option is only available if the input is a \code{fcs.SCE} object. Default = \code{FALSE} (\code{fcs.SCE} output).}
 
 \item{return.fcs}{Logical indicating whether new FCS file should be generated without low quality events. They will stored in specified \code{output.folder} with the corresponding \code{output.suffix}.}
+
+\item{keep.QCfile}{Final QC text report should be kept? Attention, this file does not contain removed doublets but only those events removed through {\code{flowAI::flow_auto_qc()}}, all events are showed trough terminal output. Default = \code{FALSE}.}
 }
 \value{
 Final output is a new \code{fcs.SCE} object (if \code{fcs.SCE} input) without these events that do not pass the quality control or new FCS files with the suffix \code{"qc"} with these low quality events removed. If user specifies \code{return.idx = TRUE}, output would be a vector with all low-quality events positions.
