@@ -12,6 +12,7 @@
 #' @param output.suffix Suffix added to new generated FCS files (in case not being working with a \code{fcs.SCE} object). Default = \code{qc}.
 #' @param return.idx Logical indicating whether output is a new \code{fcs.SCE} object without low-quality events or an index with this positions (without removing them from original \code{fcs.SCE}). This option is only available if the input is a \code{fcs.SCE} object. Default = \code{FALSE} (\code{fcs.SCE} output).
 #' @param return.fcs Logical indicating whether new FCS file should be generated without low quality events. They will stored in specified \code{output.folder} with the corresponding \code{output.suffix}.
+#' @param keep.QCfile Final QC text report should be kept? Attention, this file does not contain removed doublets but only those events removed through {\code{flowAI::flow_auto_qc()}}, all events are showed trough terminal output. Default = \code{FALSE}.
 #' @keywords quality control
 #' @keywords doublets removal
 #' @keywords remove low quality events
@@ -39,7 +40,7 @@
 #'      physical.markers = c("FSC_A", "FSC_H", "SSC_A", "SSC_H"))
 #' }
 
-qc.and.removeDoublets <- function(fcs.SCE = NULL, filelist = NULL, directory = getwd(), pattern = "fcs", physical.markers, output.folder = directory, output.suffix = "qc", return.idx = FALSE, return.fcs = FALSE){
+qc.and.removeDoublets <- function(fcs.SCE = NULL, filelist = NULL, directory = getwd(), pattern = "fcs", physical.markers, output.folder = directory, output.suffix = "qc", return.idx = FALSE, return.fcs = FALSE, keep.QCfile = F){
   if(!is.null(fcs.SCE)){
     fcs <- as.flowSet.SE(fcs.SCE, assay.i = "raw")
     filenames <- fcs@phenoData@data$name
@@ -54,23 +55,26 @@ qc.and.removeDoublets <- function(fcs.SCE = NULL, filelist = NULL, directory = g
       FSCA <- grep("FS.*.A", physical.markers, value = T)
       FSCH <- grep("FS.*.H", physical.markers, value = T)
       
-      ratio <- exprs(fcs[[file]])[,FSCA]/(1+ exprs(fcs[[file]])[,FSCH]) #calculate the ratios
+      exprstmp <- exprs(fcs[[file]])
+
+      ratio <- exprstmp[,grep(FSCA, colnames(exprstmp))]/(1+ exprstmp[,grep(FSCH, colnames(exprstmp))]) #calculate the ratios
       r <- median(ratio)
       w <- 2*sd(ratio) 
       idx2 <- as.vector(which(ratio > r+w)) #define the region that will be removed
       
-      idx <- c(idx, rownames(exprs(fcs[[file]]))[c(idx1, idx2)])
+      idx <- append(idx, rownames(exprstmp)[c(idx1, idx2)])
       losses <- append(losses, round(length(c(idx1, idx2))/nrow(fcs[[file]])*100, digits = 2))
       names(losses)[length(losses)] <- file
 
       # generate new high QC FCS
       if(return.fcs){
-        extension <- tolower(strsplit(filenames[1], split="\\.")[[1]][-1])
-        idx_fcs <- unique(rownames(exprs(fcs[[file]]))[c(idx1, idx2)])
+        extension <- tolower(tail(strsplit(filenames[1], split="\\.")[[1]], n = 1))
+        idx_fcs <- unique(rownames(exprstmp)[c(idx1, idx2)])
 
-        exp_matrix <- exprs(fcs[[file]])
+        exp_matrix <- exprstmp[-match(idx_fcs, rownames(exprstmp)),]
         colnames(exp_matrix) <- sapply(fcs.SCE@metadata$raw_channel_names, function(x) strsplit(x, split = ":")[[1]][1])
-        file_return <- as_flowFrame(exp_matrix[-match(idx_fcs, rownames(exp_matrix)),])
+        file_return <- as_flowFrame(exp_matrix)
+        # file_return <- flowCore::flowFrame(exp_matrix)
         file_return@parameters@data$desc <- sapply(fcs.SCE@metadata$raw_channel_names, function(x) strsplit(x, split = ":")[[1]][2])
                                                    
         write.FCS(file_return, paste0(output.folder, "/", gsub(extension, "", file), output.suffix, ".", extension))
@@ -80,6 +84,8 @@ qc.and.removeDoublets <- function(fcs.SCE = NULL, filelist = NULL, directory = g
     if(return.fcs) cat("New generated FCSs without low quality events are stored in:", output.folder)
     print(kable(as.data.frame(losses), col.names = "removed events (%)"))
     fcs.SCE@metadata$lowQC_events <- idx
+
+    if(!keep.QCfile) invisible(file.remove(list.files(pattern = "miniQC")))
 
     if(return.idx) return(idx) else return(fcs.SCE[,-match(idx, colnames(fcs.SCE))])
   }else{
@@ -93,12 +99,14 @@ qc.and.removeDoublets <- function(fcs.SCE = NULL, filelist = NULL, directory = g
       FSCA <- grep("FS.*.A", physical.markers, value = T)
       FSCH <- grep("FS.*.H", physical.markers, value = T)
       
-      ratio <- exprs(file_q)[,FSCA]/(1+ exprs(file_q)[,FSCH]) #calculate the ratios
+      exprstmp <- exprs(fcs[[file]])
+
+      ratio <- exprstmp[,grep(FSCA, colnames(exprstmp))]/(1+ exprstmp[,grep(FSCH, colnames(exprstmp))]) #calculate the ratios
       r <- median(ratio)
       w <- 2*sd(ratio) 
       file_d <- file_q[which(ratio < r+w),] #define the region that is accepted
       
-      extension <- strsplit(basename(file), "\\.")[[1]][2]
+      extension <- tolower(tail(strsplit(basename(file), "\\.")[[1]], n = 1))
       filename <- strsplit(basename(file), "\\.")[[1]][1]
       write.FCS(file_d, paste0(output.folder, "/", filename, ".", output.suffix, ".", extension))
     }
@@ -106,5 +114,7 @@ qc.and.removeDoublets <- function(fcs.SCE = NULL, filelist = NULL, directory = g
     qct <- read.table("miniQC.txt", header = T, sep = "\t", colClasses = c("character", rep("numeric", 2), rep("NULL", 4)))
     qct$warning <- ifelse(qct$X..anomalies >= 30, "(!)", "")
     print(kable(qct, col.names = c("filenames", "# initial events", "% deleted events", "Warning!")))
+
+    if(!keep.QCfile) invisible(file.remove(list.files(pattern = "miniQC")))
   }
 }
