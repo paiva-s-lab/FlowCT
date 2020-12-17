@@ -2,11 +2,17 @@
 % Please edit documentation in R/dim.reduction.R
 \name{dim.reduction}
 \alias{dim.reduction}
-\title{dim.reduction}
+\title{Calculate dimensional reductions}
 \usage{
-\method{dim}{reduction}(data, assay.i = "normalized",
-  markers.to.use = "all", dr.method, num.threads = NULL,
-  perplexity.tsne = 100, n.neighbors.umap = 50)
+\method{dim}{reduction}(
+  data,
+  assay.i = "normalized",
+  markers.to.use = "all",
+  dr.method,
+  num.threads = NULL,
+  perplexity.tsne = 100,
+  n.neighbors.umap = 50
+)
 }
 \arguments{
 \item{data}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}} or a expression table with events in rows and markers in columns.}

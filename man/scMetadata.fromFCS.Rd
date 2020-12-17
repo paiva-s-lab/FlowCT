@@ -2,7 +2,7 @@
 % Please edit documentation in R/scMetadata.fromFCS.R
 \name{scMetadata.fromFCS}
 \alias{scMetadata.fromFCS}
-\title{scMetadata.fromFCS}
+\title{Create a single-event metadata}
 \usage{
 scMetadata.fromFCS(flowset, metadata, add.exprs = T)
 }

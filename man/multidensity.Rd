@@ -2,10 +2,18 @@
 % Please edit documentation in R/multidensity.R
 \name{multidensity}
 \alias{multidensity}
-\title{multidensity}
+\title{Density plots with expression values overlapped}
 \usage{
-multidensity(fcs.SCE, assay.i, show.markers = "all", color.by = NULL,
-  subsampling = NULL, interactive = F, ridgeline.lim = 15, colors = NULL)
+multidensity(
+  fcs.SCE,
+  assay.i,
+  show.markers = "all",
+  color.by = NULL,
+  subsampling = NULL,
+  interactive = F,
+  ridgeline.lim = 15,
+  colors = NULL
+)
 }
 \arguments{
 \item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}

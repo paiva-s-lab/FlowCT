@@ -2,10 +2,14 @@
 % Please edit documentation in R/gauss.norm.R
 \name{gauss.norm}
 \alias{gauss.norm}
-\title{gauss.norm}
+\title{Gaussian normalization (it will deprecated soon!)}
 \usage{
-gauss.norm(fcs.SCE, assay.i = "transformed", marker.to.norm,
-  norm.matrix.name = "normalized")
+gauss.norm(
+  fcs.SCE,
+  assay.i = "transformed",
+  marker.to.norm,
+  norm.matrix.name = "normalized"
+)
 }
 \arguments{
 \item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}

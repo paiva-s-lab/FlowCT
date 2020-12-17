@@ -2,11 +2,18 @@
 % Please edit documentation in R/sc.Heatmap.R
 \name{sc.heatmap}
 \alias{sc.heatmap}
-\title{This function draws a heatmap with single-cell fluorescence values.}
+\title{Heatmap at event-level}
 \usage{
-sc.heatmap(fcs.SCE, assay.i = "normalized", markers.to.use = "all",
+sc.heatmap(
+  fcs.SCE,
+  assay.i = "normalized",
+  markers.to.use = "all",
   not.metadata = c("filename", "cell_id", "sample_id"),
-  clustering.method = "average", subsampling = 100, color.expression = NULL, colors = NULL)
+  clustering.method = "average",
+  subsampling = 100,
+  color.expression = NULL,
+  colors = NULL
+)
 }
 \arguments{
 \item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}

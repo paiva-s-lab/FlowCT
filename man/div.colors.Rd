@@ -2,10 +2,10 @@
 % Please edit documentation in R/div.colors.R
 \name{div.colors}
 \alias{div.colors}
-\title{div.colors}
+\title{Create a palette of colors}
 \usage{
-div.colors(n, set.seed = 333)
+div.colors(n)
 }
 \description{
-div.colors
+Create a palette of colors
 }

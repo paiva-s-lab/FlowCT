@@ -2,11 +2,23 @@
 % Please edit documentation in R/median.dr.R
 \name{median.dr}
 \alias{median.dr}
-\title{This function draws a plot from internally calculated K-means and dimensional reduction (DR).}
+\title{Calculate a DR with median values}
 \usage{
- median.dr(fcs.SCE, assay.i = "normalized",
-  markers.to.use = "all", dr.method = "kmeans", num.k = 3, perplexity.tsne = 15,
-  n.neighbors.umap = 50, color.by = "filename", label.by = NULL, size = 3, return.DR.info = FALSE)
+\method{median}{dr}(
+  fcs.SCE,
+  assay.i = "normalized",
+  markers.to.use = "all",
+  dr.method = "PCA",
+  num.k = 3,
+  kmeans.frame = T,
+  perplexity.tsne = 15,
+  n.neighbors.umap = 50,
+  color.by = "filename",
+  shape.by = NULL,
+  label.by = NULL,
+  size = 3,
+  return.DR.info = F
+)
 }
 \arguments{
 \item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}
@@ -33,7 +45,7 @@
 
 \item{size}{Point size. Default = \code{3}.}
 
-\item{return.DR.info}{Final data combining metadata and DR info should be returned. Default = \code{FALSE}.}
+\item{return.DR.info}{Final data combining metadata, K-means and DR info should be returned?. Default = \code{FALSE}.}
 }
 \description{
 This function draws a plot from internally calculated K-means and dimensional reduction (DR).
@@ -45,7 +57,7 @@ median.dr(fcs, color.by = "condition")
 }
 \keyword{dimensional}
 \keyword{expression}
+\keyword{kmeans}
 \keyword{median}
 \keyword{reduction}
 \keyword{values}
-\keyword{kmeans}

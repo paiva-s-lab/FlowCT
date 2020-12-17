@@ -2,11 +2,17 @@
 % Please edit documentation in R/dotplot.DE.R
 \name{dotplot.DE}
 \alias{dotplot.DE}
-\title{It draws dotplot for each cell cluster identified and each marker to facilitate identification of cell populations in each cell cluster.}
+\title{Differential expression plot to identify populations within clusters}
 \usage{
-dotplot.DE(fcs.SCE, assay.i = "normalized",
-  clusters.named = "SOM_named", markers.to.use = "all",
-  psig.cutoff = 0.05, return.stats = F, scale.size = 9)
+dotplot.DE(
+  fcs.SCE,
+  assay.i = "normalized",
+  clusters.named = "SOM_named",
+  markers.to.use = "all",
+  psig.cutoff = 0.05,
+  return.stats = F,
+  scale.size = 9
+)
 }
 \arguments{
 \item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}

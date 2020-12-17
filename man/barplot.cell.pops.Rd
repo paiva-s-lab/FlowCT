@@ -2,11 +2,18 @@
 % Please edit documentation in R/barplot.cell.pops.R
 \name{barplot.cell.pops}
 \alias{barplot.cell.pops}
-\title{barplot.cell.pops}
+\title{Stacked barplot with cell clusters}
 \usage{
-barplot.cell.pops(fcs.SCE, assay.i = "normalized",
-  cell.clusters, plot = T, count.by, facet.by = NULL,
-  return.mode = NULL, colors = NULL)
+\method{barplot}{cell.pops}(
+  fcs.SCE,
+  assay.i = "normalized",
+  cell.clusters,
+  plot = T,
+  count.by,
+  facet.by = NULL,
+  return.mode,
+  colors = NULL
+)
 }
 \arguments{
 \item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}

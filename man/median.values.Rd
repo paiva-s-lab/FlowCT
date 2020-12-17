@@ -2,7 +2,7 @@
 % Please edit documentation in R/median.values.R
 \name{median.values}
 \alias{median.values}
-\title{It calculates median values according a specfied variable, normaly "filename".}
+\title{Obtain median values}
 \usage{
 \method{median}{values}(fcs.SCE, assay.i = "raw", var = "filename")
 }

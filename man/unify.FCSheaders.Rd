@@ -2,11 +2,18 @@
 % Please edit documentation in R/unify.FCSheaders.R
 \name{unify.FCSheaders}
 \alias{unify.FCSheaders}
-\title{unify.FCSheaders}
+\title{Unify all FCS header for multiple FCS}
 \usage{
-unify.FCSheaders(filelist = NULL, directory = getwd(),
-  pattern = ".fcs$", dataset = 1, fix = T, select.freq = 1,
-  events = "all", view = F)
+unify.FCSheaders(
+  filelist = NULL,
+  directory = getwd(),
+  pattern = ".fcs$",
+  dataset = 1,
+  fix = T,
+  select.freq = 1,
+  events = "all",
+  view = F
+)
 }
 \arguments{
 \item{filelist}{A vector with full path of FCS files to be read, commonly generated through \code{\link[base:list.files]{base::list.files()}}. If \code{NULL}, this file list will be generated as indicated below.}

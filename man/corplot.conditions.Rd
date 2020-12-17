@@ -2,10 +2,15 @@
 % Please edit documentation in R/cor.plot.conditions.R
 \name{corplot.conditions}
 \alias{corplot.conditions}
-\title{cor.plot.conditions}
+\title{Draw a correlation heatmap between two conditions}
 \usage{
-corplot.conditions(fcs.SCE, assay.i = "normalized", cell.clusters,
-  condition.column, return.stats = F)
+corplot.conditions(
+  fcs.SCE,
+  assay.i = "normalized",
+  cell.clusters,
+  condition.column,
+  return.stats = F
+)
 }
 \arguments{
 \item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}

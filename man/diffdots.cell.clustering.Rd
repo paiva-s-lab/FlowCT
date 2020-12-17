@@ -2,10 +2,19 @@
 % Please edit documentation in R/diffdots.cell.clustering.R
 \name{diffdots.cell.clustering}
 \alias{diffdots.cell.clustering}
-\title{It draws a differential dot plot (longitudinaly) according condition for each cell cluster identified.}
+\title{Longitudinal differential dotplot}
 \usage{
-diffdots.cell.clustering(fcs.SCE, assay.i = "normalized", cell.clusters,
-  condition.column, psig.cutoff = 0.05, return.stats = T, colors = NULL)
+diffdots.cell.clustering(
+  fcs.SCE,
+  assay.i = "normalized",
+  cell.clusters,
+  condition.column,
+  psig.cutoff = 0.05,
+  return.stats = T,
+  colors = NULL,
+  return.mode = "percentage",
+  hide.nosig = F
+)
 }
 \arguments{
 \item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}
@@ -18,10 +27,10 @@ diffdots.cell.clustering(fcs.SCE, assay.i = "normalized", cell.clusters,
 
 \item{psig.cutoff}{P-value cutoff. Default = \code{0.05}.}
 
+\item{return.stats}{Logical indicating if calculated statistics should be returned in a new variable. Default = \code{TRUE}.}
+
 \item{colors}{Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).}
 
-\item{return.stats}{Logical indicating if calculated statistics should be returned in a new variable. Default = \code{TRUE}.}
-  
 \item{hide.nosig}{Logical indicating whether hiding non-significal cell populations. Default = \code{FALSE}.}
 }
 \description{

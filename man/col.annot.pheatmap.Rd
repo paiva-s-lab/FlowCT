@@ -2,10 +2,10 @@
 % Please edit documentation in R/col.annot.pheatmap.R
 \name{col.annot.pheatmap}
 \alias{col.annot.pheatmap}
-\title{col.annot.pheatmap}
+\title{Create a palette of colors suitable for doing a heatmap}
 \usage{
 col.annot.pheatmap(metadata, colors = NULL)
 }
 \description{
-col.annot.pheatmap
+Create a palette of colors suitable for doing a heatmap
 }

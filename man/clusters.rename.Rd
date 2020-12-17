@@ -2,7 +2,7 @@
 % Please edit documentation in R/clusters.rename.R
 \name{clusters.rename}
 \alias{clusters.rename}
-\title{It renames the numerical clusters detected through \code{\link[FlowCT.v2:fsom.clustering]{FlowCT.v2::fsom.clustering()}} to specific cell populations identified by flow cytometry user.}
+\title{Rename clusters from numeric to cell name}
 \usage{
 clusters.rename(x, cluster, name)
 }

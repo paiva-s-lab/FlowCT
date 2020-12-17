@@ -2,10 +2,13 @@
 % Please edit documentation in R/combine.subclusterings.R
 \name{combine.subclusterings}
 \alias{combine.subclusterings}
-\title{It combines initial \code{fcs.SCE} object (without subclustering) with other \code{fcs.SCE} objects with subclustering analysis coming from downstream steps and generates a new \code{fcs.SCE} object. This final \code{fcs.SCE} object has an additional column combining all information from initial and subclustering analysis.}
+\title{Combine multiple subclustering with initial one}
 \usage{
-combine.subclusterings(initial.fcs.SCE, subclustering.fcs.SCE,
-  clusters.named = "SOM_named")
+combine.subclusterings(
+  initial.fcs.SCE,
+  subclustering.fcs.SCE,
+  clusters.named = "SOM_named"
+)
 }
 \arguments{
 \item{initial.fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}. The initial one, without extracting any cell population.}

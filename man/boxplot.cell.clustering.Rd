@@ -2,15 +2,26 @@
 % Please edit documentation in R/boxplot.cell.clustering.R
 \name{boxplot.cell.clustering}
 \alias{boxplot.cell.clustering}
-\title{It draws a boxplot with cell clusters identified through \code{\link[FlowCT.v2:fsom.clustering]{FlowCT.v2::fsom.clustering()}}.}
+\title{Boxplots for identified clusters}
 \usage{
-\method{boxplot}{cell.clustering}(fcs.SCE, assay.i = "normalized",
-  cell.clusters, condition.column = "condition",
-  pvalue.cutoffs = list(cutpoints = c(0, 1e-04, 0.001, 0.01, 0.05, 1),
-  symbols = c("xxxx", "***", "**", "*", "ns")),
-  color.by = condition.column, geom.point = T, facet = F,
-  facet.free.scale = "free_x", shape.by = NULL, y.limits = NULL,
-  show.stats = T, return.stats = T, plot.only.sig = c(F, 0.05), colors = NULL)
+boxplot.cell.clustering(
+  fcs.SCE,
+  assay.i = "normalized",
+  cell.clusters,
+  condition.column = "condition",
+  pvalue.cutoffs = list(cutpoints = c(0, 1e-04, 0.001, 0.01, 0.05, 1), symbols =
+    c("xxxx", "***", "**", "*", "ns")),
+  color.by = condition.column,
+  geom.point = T,
+  facet = F,
+  facet.free.scale = "free_x",
+  shape.by = NULL,
+  y.limits = NULL,
+  show.stats = T,
+  return.stats = T,
+  plot.only.sig = c(F, 0.05),
+  colors = NULL
+)
 }
 \arguments{
 \item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}
@@ -49,12 +60,12 @@ It draws a boxplot with cell clusters identified through \code{\link[FlowCT.v2:f
 \examples{
 \dontrun{
 # option 1: show all cell clusters and return statistics
-bx_sig <- boxplot.cell.clustering(fcs.SCE = fcs, cell.clusters = fcs$SOM_named, facet = T, 
-    return.stats = T, 
+bx_sig <- boxplot.cell.clustering(fcs.SCE = fcs, cell.clusters = fcs$SOM_named, facet = T,
+    return.stats = T,
     facet.free.scale = "free")
 
 # option 2: show only those significant cell clusters
-boxplot.cell.clustering(fcs.SCE = fcs, cell.clusters = fcs$SOM_named, return.stats = F, 
+boxplot.cell.clustering(fcs.SCE = fcs, cell.clusters = fcs$SOM_named, return.stats = F,
     plot.only.sig = c(T, 0.1))
 }
 }

@@ -4,8 +4,15 @@
 \alias{pop.cutoff}
 \title{Immune cutoffs}
 \usage{
-pop.cutoff(fcs.SCE, cell.clusters, value = "percentage", time.var, event.var, 
-	variables, cutoff.type = "maxstat", return.stats = F)
+pop.cutoff(
+  fcs.SCE,
+  cell.clusters,
+  value = "percentage",
+  time.var,
+  event.var,
+  cutoff.type = "maxstat",
+  variables
+)
 }
 \arguments{
 \item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}
@@ -18,19 +25,18 @@ pop.cutoff(fcs.SCE, cell.clusters, value = "percentage", time.var, event.var,
 
 \item{event.var}{Variable with event censoring.}
 
-\item{variables}{Vector with variables for calculating the cutoff. If nothing is detailed (\code{NULL}, default), all immune populations from \code{cell.clusters} will be considered.}
-
 \item{cutoff.type}{Method for calculating survival cutoffs. Available methods are "maxstat" (default, based on \href{https://cran.r-project.org/web/packages/maxstat/index.html}{\code{maxstat}}), "quantiles" (i.e., terciles) and "median".}
 
+\item{variables}{Vector with variables for calculating the cutoff. If nothing is detailed (\code{NULL}, default), all immune populations from \code{cell.clusters} will be considered.}
 }
 \description{
-Once immune cell populations are identified, it calculates a cutoff from the percentage (or raw counts) according survival time
+Once immune cell populations are identified, it calculates a cutoff from the percentage (or raw counts) according survival time.
 }
 \examples{
 \dontrun{
 ct <- pop.cutoff(fcs.SCE = fcs, cell.clusters = "SOM_named", time.var = "PFS",
-	event.var = "PFS_c", cutoff.type = "quantiles")
+    event.var = "PFS_c", cutoff.type = "quantiles")
 }
 }
-\keyword{survival}
 \keyword{cutoffs}
+\keyword{survival}

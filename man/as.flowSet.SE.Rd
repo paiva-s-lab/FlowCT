@@ -2,7 +2,7 @@
 % Please edit documentation in R/as.flowSet.SE.R
 \name{as.flowSet.SE}
 \alias{as.flowSet.SE}
-\title{as.flowSet.SE}
+\title{Transform a \code{fcs.SCE} object into a \code{flowset} object}
 \usage{
 as.flowSet.SE(fcs.SCE, assay.i)
 }

@@ -2,11 +2,16 @@
 % Please edit documentation in R/export.metaFCS.R
 \name{export.metaFCS}
 \alias{export.metaFCS}
-\title{export.metaFCS}
+\title{Create FCS from a \code{fcs.SCE} object}
 \usage{
-export.metaFCS(fcs.SCE, assay.i = "raw", output.name = NULL,
-  output.folder = getwd(), separate.fcs = FALSE,
-  output.suffix = "meta")
+export.metaFCS(
+  fcs.SCE,
+  assay.i = "raw",
+  output.name = NULL,
+  output.folder = getwd(),
+  separate.fcs = FALSE,
+  output.suffix = "meta"
+)
 }
 \arguments{
 \item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}

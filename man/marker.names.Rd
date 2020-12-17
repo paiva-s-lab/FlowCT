@@ -2,7 +2,7 @@
 % Please edit documentation in R/marker.names.R
 \name{marker.names}
 \alias{marker.names}
-\title{It shows marker names of a \code{fcs.SCE} object and renames them accordin a new vector provided by the user.}
+\title{Show and change markers names}
 \usage{
 marker.names(fcs.SCE, new.names = NULL)
 }

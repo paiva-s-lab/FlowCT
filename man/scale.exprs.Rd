@@ -2,10 +2,14 @@
 % Please edit documentation in R/scale.exprs.R
 \name{scale.exprs}
 \alias{scale.exprs}
-\title{scale.exprs}
+\title{Scale expression}
 \usage{
-\method{scale}{exprs}(data, assay.i = "normalized",
-  include.FCS.SCE = F, scaled.matrix.name = "scaled")
+\method{scale}{exprs}(
+  data,
+  assay.i = "normalized",
+  include.FCS.SCE = F,
+  scaled.matrix.name = "scaled"
+)
 }
 \arguments{
 \item{data}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}} or a expression table with events in rows and markers in columns.}

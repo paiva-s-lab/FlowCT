@@ -2,10 +2,17 @@
 % Please edit documentation in R/dumbPlot.cell.clustering.R
 \name{dumbPlot.cell.clustering}
 \alias{dumbPlot.cell.clustering}
-\title{It draws a Dumbbell plot according condition for each cell cluster identified.}
+\title{Dumbbell plot with clusters}
 \usage{
-dumbPlot.cell.clustering(fcs.SCE, assay.i = "normalized", cell.clusters,
-  condition.column, psig.cutoff = 0.05, return.stats = T, colors = NULL)
+dumbPlot.cell.clustering(
+  fcs.SCE,
+  assay.i = "normalized",
+  cell.clusters,
+  condition.column,
+  psig.cutoff = 0.05,
+  return.stats = T,
+  colors = NULL
+)
 }
 \arguments{
 \item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}

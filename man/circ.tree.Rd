@@ -2,12 +2,20 @@
 % Please edit documentation in R/circ.tree.R
 \name{circ.tree}
 \alias{circ.tree}
-\title{circ.tree}
+\title{Circular dendrogram tree}
 \usage{
-circ.tree(fcs.SCE, assay.i = "normalized", cell.clusters,
-  dist.method = "euclidean", hclust.method = "average",
-  nodes = "display", open.angle = 100, dendro.labels = FALSE,
-  scale.size = 10, colors = NULL)
+circ.tree(
+  fcs.SCE,
+  assay.i = "normalized",
+  cell.clusters,
+  dist.method = "euclidean",
+  hclust.method = "average",
+  nodes = "display",
+  open.angle = 100,
+  dendro.labels = FALSE,
+  scale.size = 10,
+  colors = NULL
+)
 }
 \arguments{
 \item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}

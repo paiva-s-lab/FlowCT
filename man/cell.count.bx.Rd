@@ -2,10 +2,17 @@
 % Please edit documentation in R/cell.count.bx.R
 \name{cell.count.bx}
 \alias{cell.count.bx}
-\title{cell.count.bx}
+\title{Boxplot according according metadata}
 \usage{
-cell.count.bx(fcs.SCE, assay.i = "normalized", x.axis,
-  color.by = x.axis, label.by = NULL, limits = NULL, colors = NULL)
+cell.count.bx(
+  fcs.SCE,
+  assay.i = "normalized",
+  x.axis,
+  color.by = x.axis,
+  label.by = NULL,
+  limits = NULL,
+  colors = NULL
+)
 }
 \arguments{
 \item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}

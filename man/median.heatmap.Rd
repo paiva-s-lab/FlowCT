@@ -2,11 +2,16 @@
 % Please edit documentation in R/median.heatmap.R
 \name{median.heatmap}
 \alias{median.heatmap}
-\title{median.heatmap}
+\title{Heatmap from median expression values}
 \usage{
-\method{median}{heatmap}(fcs.SCE, assay.i = "normalized",
-  cell.clusters = NULL, markers.to.use = "all",
-  not.metadata = "filename", colors = NULL)
+\method{median}{heatmap}(
+  fcs.SCE,
+  assay.i = "normalized",
+  cell.clusters = NULL,
+  markers.to.use = "all",
+  not.metadata = "filename",
+  colors = NULL
+)
 }
 \arguments{
 \item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}

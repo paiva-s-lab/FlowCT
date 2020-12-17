@@ -2,12 +2,20 @@
 % Please edit documentation in R/qc.and.removeDoublets.R
 \name{qc.and.removeDoublets}
 \alias{qc.and.removeDoublets}
-\title{qc.and.removeDoublets}
+\title{Perform quality control and remove doublets}
 \usage{
-qc.and.removeDoublets(fcs.SCE = NULL, filelist = NULL,
-  directory = getwd(), pattern = "fcs", physical.markers,
-  output.folder = directory, output.suffix = "qc",
-  return.idx = FALSE, return.fcs = FALSE, keep.QCfile = FALSE)
+qc.and.removeDoublets(
+  fcs.SCE = NULL,
+  filelist = NULL,
+  directory = getwd(),
+  pattern = "fcs",
+  physical.markers,
+  output.folder = directory,
+  output.suffix = "qc",
+  return.idx = FALSE,
+  return.fcs = FALSE,
+  keep.QCfile = F
+)
 }
 \arguments{
 \item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}. If \code{NULL} (default), this function will search for FCS files within current working directory.}
@@ -36,7 +44,7 @@ Final output is a new \code{fcs.SCE} object (if \code{fcs.SCE} input) without th
 A table with percentaje of removed events for each FCS will be also shown in the terminal (those files with more than 30% of events removed will have a '!' signal).
 }
 \description{
-qc.and.removeDoublets
+
 }
 \examples{
 \dontrun{

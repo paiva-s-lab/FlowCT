@@ -4,48 +4,54 @@
 \alias{batch.removal}
 \title{Remove batch effect}
 \usage{
-  batch.removal(fcs.SCE, assay.i = "transformed", method, batch,
-  new.matrix.name = "normalized", harmony.params = NULL, seurat.params = NULL,
-  threads = NULL)
-
+batch.removal(
+  fcs.SCE,
+  assay.i = "transformed",
+  method,
+  batch,
+  new.matrix.name = "normalized",
+  harmony.params = NULL,
+  seurat.params = NULL,
+  threads = NULL
+)
 }
 \arguments{
-  \item{fcs.SE}{A FCS.SE object generated through \code{\link[FlowCT:fcs.SE]{FlowCT::fcs.SE()}}.}
+\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}
 
-  \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"transformed"}.}
+\item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"transformed"}.}
 
-  \item{method}{Methodology to perform batch correction. Possible values are "Seurat" or "harmony".}
+\item{method}{Methodology to perform batch correction. Possible values are "Seurat" or "harmony".}
 
-  \item{batch}{Variable name from \code{colData(FCS.SCE)} object to remove batch effect.}
+\item{batch}{Variable name from \code{colData(FCS.SCE)} object to remove batch effect.}
 
-  \item{new.matrix.name}{New normalized matrix name (it will stored within the \code{FCS.SE} object). Default = \code{"normalized"}.}
+\item{new.matrix.name}{New normalized matrix name (it will stored within the \code{fcs.SCE} object). Default = \code{"normalized"}.}
 
-  \item{harmony.params}{List with those options from original \code{\link[harmony:HarmonyMatrix]{harmony::HarmonyMatrix()}} function that user wants to customize. Default, harmony's default ones.}
+\item{harmony.params}{List with those options from original \code{\link[harmony:HarmonyMatrix]{harmony::HarmonyMatrix()}} function that user wants to customize. Default, harmony's default ones.}
 
-  \item{seurat.params}{List with those options from original \code{\link[Seurat:FindIntegrationAnchors]{Seurat::FindIntegrationAnchors()}} function that user wants to customize. Default, Seurat's default ones except \code{dims = 1:10} and \code{reduction = "rpca"} (the other option is "cca", but slower for typical flow cytometry dataset sizes).}
+\item{seurat.params}{List with those options from original \code{\link[Seurat:FindIntegrationAnchors]{Seurat::FindIntegrationAnchors()}} function that user wants to customize. Default, Seurat's default ones except \code{dims = 1:10} and \code{reduction = "rpca"} (the other option is "cca", but slower for typical flow cytometry dataset sizes).}
 
-  \item{threads}{Number of threads for multithreading. Default = \code{NULL} (i.e., all cores minus one).}
+\item{threads}{Number of threads for multithreading. Default = \code{NULL} (i.e., all available cores minus one).}
 }
 \description{
-  It removes posible batch effects present in multiple FCS stored in a \code{FCS.SCE} object. It based on: \enumerate{
+It removes posible batch effects present in multiple FCS stored in a \code{FCS.SCE} object. It based on: \enumerate{
     \item Seurat's Canonical Correlation Analysis (CCA) or Reciprocal PCA (RPCA), see the \href{https://satijalab.org/seurat/Seurat_AlignmentTutorial.html}{tutorial} for more information (another \href{https://satijalab.org/seurat/v3.0/integration.html}{one}).
     \item \href{https://portals.broadinstitute.org/harmony/}{Harmony}'s methodology.}
 }
 \examples{
 \dontrun{
-fcs <- batch.removal(fcs, method = "harmony", batch = "patient_id", new.matrix.name = "harmony")
-fcs <- batch.removal(fcs, method = "harmony", batch = "patient_id", new.matrix.name = "harmony",
-            harmony.params = list(plot_convergence = T)) #to see optimal number of iterations in harmony
-fcs <- batch.removal(fcs, method = "seurat", batch = "patient_id", seurat.params = list(reduction = "cca"))
-fcs <- batch.removal(fcs, method = "seurat", batch = "patient_id",
-            seurat.params = list(reduction = "cca", dims = 1:50))
+ 	fcs <- batch.removal(fcs, method = "harmony", batch = "patient_id", new.matrix.name = "harmony")
+ 	fcs <- batch.removal(fcs, method = "harmony", batch = "patient_id", new.matrix.name = "harmony",
+ 	               harmony.params = list(plot_convergence = T)) #to see optimal number of iterations in harmony
+ 	fcs <- batch.removal(fcs, method = "seurat", batch = "patient_id", seurat.params = list(reduction = "cca"))
+ 	fcs <- batch.removal(fcs, method = "seurat", batch = "patient_id",
+ 	              seurat.params = list(reduction = "cca", dims = 1:50))
 }
 }
 \keyword{alignment}
-\keyword{dataset}
+\keyword{batch}
 \keyword{canonical}
 \keyword{correlation}
+\keyword{dataset}
+\keyword{effect}
 \keyword{normalization}
 \keyword{removal}
-\keyword{effect}
-\keyword{batch}

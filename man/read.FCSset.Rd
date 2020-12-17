@@ -2,10 +2,16 @@
 % Please edit documentation in R/read.FCSset.R
 \name{read.FCSset}
 \alias{read.FCSset}
-\title{read.FCSset}
+\title{Load multiple FCS files}
 \usage{
-read.FCSset(filelist = NULL, directory = getwd(), pattern = ".fcs$",
-  events = "all", dataset = 1, num.threads = NULL)
+read.FCSset(
+  filelist = NULL,
+  directory = getwd(),
+  pattern = ".fcs$",
+  events = "all",
+  dataset = 1,
+  num.threads = NULL
+)
 }
 \arguments{
 \item{filelist}{A vector with full path of FCS files to be read, commonly generated through \code{\link[base:list.files]{base::list.files()}}. If \code{NULL}, this file list will be generated as indicated below.}

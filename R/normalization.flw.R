@@ -5,7 +5,7 @@
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"transformed"}.
 #' @param marker.to.norm Marker name(s) to normalize (based on visual inspection with \code{\link[FlowCT.v2:multidensity]{FlowCT.v2::multidensity()}}). Only applicable for methods "gauss" and "warp".
 #' @param norm.method Methodology to perform each marker normalization. Possible values are "gauss" or "warp" (from \code{flowStats} package) or "harmony" (from \code{harmony} package for single-cell).
-#' @param var.to.use Variable from \code{colData(fcs.SCE)} for calculating the normalization (only if \code{norm.method = "harmony}).
+#' @param var.to.use Variable from \code{colData(fcs.SCE)} for calculating the normalization (only if \code{norm.method = "harmony"}).
 #' @param norm.matrix.name New normalized matrix name (it will stored within the \code{fcs.SCE} object). Default = \code{"normalized"}.
 #' @keywords marker alignment
 #' @keywords marker normalization

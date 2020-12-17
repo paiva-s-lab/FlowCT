@@ -2,12 +2,20 @@
 % Please edit documentation in R/fcs.SCE.R
 \name{fcs.SCE}
 \alias{fcs.SCE}
-\title{fcs.SCE}
+\title{Read multiple FCS files and create a \code{fcs.SCE} object}
 \usage{
-fcs.SCE(filelist = NULL, directory = getwd(), pattern = ".fcs$",
-  events = "all", dataset = 1, num.threads = NULL, metadata,
-  transformation = "arcsinh", transf.cofactor = 500,
-  project.name = "noname")
+fcs.SCE(
+  filelist = NULL,
+  directory = getwd(),
+  pattern = ".fcs$",
+  events = "all",
+  dataset = 1,
+  num.threads = NULL,
+  metadata,
+  transformation = "arcsinh",
+  transf.cofactor = 500,
+  project.name = "noname"
+)
 }
 \arguments{
 \item{filelist}{A vector with full path of FCS files to be read, commonly generated through \code{\link[base:list.files]{base::list.files()}}. If \code{NULL}, this file list will be generated as indicated below.}
@@ -29,6 +37,9 @@ fcs.SCE(filelist = NULL, directory = getwd(), pattern = ".fcs$",
 \item{transf.cofactor}{Cofactor numeric value for that \code{arcsinh} transformation. Values can ranged from 15 to 50 (for mass cytometry) and from 150 to 10,000 (for flow cytometry). Default = \code{500}.}
 
 \item{project.name}{String naming the \code{fcs.SCE} generated. Default = \code{"noname"}.}
+}
+\value{
+
 }
 \description{
 It reads and creates a \code{fcs.SCE} object (based on the \href{https://www.bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html}{\code{SummarizedExperiment} class}) from FCS files in a specific folder or indicated in a vector. Important note: all files should have an identicar header (i.e., same name and markers order), if not only those common will be read (you can use \code{\link[FlowCT.v2:unify.FCSheaders]{FlowCT.v2::unify.FCSheaders()}} for doing that).
