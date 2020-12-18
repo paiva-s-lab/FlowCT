@@ -1,17 +1,19 @@
 #' Combine multiple subclustering with initial one
 #'
 #' It combines initial \code{fcs.SCE} object (without subclustering) with other \code{fcs.SCE} objects with subclustering analysis coming from downstream steps and generates a new \code{fcs.SCE} object. This final \code{fcs.SCE} object has an additional column combining all information from initial and subclustering analysis.
-#' @param initial.fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}. The initial one, without extracting any cell population.
+#' @param initial.fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}. The initial one, without extracting any cell population.
 #' @param subclustering.fcs.SCE A list with all \code{fcs.SCE} object(s) generated in the subclustering analysis (they have to come from the original \code{initial.fcs.SCE}).
-#' @param clusters.named Column name from the \code{initial.fcs.SCE} object which contains renamed clusters (through \code{\link[FlowCT.v2:clusters.rename]{FlowCT.v2::clusters.rename()}}) and has been used to extract cell populations for subclustering steps.
+#' @param clusters.named Column name from the \code{initial.fcs.SCE} object which contains renamed clusters (through \code{\link[FlowCT:clusters.rename]{FlowCT::clusters.rename()}}) and has been used to extract cell populations for subclustering steps.
 #' @keywords final fcs.SCE object
 #' @keywords combine subclustering
 #' @export
-#' @importFrom SummarizedExperiment colData
-#' @importFrom SummarizedExperiment colData
+#' @importFrom SingleCellExperiment colData
+#' @import dplyr
 #' @examples
 #' \dontrun{
-#'  fcs_final <- combine.subclusterings(initial.fcs.SCE = fcs, clusters.named = "SOM_named", subclustering.fcs.SCE = list(fcs_lymphos, fcs_monos))
+#'  fcs_final <- combine.subclusterings(initial.fcs.SCE = fcs, 
+#'    clusters.named = "SOM_named", 
+#'    subclustering.fcs.SCE = list(fcs_lymphos, fcs_monos))
 #' }
 
 combine.subclusterings <- function(initial.fcs.SCE, subclustering.fcs.SCE, clusters.named = "SOM_named"){
@@ -53,7 +55,7 @@ combine.subclusterings <- function(initial.fcs.SCE, subclustering.fcs.SCE, clust
       named_var <- append(named_var, i)
     }else mdg[,i] <- ifelse(is.na(mdg[,i]), 0, mdg[,i]) #replace NAs by 0 to avoid FCS wrong building
   }
-  mdg$final_clustering <- factor(do.call(dplyr::coalesce, mdg[,c(named_var, clusters.named)]))
+  mdg$final_clustering <- factor(do.call(coalesce, mdg[,c(named_var, clusters.named)]))
   
   colData(initial.fcs.SCE) <- mdg[match(initial.fcs.SCE$cell_id, mdg$cell_id),] # same cell_id order than initial fcs.SCE
   initial.fcs.SCE@metadata$subclusterings$populations <- paste(subclusterings, collapse = " + ")

@@ -1,12 +1,12 @@
 #' Longitudinal differential dotplot
 #'
 #' It draws a differential dot plot (longitudinaly) according condition for each cell cluster identified.
-#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.
+#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.
-#' @param cell.clusters A vector with clusters identified through \code{\link[FlowCT.v2:fsom.clustering]{FlowCT.v2::fsom.clustering()}} (and, normaly, later renamed).
+#' @param cell.clusters A vector with clusters identified through \code{\link[FlowCT:fsom.clustering]{FlowCT::fsom.clustering()}} (and, normaly, later renamed).
 #' @param condition.column Column name from the \code{colData(fcs.SCE)} object which contains condition information. De
 #' @param psig.cutoff P-value cutoff. Default = \code{0.05}.
-#' @param colors Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).
+#' @param colors Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT:div.colors]{FlowCT::div.colors()}}).
 #' @param return.stats Logical indicating if calculated statistics should be returned in a new variable. Default = \code{TRUE}.
 #' @param hide.nosig Logical indicating whether hiding non-significal cell populations. Default = \code{FALSE}.
 #' @keywords differential dotplot
@@ -17,7 +17,6 @@
 #' @importFrom data.table melt as.data.table
 #' @importFrom stats aggregate median pairwise.wilcox.test ave
 #' @importFrom matrixTests col_kruskalwallis
-#' @importFrom ggrepel geom_label_repel
 #' @examples
 #' \dontrun{
 #' diffDots.cell.clustering(fcs.SCE = fcs, cell.clusters = fcs$SOM_named, return.stats = F)
@@ -62,9 +61,12 @@ diffdots.cell.clustering <- function(fcs.SCE, assay.i = "normalized", cell.clust
                           geom_point(data = subset(dfma, dfma$sig == 0), size = 3, shape = 21, color = "gray63", fill = "gray63") + 
                           geom_point(data = subset(dfma, dfma$sig == 1), size = 3, shape = 21, color = "gray63")
 
-  if(sum(dfma$sig == 1) != 0) g <- g + geom_label_repel(data = subset(dfma, dfma$sig == 1 & dfma$condition == conditions[length(conditions)]),
-                        aes_string(x = 1, y = "pct", label = "variable", fill = "variable"),
-                        nudge_x = -0.1, show.legend = F)
+  if(sum(dfma$sig == 1) != 0){
+    if (!requireNamespace("ggrepel", quietly = TRUE)) stop("Package \"ggrepel\" needed for this function to work. Please install it.", call. = FALSE)
+    g <- g + ggrepel::geom_label_repel(data = subset(dfma, dfma$sig == 1 & dfma$condition == conditions[length(conditions)]),
+                            aes_string(x = 1, y = "pct", label = "variable", fill = "variable"),
+                            nudge_x = -0.1, show.legend = F)
+  }
 
 
   if(return.stats & length(unique(prop_table_md[,condition.column])) > 2){

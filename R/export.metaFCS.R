@@ -1,8 +1,8 @@
 #' Create FCS from a \code{fcs.SCE} object
 #'
 #' It creates a FCS file containing all analysis incorpored to colData(fcs.SCE) as well as the dimensional reduction coordinates calculated.
-#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.
-#' @param dr.object Object created with \code{\link[FlowCT.v2:dim.reduction]{FlowCT.v2::dim.reduction()}} function or a table combining DR and experimental metadata information.
+#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.
+#' @param dr.object Object created with \code{\link[FlowCT:dim.reduction]{FlowCT::dim.reduction()}} function or a table combining DR and experimental metadata information.
 #' @param output.name Name for generated FCS file. If \code{NULL} (default), the project name specified in the \code{fcs.SCE} building will be used.
 #' @param output.folder Name of the folder within store the new generated FCS files. Default = \code{getwd()} (i.e., current directory).
 #' @param separate.fcs Logical indicating whether FCS must be exporting separatelly or not. Default = \code{FALSE}.
@@ -11,7 +11,8 @@
 #' @keywords final FCS
 #' @keywords exporting
 #' @export
-#' @importFrom SummarizedExperiment colData assay
+#' @importFrom SingleCellExperiment colData
+#' @importFrom SummarizedExperiment assay
 #' @importFrom premessa as_flowFrame
 #' @importFrom flowCore write.FCS
 #' @examples

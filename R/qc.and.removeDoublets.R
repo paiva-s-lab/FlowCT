@@ -2,8 +2,8 @@
 #'
 #' This function performs a quality control based on a double-step procedure in all FCS files contained within a \code{fcs.SCE} object or a folder specified by user:\enumerate{
 #'    \item It executes a quality control based in \href{http://bioconductor.org/packages/release/bioc/vignettes/flowAI/inst/doc/flowAI.html}{\code{flowAI::flow_auto_qc()}},
-#'    \item Remove doublets according criteria described \href{https://github.com/LennonLab/flow-cytometry/blob/fcf09fc7b4943a386864de9b8ee43ce4e1c8d34d/bin/support_functions.R}{here}.
-#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}. If \code{NULL} (default), this function will search for FCS files within current working directory.
+#'    \item Remove doublets according criteria described \href{https://github.com/LennonLab/flow-cytometry/blob/fcf09fc7b4943a386864de9b8ee43ce4e1c8d34d/bin/support_functions.R}{here}.}
+#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}. If \code{NULL} (default), this function will search for FCS files within current working directory.
 #' @param filelist A vector with full path of FCS files to be read, commonly generated through \code{\link[base:list.files]{base::list.files()}}. If \code{NULL}, this file list will be generated as indicated below.
 #' @param directory If \code{filelist = NULL}, those files stored in this location will be read. Default = \code{getwd()} (current directory).
 #' @param pattern Pattern for reading files within \code{directory}. Default = \code{"fcs"}.
@@ -19,10 +19,9 @@
 #' @export
 #' @importFrom flowCore exprs write.FCS
 #' @importFrom premessa as_flowFrame
-#' @importFrom flowAI flow_auto_qc
 #' @importFrom stats median sd
-#' @importFrom utils capture.output read.table
 #' @importFrom knitr kable
+#' @importFrom utils read.table capture.output tail
 #' @return Final output is a new \code{fcs.SCE} object (if \code{fcs.SCE} input) without these events that do not pass the quality control or new FCS files with the suffix \code{"qc"} with these low quality events removed. If user specifies \code{return.idx = TRUE}, output would be a vector with all low-quality events positions.
 #' @return A table with percentaje of removed events for each FCS will be also shown in the terminal (those files with more than 30% of events removed will have a '!' signal).
 #' @examples
@@ -41,6 +40,8 @@
 #' }
 
 qc.and.removeDoublets <- function(fcs.SCE = NULL, filelist = NULL, directory = getwd(), pattern = "fcs", physical.markers, output.folder = directory, output.suffix = "qc", return.idx = FALSE, return.fcs = FALSE, keep.QCfile = F){
+  if (!requireNamespace("flowAI", quietly = TRUE)) stop("Package \"flowAI\" needed for this function to work. Please install it.", call. = FALSE)
+
   if(!is.null(fcs.SCE)){
     fcs <- as.flowSet.SE(fcs.SCE, assay.i = "raw")
     filenames <- fcs@phenoData@data$name
@@ -49,7 +50,7 @@ qc.and.removeDoublets <- function(fcs.SCE = NULL, filelist = NULL, directory = g
     for(file in filenames){
       fcs[[file]]@description$FILENAME <- file #requirements for flow_auto_qc
       
-      invisible(capture.output(idx1 <- flow_auto_qc(fcs[[file]], ChExcludeFS = physical.markers, fcs_QC = FALSE, output = 3, html_report = F, folder_results = F, mini_report = "miniQC")[[1]]))
+      invisible(capture.output(idx1 <- flowAI::flow_auto_qc(fcs[[file]], ChExcludeFS = physical.markers, fcs_QC = FALSE, output = 3, html_report = F, folder_results = F, mini_report = "miniQC")[[1]]))
       
       # doublet removal
       FSCA <- grep("FS.*.A", physical.markers, value = T)
@@ -93,7 +94,7 @@ qc.and.removeDoublets <- function(fcs.SCE = NULL, filelist = NULL, directory = g
     
     for(file in filelist){
       print(file)
-      invisible(capture.output(file_q <- flow_auto_qc(file, ChExcludeFS = physical.markers, fcs_QC = FALSE, output = 1, html_report = F, folder_results = F, mini_report = "miniQC")))
+      invisible(capture.output(file_q <- flowAI::flow_auto_qc(file, ChExcludeFS = physical.markers, fcs_QC = FALSE, output = 1, html_report = F, folder_results = F, mini_report = "miniQC")))
       
       # doublet removal
       FSCA <- grep("FS.*.A", physical.markers, value = T)

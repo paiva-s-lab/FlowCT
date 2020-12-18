@@ -18,7 +18,7 @@ qc.and.removeDoublets(
 )
 }
 \arguments{
-\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}. If \code{NULL} (default), this function will search for FCS files within current working directory.}
+\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}. If \code{NULL} (default), this function will search for FCS files within current working directory.}
 
 \item{filelist}{A vector with full path of FCS files to be read, commonly generated through \code{\link[base:list.files]{base::list.files()}}. If \code{NULL}, this file list will be generated as indicated below.}
 
@@ -44,7 +44,9 @@ Final output is a new \code{fcs.SCE} object (if \code{fcs.SCE} input) without th
 A table with percentaje of removed events for each FCS will be also shown in the terminal (those files with more than 30% of events removed will have a '!' signal).
 }
 \description{
-
+This function performs a quality control based on a double-step procedure in all FCS files contained within a \code{fcs.SCE} object or a folder specified by user:\enumerate{
+   \item It executes a quality control based in \href{http://bioconductor.org/packages/release/bioc/vignettes/flowAI/inst/doc/flowAI.html}{\code{flowAI::flow_auto_qc()}},
+   \item Remove doublets according criteria described \href{https://github.com/LennonLab/flow-cytometry/blob/fcf09fc7b4943a386864de9b8ee43ce4e1c8d34d/bin/support_functions.R}{here}.}
 }
 \examples{
 \dontrun{

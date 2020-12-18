@@ -16,9 +16,9 @@ rpart.tree(
 )
 }
 \arguments{
-\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}
+\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.}
 
-\item{cell.clusters}{Name of column containing clusters identified through \code{\link[FlowCT.v2:clustering.flow]{FlowCT.v2::clustering.flow()}}.}
+\item{cell.clusters}{Name of column containing clusters identified through \code{\link[FlowCT:clustering.flow]{FlowCT::clustering.flow()}}.}
 
 \item{variables}{Vector with variables for calculating the cutoff. If nothing is detailed (\code{NULL}, default), all immune populations from \code{cell.clusters} will be considered.}
 

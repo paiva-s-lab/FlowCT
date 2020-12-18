@@ -1,8 +1,8 @@
 #' Recursive partitioning tree
 #'
 #' This function performs a recursive partitioning tree using the percentage (or raw counts) of identified cell populations. Depending if \code{time.var} is present or absent, final tree were a cassification or regression tree, respectively.
-#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.
-#' @param cell.clusters Name of column containing clusters identified through \code{\link[FlowCT.v2:clustering.flow]{FlowCT.v2::clustering.flow()}}.
+#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.
+#' @param cell.clusters Name of column containing clusters identified through \code{\link[FlowCT:clustering.flow]{FlowCT::clustering.flow()}}.
 #' @param variables Vector with variables for calculating the cutoff. If nothing is detailed (\code{NULL}, default), all immune populations from \code{cell.clusters} will be considered.
 #' @param value String specifying if final resuls should be proportions ("percentage", default) or raw counts ("counts").
 #' @param time.var Survival time variable.
@@ -13,6 +13,10 @@
 #' @keywords CART
 #' @keywords classification regression tree
 #' @export rpart.tree
+#' @import dplyr
+#' @importFrom SingleCellExperiment colData
+#' @importFrom stats as.formula
+#' @importFrom graphics par
 #' @examples
 #' \dontrun{
 #' tr <- rpart.tree(fcs.SCE = fcs, cell.clusters = "clusters_named", 
@@ -21,8 +25,10 @@
 
 
 rpart.tree <- function(fcs.SCE, cell.clusters, variables, value = "percentage", time.var, event.var, xerror, return.data = F){
+  if (!requireNamespace(c("rpart", "rpart.plot"), quietly = TRUE)) stop("Packages \"rpart\" and \"rpart.plot\" needed for this function to work. Please install them.", call. = FALSE)
+  
   cell_props <- as.data.frame.matrix(t(barplot.cell.pops(fcs.SCE, cell.clusters = cell.clusters, plot = F, count.by = "filename", return.mode = value)))
-  md <- SummarizedExperiment::colData(fcs.SCE) %>% as.data.frame() %>% dplyr::distinct(filename, .keep_all = T)
+  md <- colData(fcs.SCE) %>% as.data.frame() %>% distinct(.data$filename, .keep_all = T)
   surv_data <- data.frame(cell_props[match(md$filename, rownames(cell_props)),], md)
 
   if(missing(variables)) variables <- fcs.SCE[[cell.clusters]]
@@ -31,7 +37,7 @@ rpart.tree <- function(fcs.SCE, cell.clusters, variables, value = "percentage", 
   set.seed(33)
   if(missing(time.var)){
     f <- as.formula(paste0(event.var, " ~ ", paste(unique(variables), collapse = "+")))
-    tr <- rpart::rpart(f, data = surv_data, method = "class", control = rpart.control(cp = 0))
+    tr <- rpart::rpart(f, data = surv_data, method = "class", control = rpart::rpart.control(cp = 0))
   }else{
     if(class(surv_data[,time.var]) != "numeric") surv_data[,time.var] <- as.numeric(surv_data[,time.var])
     
@@ -39,7 +45,7 @@ rpart.tree <- function(fcs.SCE, cell.clusters, variables, value = "percentage", 
     surv_data <- surv_data[surv_data[,time.var] > 0,]
     
     f <- as.formula(paste0("Surv(", time.var, ", ", event.var, ") ~ ", paste(unique(variables), collapse = "+")))
-    tr <- rpart::rpart(f, data = surv_data, method = "exp", control = rpart.control(cp = 0))
+    tr <- rpart::rpart(f, data = surv_data, method = "exp", control = rpart::rpart.control(cp = 0))
   }
 
   if(missing(xerror)){ #minimal crossvalidated error

@@ -1,7 +1,7 @@
 #' Calculate a DR with median values
 #'
 #' This function draws a plot from internally calculated K-means and dimensional reduction (DR).
-#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.
+#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.
 #' @param markers.to.use Vector with markers to use. Default = \code{"all"}.
 #' @param dr.method DR method to calculate. Possible values are "PCA", "tSNE" or "UMAP". Take into account the number of samples for this DR, for few samples t-SNE and UMAP are useless. Default = \code{"PCA"}.
@@ -20,8 +20,8 @@
 #' @export median.dr
 #' @import ggplot2
 #' @importFrom SummarizedExperiment assay
-#' @importFrom utils capture.output
 #' @importFrom stats kmeans
+#' @importFrom utils capture.output
 #' @examples
 #' \dontrun{
 #' median.dr(fcs, color.by = "condition")

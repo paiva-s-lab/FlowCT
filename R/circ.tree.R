@@ -2,29 +2,25 @@
 #'
 #' This function plots a circular dendrogram and a heatmap according a \code{fcs.SCE}. Every leaf has a different colored point size regarding the cell type and the frequency for each cluster.
 #' For additional information go to \href{https://guangchuangyu.github.io/software/ggtree/documentation/}{\code{ggtree} package}.
-#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.
+#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which drawing the circular tree. Default = \code{"normalized"}.
-#' @param cell.clusters A vector with clusters identified through \code{\link[FlowCT.v2:fsom.clustering]{FlowCT.v2::fsom.clustering()}} (and, normaly, later renamed).
+#' @param cell.clusters A vector with clusters identified through \code{\link[FlowCT:fsom.clustering]{FlowCT::fsom.clustering()}} (and, normaly, later renamed).
 #' @param dist.method Distance method measurement to be used. Possible values are "euclidean" (default), "maximum", "manhattan", "canberra", "binary" or "minkowski".
 #' @param hclust.method Hierarchical clustering method to be used. Possible values are "average" (default), "ward.D", "ward.D2", "single", "complete", "mcquitty", "median" or "centroid".
 #' @param nodes If \code{"display"} (default), nodes will be numered. If contains a numeric vector with node numbers, areas defined from these nodes will be differently colored.
 #' @param open.angle Angle aperture circular layout. Default = \code{100}.
 #' @param dendro.labels Logical whether adding labels to dendrogram. Default = \code{FALSE}.
 #' @param scale.size Numerical value indicating how much scale points in the dendogram terminal nodes. Default = \code{10}.
-#' @param colors Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).
+#' @param colors Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT:div.colors]{FlowCT::div.colors()}}).
 #' @keywords circular tree
 #' @keywords dendrogram
 #' @keywords nodes
 #' @keywords hierachical clustering
 #' @export
 #' @import dplyr
-#' @import phytools
-#' @import ggtree
 #' @import ggplot2
 #' @importFrom SummarizedExperiment assay
 #' @importFrom stats dist hclust median
-#' @importFrom treeio isTip
-#' @importFrom ape as.phylo
 #' @examples
 #' \dontrun{
 #' # step 1: display all node numbers to select how to coloring areas
@@ -36,6 +32,8 @@
 
 circ.tree <- function(fcs.SCE, assay.i = "normalized", cell.clusters, dist.method = "euclidean", hclust.method = "average", 
                       nodes = "display", open.angle = 100, dendro.labels = FALSE, scale.size = 10, colors = NULL){
+  if(!requireNamespace(c("ape"), quietly = TRUE)) stop("Packages \"ape\", \"ggtree\" needed for this function to work. Please install it.", call. = FALSE)
+
   exprs <- t(assay(fcs.SCE, i = assay.i))
   exprs_01 <- scale.exprs(exprs)
   if(is.null(colors)) colors <- div.colors(length(unique(cell.clusters)))
@@ -58,31 +56,31 @@ circ.tree <- function(fcs.SCE, assay.i = "normalized", cell.clusters, dist.metho
   rownames(expr_heatL) <- expr01_medianL$cell_clustering
   
   #hyerarchical tree building
-  hca <- as.phylo(cluster_rowsL)
+  hca <- ape::as.phylo(cluster_rowsL)
   hca$tip.label <- rownames(expr_heatL)
   
   if(length(nodes) == 1 && nodes == "display"){
-    print(ggtree(hca, layout = "fan", branch.length = 1) + geom_text2(aes_string(label = "node"), hjust = -.3) + geom_tiplab())
+    print(ggtree::ggtree(hca, layout = "fan", branch.length = 1) + ggtree::geom_text2(aes_string(label = "node"), hjust = -.3) + ggtree::geom_tiplab())
   }else{
-    p1 <- ggtree(hca, layout = "fan", open.angle = open.angle, branch.length = 1) 
+    p1 <- ggtree::ggtree(hca, layout = "fan", open.angle = open.angle, branch.length = 1) 
     
     p1 <- p1 %<+% clustering_propL #add dataframe for geom_point level
     
     for(i in nodes){
-      p1 <- p1 + geom_hilight(node = i, fill = sample(colors, 1), alpha = .6) +
+      p1 <- p1 + ggtree::geom_hilight(node = i, fill = sample(colors, 1), alpha = .6) +
         geom_point(aes_string(color = "cell_cluster", size = "Freq")) +
         scale_size_area(max_size = scale.size) + scale_color_manual(values = colors) + 
         theme(legend.position = "right")
     }
     
     if(dendro.labels){
-      p1 + geom_tiplab2(offset=0.1, align = F, size=3)
+      p1 + ggtree::geom_tiplab2(offset=0.1, align = F, size=3)
     }
     
     expr_tree_plot <- expr01_medianL[,-1] #add saturated expression to tree heatmap
     rownames(expr_tree_plot) <- rownames(expr_heatL)
     
-    print(gheatmap(p1, expr_tree_plot, offset = 0.5, width = 1, font.size = 2, colnames_angle = 0, hjust = 0,
+    print(ggtree::gheatmap(p1, expr_tree_plot, offset = 0.5, width = 1, font.size = 2, colnames_angle = 0, hjust = 0,
                    colnames_position = "top", high = "#b30000", low = "#fff7f3") +
             theme(legend.position = NULL))
   }

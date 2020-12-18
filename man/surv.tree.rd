@@ -14,7 +14,7 @@ surv.tree(
 )
 }
 \arguments{
-\item{rpart.tree}{A object generated through \code{\link[FlowCT.v2:rpart.tree]{FlowCT.v2::rpart.tree()}}.}
+\item{rpart.tree}{A object generated through \code{\link[FlowCT:rpart.tree]{FlowCT::rpart.tree()}}.}
 
 \item{tree}{Specify the tree name, i.e. "original" or "pruned".}
 

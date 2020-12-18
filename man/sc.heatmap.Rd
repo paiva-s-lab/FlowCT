@@ -16,7 +16,7 @@ sc.heatmap(
 )
 }
 \arguments{
-\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}
+\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.}
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.}
 
@@ -30,7 +30,7 @@ sc.heatmap(
 
 \item{color.expression}{Color vector for coloring expression values within the heatmap. Default = \code{NULL} (i.e., scale "YlGnBu" from \code{RColorBrewer}).}
 
-\item{colors}{Vector with colors for plotting (if provided, it must be as long as the number of unique elements in the longer metadata field). Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).}
+\item{colors}{Vector with colors for plotting (if provided, it must be as long as the number of unique elements in the longer metadata field). Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT:div.colors]{FlowCT::div.colors()}}).}
 }
 \description{
 This function draws a heatmap with single-cell fluorescence values.

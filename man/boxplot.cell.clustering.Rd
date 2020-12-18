@@ -24,11 +24,11 @@ boxplot.cell.clustering(
 )
 }
 \arguments{
-\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}
+\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.}
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.}
 
-\item{cell.clusters}{A vector with clusters identified through \code{\link[FlowCT.v2:fsom.clustering]{FlowCT.v2::fsom.clustering()}} (and, normaly, later renamed).}
+\item{cell.clusters}{A vector with clusters identified through \code{\link[FlowCT:fsom.clustering]{FlowCT::fsom.clustering()}} (and, normaly, later renamed).}
 
 \item{condition.column}{Column name from the \code{colData(fcs.SCE)} object which contains condition information.}
 
@@ -52,10 +52,10 @@ boxplot.cell.clustering(
 
 \item{plot.only.sig}{Vector indicating if only significant cell clusters should be displayed (logical element) and the P-value cutoff for selecting those ones (numerical element). Default = \code{c(FALSE, 0.05)}.}
 
-\item{colors}{Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).}
+\item{colors}{Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT:div.colors]{FlowCT::div.colors()}}).}
 }
 \description{
-It draws a boxplot with cell clusters identified through \code{\link[FlowCT.v2:fsom.clustering]{FlowCT.v2::fsom.clustering()}}.
+It draws a boxplot with cell clusters identified through \code{\link[FlowCT:fsom.clustering]{FlowCT::fsom.clustering()}}.
 }
 \examples{
 \dontrun{

@@ -7,7 +7,7 @@
 sub.samples(fcs.SCE, subsampling = 1000, index = F, unbalanced = NULL)
 }
 \arguments{
-\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}
+\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.}
 
 \item{subsampling}{Number of events to keep (in each FCS file contained within the \code{fcs.SCE} object). If indicated value is between 0 and 1, it will considered as a percentage to keep instead an absolute number. Default = 1000.}
 

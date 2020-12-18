@@ -1,7 +1,7 @@
 #' Plot DR data
 #'
-#' This function plots the indicated dimensional reduction (DR) from a previously calculated \code{\link[FlowCT.v2:dim.reduction]{FlowCT.v2::dim.reduction()}} object.
-#' @param data A object with DR generated with \code{\link[FlowCT.v2:dim.reduction]{FlowCT.v2::dim.reduction()}} or a \code{data.frame} with DR, expression and metadata information (like the first element list of the object generated with \code{\link[FlowCT.v2:dim.reduction]{FlowCT.v2::dim.reduction()}}).
+#' This function plots the indicated dimensional reduction (DR) from a previously calculated \code{\link[FlowCT:dim.reduction]{FlowCT::dim.reduction()}} object.
+#' @param data A object with DR generated with \code{\link[FlowCT:dim.reduction]{FlowCT::dim.reduction()}} or a \code{data.frame} with DR, expression and metadata information (like the first element list of the object generated with \code{\link[FlowCT:dim.reduction]{FlowCT::dim.reduction()}}).
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.
 #' @param plot.dr String indicating the desired DR to plot (this indicated DR should be prevoulsy calculated to being plotted).
 #' @param n.dims Vector indicating the two DR components to plot. Default = \code{c(1,2)} (by now, these are the only dims allowed).
@@ -14,18 +14,18 @@
 #' @param size Point size. Default = \code{1}.
 #' @param raster Number of pixels to consider for rastering image, if none indicated, not rasterization will performed. It is based on \href{https://github.com/exaexa/scattermore}{\code{scattermore} package}.
 #' @param return.df Logical indicating if built \code{data.frame} with DR information and metadata must be returned. Default = \code{FALSE}.
-#' @param colors Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).
+#' @param colors Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT:div.colors]{FlowCT::div.colors()}}).
 #' @keywords dimensional reduction plotting
 #' @keywords tSNE
 #' @keywords PCA
 #' @keywords UMAP
 #' @export
 #' @import ggplot2
-#' @import cowplot
 #' @importFrom grDevices colorRampPalette
-#' @importFrom RColorBrewer brewer.pal
 #' @importFrom data.table melt as.data.table
-#' @importFrom scattermore geom_scattermore
+#' @importFrom SingleCellExperiment colData reducedDims
+#' @importFrom SummarizedExperiment assay
+#' @importFrom RColorBrewer brewer.pal
 #' @examples
 #' \dontrun{
 #' dr.plotting(fcs, plot.dr = "tSNE", color.by = "condition")
@@ -55,6 +55,8 @@ dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), co
             panel.background = element_blank(), panel.border = element_rect(color = "black", fill = NA))
 
     if(!missing(raster)){
+      if(!requireNamespace("scattermore", quietly = TRUE)) stop("Package \"scattermore\" (https://github.com/exaexa/scattermore) needed for this function to work. Please install it.", call. = FALSE)
+
       g <- g + geom_scattermore(pointsize = size, pixels = rep(raster, 2)) #devtools::install_github('exaexa/scattermore')
     }else{
       g <- g + geom_point(aes_string(color = color.by), size = size)
@@ -73,6 +75,8 @@ dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), co
       g <- g + geom_text(aes_string(label = label.by), nudge_y = 0.05)
     }
   }else{
+    if (!requireNamespace("cowplot", quietly = TRUE)) stop("Package \"cowplot\" needed for this function to work. Please install it.", call. = FALSE)
+
     drmd <- as.data.frame(melt(as.data.table(drmd), measure.vars = no.omit.markers, value.name = "expression", variable.name = "antigen"))
     glist <- lapply(unique(drmd$antigen), function(x){
       g <- ggplot(drmd[drmd$antigen == x,], aes_string(x = paste0("dr", dims[1]), y = paste0("dr", dims[2]), color = "expression")) +

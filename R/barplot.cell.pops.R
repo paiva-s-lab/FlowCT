@@ -1,21 +1,21 @@
 #' Stacked barplot with cell clusters
 #'
 #' This function calculates cluster proportions (or raw counts) for each identified cluster and plot them on a stacked barplot.
-#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.
+#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.
-#' @param cell.clusters A vector with clusters identified through \code{\link[FlowCT.v2:fsom.clustering]{FlowCT.v2::fsom.clustering()}} (and, normaly, later renamed).
+#' @param cell.clusters A vector with clusters identified through \code{\link[FlowCT:fsom.clustering]{FlowCT::fsom.clustering()}} (and, normaly, later renamed).
 #' @param plot Logical indicating whether plotting stacked barplot. Default = \code{TRUE}.
 #' @param count.by Variable name (from \code{colData(fcs.SCE)}) for calculating proportions (or counts) and drawing the x-axis in the stacked bar plotting.
 #' @param facet.by Variable name (from \code{colData(fcs.SCE)}) for splitting the stacked bar plotting. Default = \code{NULL}.
 #' @param return.mode String for specifying if final resuls should be proportions ("percentage") or raw counts ("counts"). Default = \code{NULL}.
-#' @param colors Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).
+#' @param colors Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT:div.colors]{FlowCT::div.colors()}}).
 #' @keywords proportions
 #' @keywords barplot
 #' @export barplot.cell.pops
 #' @method barplot cell.pops
 #' @import ggplot2
-#' @importFrom SummarizedExperiment colData assay
-#' @importFrom data.table melt as.data.table
+#' @importFrom SingleCellExperiment colData
+#' @importFrom SummarizedExperiment assay
 #' @examples
 #' \dontrun{
 #' prop_table <- barplot.cell.pops(fcs.SCE = fcs, cell.clusters = fcs$SOM_named, 
@@ -36,7 +36,7 @@ barplot.cell.pops <- function(fcs.SCE, assay.i = "normalized", cell.clusters, pl
 
   ggdf <- as.data.frame(metadata) %>% 
   select(count.by, facet.by, cell.clusters) %>% 
-  add_count(x = ., eval(parse(text = cell.clusters)), eval(parse(text = count.by)))
+  add_count(x = .data, eval(parse(text = cell.clusters)), eval(parse(text = count.by)))
 
   ggdf <- aggregate(n ~ ., ggdf[,-c(ncol(ggdf)-1, ncol(ggdf)-2)], FUN = unique)
 

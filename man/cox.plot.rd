@@ -18,7 +18,7 @@ cox.plot(
 )
 }
 \arguments{
-\item{pop.cutoff.obj}{An object generated through \code{\link[FlowCT.v2:pop.cutoff]{FlowCT.v2::pop.cutoff()}}.}
+\item{pop.cutoff.obj}{An object generated through \code{\link[FlowCT:pop.cutoff]{FlowCT::pop.cutoff()}}.}
 
 \item{time.var}{Survival time variable.}
 
@@ -43,7 +43,8 @@ Plotting (Forest plot) of uni/multivariable Cox regressions.
 }
 \examples{
 \dontrun{
-unicox <- cox.plot(pop.cutoff.obj = pop_cuts, time.var, event.var, cox.type = "multicox", ref.var = "low")
+unicox <- cox.plot(pop.cutoff.obj = pop_cuts, time.var, event.var, 
+   cox.type = "multicox", ref.var = "low")
 }
 }
 \keyword{Cox}

@@ -15,9 +15,9 @@ pop.cutoff(
 )
 }
 \arguments{
-\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}
+\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.}
 
-\item{cell.clusters}{Name of column containing clusters identified through \code{\link[FlowCT.v2:clustering.flow]{FlowCT.v2::clustering.flow()}}.}
+\item{cell.clusters}{Name of column containing clusters identified through \code{\link[FlowCT:clustering.flow]{FlowCT::clustering.flow()}}.}
 
 \item{value}{String specifying if final resuls should be proportions ("percentage", default) or raw counts ("counts").}
 

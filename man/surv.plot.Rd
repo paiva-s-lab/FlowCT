@@ -14,7 +14,7 @@ surv.plot(
 )
 }
 \arguments{
-\item{pop.cutoff.obj}{An object generated through \code{\link[FlowCT.v2:pop.cutoff]{FlowCT.v2::pop.cutoff()}}.}
+\item{pop.cutoff.obj}{An object generated through \code{\link[FlowCT:pop.cutoff]{FlowCT::pop.cutoff()}}.}
 
 \item{time.var}{Survival time variable.}
 

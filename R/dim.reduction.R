@@ -1,7 +1,7 @@
 #' Calculate dimensional reductions
 #'
 #' It calculates a dimensional reduction (DR) from a \code{fcs.SCE} object (or an expression table). Three different DR methods are available: Principal Component Analsis (PCA), t-Distributed Stochastic Neighbor Embedding (t-SNE) and  Uniform Manifold Approximation and Projection (UMAP).
-#' @param data A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}} or a expression table with events in rows and markers in columns.
+#' @param data A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}} or a expression table with events in rows and markers in columns.
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate the DR (this option is useless if input is not a \code{fcs.SCE} object). Default = \code{"normalized"}.
 #' @param markers.to.use Markers to take account in the DR calculus. Default = \code{"all"}.
 #' @param dr.method DR method to calculate. Possible values are "PCA", "tSNE" and/or "UMAP".
@@ -12,18 +12,17 @@
 #' @keywords tSNE
 #' @keywords PCA
 #' @keywords UMAP
-#' @importFrom SummarizedExperiment colData assay
-#' @importFrom parallel detectCores
+#' @importFrom SingleCellExperiment colData reducedDims
+#' @importFrom SummarizedExperiment assay
 #' @importFrom stats prcomp
-#' @importFrom Rtsne Rtsne
-#' @importFrom uwot tumap
-#' @importFrom SingleCellExperiment reducedDims
+#' @importFrom parallel detectCores
 #' @import dplyr
 #' @export dim.reduction
 #' @method dim reduction
 #' @examples
 #' \dontrun{
-#' fcs <- dim.reduction(fcs, dr.method = "tSNE", markers.to.use = c("CD8", "CD27", "CCR4", "CD45RA", "CD4"))
+#' fcs <- dim.reduction(fcs, dr.method = "tSNE", 
+#'    markers.to.use = c("CD8", "CD27", "CCR4", "CD45RA", "CD4"))
 #' fcs <- dim.reduction(fcs, dr.method = "UMAP", n.neighbors.umap = 10)
 #' fcs <- dim.reduction(fcs, dr.method = c("pca", "Umap"))
 #' }
@@ -48,13 +47,21 @@ dim.reduction <- function(data, assay.i = "normalized", markers.to.use = "all", 
     colnames(drs[["PCA"]]) <- paste0("pca", c(1:2))
   }
   if("tsne" %in% tolower(dr.method)){
+    if (!requireNamespace("Rtsne", quietly = TRUE)) {
+      stop("Package \"Rtsne\" needed for this function to work. Please install it.", call. = FALSE)
+    }
+
     cat(">>> tSNE calculation...\n")
-    set.seed(333); drs[["tSNE"]] <- Rtsne(data1, num_threads = num.threads, check_duplicates = FALSE, pca = FALSE, perplexity.tsne = perplexity.tsne)$Y
+    set.seed(333); drs[["tSNE"]] <- Rtsne::Rtsne(data1, num_threads = num.threads, check_duplicates = FALSE, pca = FALSE, perplexity.tsne = perplexity.tsne)$Y
     colnames(drs[["tSNE"]]) <- paste0("tsne", c(1:2))
   }
   if("umap" %in% tolower(dr.method)){
+    if (!requireNamespace("uwot", quietly = TRUE)) {
+      stop("Package \"uwot\" needed for this function to work. Please install it.", call. = FALSE)
+    }
+
     cat(">>> UMAP calculation...\n")
-    set.seed(333); drs[["UMAP"]] <- tumap(data1, n_neighbors = n.neighbors.umap, init = "random", n_threads = num.threads, verbose = F)
+    set.seed(333); drs[["UMAP"]] <- uwot::tumap(data1, n_neighbors = n.neighbors.umap, init = "random", n_threads = num.threads, verbose = F)
     colnames(drs[["UMAP"]]) <- paste0("umap", c(1:2))
   }
 

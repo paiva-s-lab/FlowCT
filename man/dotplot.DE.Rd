@@ -15,11 +15,11 @@ dotplot.DE(
 )
 }
 \arguments{
-\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}
+\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.}
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.}
 
-\item{clusters.named}{Column name from the \code{initial.fcs.SCE} object which contains renamed clusters (through \code{\link[FlowCT.v2:clusters.rename]{FlowCT.v2::clusters.rename()}}).}
+\item{clusters.named}{Column name from the \code{initial.fcs.SCE} object which contains renamed clusters (through \code{\link[FlowCT:clusters.rename]{FlowCT::clusters.rename()}}).}
 
 \item{markers.to.use}{Vector with markers to use. Default = \code{"all"}.}
 
@@ -34,7 +34,8 @@ It draws dotplot for each cell cluster identified and each marker to facilitate 
 }
 \examples{
 \dontrun{
-dotplot.DE(fcs.SCE = fcs, markers.to.use = c("CD8", "CD27", "CCR4", "CD45RA", "CD4"), clusters.named = "SOM_named")
+dotplot.DE(fcs.SCE = fcs, clusters.named = "SOM_named", 
+   markers.to.use = c("CD8", "CD27", "CCR4", "CD45RA", "CD4"))
 }
 }
 \keyword{cell}

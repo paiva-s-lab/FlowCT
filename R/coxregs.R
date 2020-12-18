@@ -2,6 +2,8 @@
 #' @export unicox
 
 unicox <- function(data, covariates, pval.cutoff = 0.05, timevar, censvar, xlim = c(0,6), log.scale = F, hide.nosig = F){
+  if(!requireNamespace("survival", quietly = TRUE)) stop("Package \"survival\" needed for this function to work. Please install it.", call. = FALSE)
+
   data <- as.data.frame(data)
   unicox_pfs <- sapply(covariates, function(x) as.formula(paste0("Surv(", timevar, ", ", censvar, ") ~ `", x, "`")))
   unicox_pfs <- lapply(unicox_pfs, function(x) coxph(x, data))
@@ -44,9 +46,9 @@ unicox <- function(data, covariates, pval.cutoff = 0.05, timevar, censvar, xlim 
     else unicox_pfs_ress <- unicox_pfs_res
   sigcol <- ifelse(unicox_pfs_ress$HR != 1 & unicox_pfs_ress$p.value <= pval.cutoff, "black", "gray63")
   
-   g <- ggplot(unicox_pfs_ress, aes(x = HR, y = clinparam)) +
+   g <- ggplot(unicox_pfs_ress, aes_string(x = "HR", y = "clinparam")) +
     geom_point(size = 3, color = sigcol) +
-    geom_errorbar(aes(xmax = HR.confint.lower, xmin = HR.confint.upper), width = .25, color = sigcol) +
+    geom_errorbar(aes_string(xmax = "HR.confint.lower", xmin = "HR.confint.upper"), width = .25, color = sigcol) +
     scale_y_discrete(limits = rev(unique(unicox_pfs_ress$clinparam))) +
     theme_minimal(base_size = 9) + theme(axis.text.x = element_text(size = 8))
   
@@ -69,6 +71,8 @@ unicox <- function(data, covariates, pval.cutoff = 0.05, timevar, censvar, xlim 
 #' @export multicox
 
 multicox <- function(data, covariates, pval.cutoff = 0.05, timevar, censvar, xlim = c(0,100), log.scale = F, hide.nosig = T){
+  if(!requireNamespace("survival", quietly = TRUE)) stop("Package \"survival\" needed for this function to work. Please install it.", call. = FALSE)
+
   mcox <- summary(coxph(as.formula(paste0("Surv(", timevar, ",", censvar, ") ~ ", paste0("`", covariates, "`", collapse = "+"))), 
                         data = data))
   mcox <- as.data.frame(cbind(mcox$coefficients[,c(1,5)], mcox$conf.int[,c(1,3,4)]))
@@ -81,9 +85,9 @@ multicox <- function(data, covariates, pval.cutoff = 0.05, timevar, censvar, xli
   mcoxs$clinparam <- rownames(mcoxs)
   # if(log.scale) mcoxs[,c("HR", "HR_up", "HR_low")] <- log10(mcoxs[,c("HR", "HR_up", "HR_low")])
 
-  g <- ggplot(mcoxs, aes(x = HR, y = clinparam)) +
+  g <- ggplot(mcoxs, aes_string(x = "HR", y = "clinparam")) +
     geom_point(size = 3, color = sigcol) +
-    geom_errorbar(aes(xmax = HR_up, xmin = HR_low), width = .25, color = sigcol) +
+    geom_errorbar(aes_string(xmax = "HR_up", xmin = "HR_low"), width = .25, color = sigcol) +
     scale_y_discrete(limits = rev(unique(mcoxs$clinparam))) +
     theme_minimal(base_size = 9) + theme(axis.text.x = element_text(size = 8))
   
@@ -106,7 +110,7 @@ multicox <- function(data, covariates, pval.cutoff = 0.05, timevar, censvar, xli
 #' Forest plot for uni/multivariable Cox regressions
 #'
 #' Plotting (Forest plot) of uni/multivariable Cox regressions.
-#' @param pop.cutoff.obj An object generated through \code{\link[FlowCT.v2:pop.cutoff]{FlowCT.v2::pop.cutoff()}}.
+#' @param pop.cutoff.obj An object generated through \code{\link[FlowCT:pop.cutoff]{FlowCT::pop.cutoff()}}.
 #' @param time.var Survival time variable.
 #' @param event.var Variable with event censoring.
 #' @param cox.type Cox regression type: "unicox" or "multicox". 
@@ -118,9 +122,12 @@ multicox <- function(data, covariates, pval.cutoff = 0.05, timevar, censvar, xli
 #' @param hide.nosig Hide non-significant cell populations. Default = \code{FALSE}.
 #' @keywords Cox regression forest-plot multivariable univariable
 #' @export cox.plot
+#' @importFrom scales trans_breaks math_format trans_format
+#' @importFrom stats as.formula relevel
 #' @examples
 #' \dontrun{
-#' unicox <- cox.plot(pop.cutoff.obj = pop_cuts, time.var, event.var, cox.type = "multicox", ref.var = "low")
+#' unicox <- cox.plot(pop.cutoff.obj = pop_cuts, time.var, event.var, 
+#'    cox.type = "multicox", ref.var = "low")
 #' }
 
 cox.plot <- function(pop.cutoff.obj, time.var, event.var, cox.type, variables, ref.var, xlim = c(0,10), return.stats = T, log.scale = F, hide.nosig = F){

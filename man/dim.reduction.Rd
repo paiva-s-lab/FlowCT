@@ -15,7 +15,7 @@
 )
 }
 \arguments{
-\item{data}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}} or a expression table with events in rows and markers in columns.}
+\item{data}{A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}} or a expression table with events in rows and markers in columns.}
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate the DR (this option is useless if input is not a \code{fcs.SCE} object). Default = \code{"normalized"}.}
 
@@ -34,7 +34,8 @@ It calculates a dimensional reduction (DR) from a \code{fcs.SCE} object (or an e
 }
 \examples{
 \dontrun{
-fcs <- dim.reduction(fcs, dr.method = "tSNE", markers.to.use = c("CD8", "CD27", "CCR4", "CD45RA", "CD4"))
+fcs <- dim.reduction(fcs, dr.method = "tSNE", 
+   markers.to.use = c("CD8", "CD27", "CCR4", "CD45RA", "CD4"))
 fcs <- dim.reduction(fcs, dr.method = "UMAP", n.neighbors.umap = 10)
 fcs <- dim.reduction(fcs, dr.method = c("pca", "Umap"))
 }

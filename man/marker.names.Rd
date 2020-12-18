@@ -7,7 +7,7 @@
 marker.names(fcs.SCE, new.names = NULL)
 }
 \arguments{
-\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}
+\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.}
 
 \item{new.names}{Vector with new channel/marker names (it must has the same length that \code{fcs.SCE}'s markers). Default = \code{NULL} (i.e., markers will not be renamed, only displayed).}
 }
@@ -17,7 +17,8 @@ It shows marker names of a \code{fcs.SCE} object and renames them accordin a new
 \examples{
 \dontrun{
 marker.names(fcs)
-new_names <- c("FSC_A", "FSC_H", "SSC_A", "SSC_H", "CD62L", "CXCR3", "CD8", "CCR4", "CCR6", "CD4", "CD45", "CD27")
+new_names <- c("FSC_A", "FSC_H", "SSC_A", "SSC_H", "CD62L", 
+     "CXCR3", "CD8", "CCR4", "CCR6", "CD4", "CD45", "CD27")
 fcs <- marker.names(fcs, new.names = new_names)
 }
 }

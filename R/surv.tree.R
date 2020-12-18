@@ -2,7 +2,7 @@
 #' Kaplan-Meier from survival tree
 #'
 #' Plot with a Kaplan-Meier curve with node leafs identified by recursive partitioning.
-#' @param rpart.tree A object generated through \code{\link[FlowCT.v2:rpart.tree]{FlowCT.v2::rpart.tree()}}.
+#' @param rpart.tree A object generated through \code{\link[FlowCT:rpart.tree]{FlowCT::rpart.tree()}}.
 #' @param tree Specify the tree name, i.e. "original" or "pruned".
 #' @param time.var Survival time variable.
 #' @param event.var Variable with event censoring.
@@ -19,6 +19,8 @@
 #' }
 
 surv.tree <- function(rpart.tree, tree, time.var, event.var, return.data = F, curve.type = "survival"){
+  if (!requireNamespace(c("survminer", "partykit", "cowplot"), quietly = TRUE)) stop("Packages \"survminer\", \"cowplot\" and \"partykit\" needed for this function to work. Please install them.", call. = FALSE)
+
   md <- rpart.tree$metadata
   tr <- rpart.tree[[grep(tree, names(rpart.tree))]]
   tr$splits <- round(tr$splits, 2)

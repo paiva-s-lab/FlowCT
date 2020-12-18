@@ -1,7 +1,7 @@
 #' Rename clusters from numeric to cell name
 #'
-#' It renames the numerical clusters detected through \code{\link[FlowCT.v2:fsom.clustering]{FlowCT.v2::fsom.clustering()}} to specific cell populations identified by flow cytometry user.
-#' @param x Vector with numeric values corresponding to clusters detected with \code{\link[FlowCT.v2:fsom.clustering]{FlowCT.v2::fsom.clustering()}}.
+#' It renames the numerical clusters detected through \code{\link[FlowCT:fsom.clustering]{FlowCT::fsom.clustering()}} to specific cell populations identified by flow cytometry user.
+#' @param x Vector with numeric values corresponding to clusters detected with \code{\link[FlowCT:fsom.clustering]{FlowCT::fsom.clustering()}}.
 #' @param cluster Numeric vector or column name with numeric values for replacing.
 #' @param name Cell population names to replace numeric values from \code{cluster} column.
 #' @keywords population assignment
@@ -18,10 +18,13 @@
 #'  # 4 4                lymphocytes
 #'  # 5 5                eosinophils
 #'  # 6 6                eosinophils
-#' fcs$SOM_named <- clusters.rename(fcs$SOM, cluster = replacedata$original_cluster, name = replacedata$new_cluster)
+#' fcs$SOM_named <- clusters.rename(fcs$SOM, cluster = replacedata$original_cluster, 
+#' 		name = replacedata$new_cluster)
 #' 
 #' # option 2
-#' fcs$SOM_named <- clusters.rename(fcs$SOM, cluster = 1:6, name = c("debris", "lymphocytes", "monocytes", "lymphocytes", "eosinophils", "eosinophils"))
+#' fcs$SOM_named <- clusters.rename(fcs$SOM, cluster = 1:6, 
+#' 		name = c("debris", "lymphocytes", "monocytes", "lymphocytes", "eosinophils", 
+#' 		"eosinophils"))
 #' }
 
 clusters.rename <- function(x, cluster, name){

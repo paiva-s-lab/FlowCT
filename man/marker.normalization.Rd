@@ -13,13 +13,13 @@ marker.normalization(
 )
 }
 \arguments{
-\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}
+\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.}
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"transformed"}.}
 
 \item{method}{Methodology to perform each marker normalization. Possible values are "gauss" or "warp" (from \code{flowStats} package).}
 
-\item{marker}{Marker name(s) to normalize (based on visual inspection with \code{\link[FlowCT.v2:multidensity]{FlowCT.v2::multidensity()}}).}
+\item{marker}{Marker name(s) to normalize (based on visual inspection with \code{\link[FlowCT:multidensity]{FlowCT::multidensity()}}).}
 
 \item{new.matrix.name}{New normalized matrix name (it will stored within the \code{fcs.SCE} object). Default = \code{"normalized"}.}
 }
@@ -28,8 +28,10 @@ It normalizes expression abnormalities within selected markers.
 }
 \examples{
 \dontrun{
- fcs_gauss <- normalization.flw(fcs.SCE = fcs, marker = c("CD62L", "CCR4", "SSC_A"), method = "gauss")
- fcs_warp <- normalization.flw(fcs.SCE = fcs, marker = c("CD62L", "CCR4", "SSC_A"), method = "warp")
+ fcs_gauss <- normalization.flw(fcs.SCE = fcs, method = "gauss", 
+     marker = c("CD62L", "CCR4", "SSC_A"))
+ fcs_warp <- normalization.flw(fcs.SCE = fcs, method = "warp", 
+     marker = c("CD62L", "CCR4", "SSC_A"))
 }
 }
 \keyword{alignment}

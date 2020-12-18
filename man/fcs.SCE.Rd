@@ -39,10 +39,13 @@ fcs.SCE(
 \item{project.name}{String naming the \code{fcs.SCE} generated. Default = \code{"noname"}.}
 }
 \value{
-
+The fcs.SCE object is comprised with multiple (and downstream customizable) elements \enumerate{
+          \item \code{colData(fcs.SCE)}: A \code{data.frame} with metadata information for each event in the read FCS files.
+          \item \code{assayNames(fcs.SCE)}: Two expression matrices with markers as rows and events (cells) as columns. The first matrix (\code{raw}) contains the raw expression for each marker, and the second one (\code{transformed}), the \code{arcsinh}-transformed expression for subsequent analysis.
+          \item \code{metadata(fcs.SCE)}: Additional information about the experiment and following downstream steps: those read FCS files (\code{input_files}), \code{reduced_metada} with metadata for each FCS file...}
 }
 \description{
-It reads and creates a \code{fcs.SCE} object (based on the \href{https://www.bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html}{\code{SummarizedExperiment} class}) from FCS files in a specific folder or indicated in a vector. Important note: all files should have an identicar header (i.e., same name and markers order), if not only those common will be read (you can use \code{\link[FlowCT.v2:unify.FCSheaders]{FlowCT.v2::unify.FCSheaders()}} for doing that).
+It reads and creates a \code{fcs.SCE} object (based on the \href{https://www.bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html}{\code{SingleCellExperiment} class}) from FCS files in a specific folder or indicated in a vector. Important note: all files should have an identicar header (i.e., same name and markers order), if not only those common will be read (you can use \code{\link[FlowCT:unify.FCSheaders]{FlowCT::unify.FCSheaders()}} for doing that).
 }
 \examples{
 \dontrun{
@@ -54,7 +57,8 @@ head(metadata_user)
  # 4 PB_017294.fcs         4        PB     017294
  # 5 PB_017564.fcs         5        PB     017564
  # 6 PB_017612.fcs         6        PB     017612
-fcs <- fcs.SCE(directory = "../data/", which.lines = 1000, metadata = metadata_user, transf.cofactor = 500)
+fcs <- fcs.SCE(directory = "../data/", which.lines = 1000, 
+   metadata = metadata_user, transf.cofactor = 500)
 }
 }
 \keyword{FCS}

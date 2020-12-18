@@ -1,14 +1,65 @@
 Package: FlowCT.devel
 Type: Package
 Title: A semi-automated workflow for deconvolution of immunophenotypic data and objective reporting on large datasets
-Version: 2.1
+Version: 2.0.0
 Authors@R: c(
     person("Cirino", "Botta", email = "cirino.botta@gmail.com", role = "aut"),
-    person("Juan José", "Garcés", email = "jgarces@unav.es", role = c("cre", "ctb")))
+    person("Juan José", "Garcés", email = "jgarces@unav.es", role = c("aut", "cre")))
 Description: FlowCT is a semi-automated pipeline for flow cytometry data analysis. 
     Starting from compensated data obtained with standardized protocols, allows simultaneous analyses of multiple files, automated cell clustering and statistical analysis. It provides results in tabular format that can be exported into other databases for integrated analysis (e.g. clinical trials). 
-License: CC0
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
-Depends: R (>= 2.10), SingleCellExperiment (>= 1.10.1), flowCore (>= 2.0.0), flowStats (>= 4.0.0), ggplot2
+Depends:
+    R (>= 4.0.0)
+Imports:
+    SingleCellExperiment (>= 1.10.1),
+    premessa (>= 0.2.6),
+    flowCore (>= 2.0.0),
+    data.table,
+    dplyr,
+    ggplot2,
+    ggpubr,
+    knitr,
+    matrixStats,
+    matrixTests,
+    methods,
+    ncdfFlow,
+    pheatmap,
+    progress,
+    RColorBrewer,
+    reticulate,
+    SummarizedExperiment,
+    scales,
+    filesstrings
+Remotes: 
+    ParkerICI/premessa,
+    immunogenomics/harmony,
+    exaexa/scattermore
+Suggests: 
+    flowStats (>= 4.0.0),
+    harmony (>= 1.0),
+    scattermore (>= 0.7),
+    flowAI,
+    ape,
+    ConsensusClusterPlus,
+    corrplot,
+    cowplot,
+    FlowSOM,
+    future,
+    ggrepel,
+    ggridges,
+    ggtree,
+    gridExtra,
+    partykit,
+    plotly,
+    rpart,
+    rpart.plot,
+    Rphenograph,
+    Rtsne,
+    Seurat,
+    survminer,
+    uwot,
+    survival
+BugReports: https://github.com/jgarces02/FlowCT/issues

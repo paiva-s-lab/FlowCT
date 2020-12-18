@@ -1,8 +1,8 @@
 #' Immune cutoffs
 #'
 #' Once immune cell populations are identified, it calculates a cutoff from the percentage (or raw counts) according survival time.
-#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.
-#' @param cell.clusters Name of column containing clusters identified through \code{\link[FlowCT.v2:clustering.flow]{FlowCT.v2::clustering.flow()}}.
+#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.
+#' @param cell.clusters Name of column containing clusters identified through \code{\link[FlowCT:clustering.flow]{FlowCT::clustering.flow()}}.
 #' @param value String specifying if final resuls should be proportions ("percentage", default) or raw counts ("counts").
 #' @param time.var Survival time variable.
 #' @param event.var Variable with event censoring.
@@ -10,6 +10,8 @@
 #' @param cutoff.type Method for calculating survival cutoffs. Available methods are "maxstat" (default, based on \href{https://cran.r-project.org/web/packages/maxstat/index.html}{\code{maxstat}}), "quantiles" (i.e., terciles) and "median". 
 #' @keywords survival cutoffs
 #' @export pop.cutoff
+#' @import dplyr
+#' @importFrom stats quantile median
 #' @examples
 #' \dontrun{
 #' ct <- pop.cutoff(fcs.SCE = fcs, cell.clusters = "SOM_named", time.var = "PFS",
@@ -20,7 +22,7 @@ pop.cutoff <- function(fcs.SCE, cell.clusters, value = "percentage", time.var, e
                        cutoff.type = "maxstat", variables){
   ## prepare data
   prop_table_surv <- barplot.cell.pops(fcs.SCE, cell.clusters, count.by = "filename", return.mode = value, plot = F, assay.i = "normalized")
-  dataset_surv <- merge(dplyr::distinct(as.data.frame(colData(fcs.SCE)), filename, .keep_all = T), 
+  dataset_surv <- merge(distinct(as.data.frame(colData(fcs.SCE)), .data$filename, .keep_all = T), 
                         as.data.frame.matrix(t(prop_table_surv)), by.x = "filename", by.y = "row.names")
   
   if(class(dataset_surv[,time.var]) != "numeric") dataset_surv[,time.var] <- as.numeric(dataset_surv[,time.var])
@@ -29,6 +31,8 @@ pop.cutoff <- function(fcs.SCE, cell.clusters, value = "percentage", time.var, e
   
   ## cutoffs
   if(cutoff.type == "maxstat"){
+    if (!requireNamespace("survminer", quietly = TRUE)) stop("Package \"survminer\" needed for this function to work. Please install it.", call. = FALSE)
+
     res_cut <- survminer::surv_cutpoint(dataset_surv, time = time.var, event = event.var, variables = groups, minprop = 0.2, progressbar = F)
     res_cat <- data.frame(dataset_surv, survminer::surv_categorize(res_cut)[,-c(1:2)]) #not to duplicate time and event cols
     colnames(res_cat)[grep("\\.1", colnames(res_cat))] <- paste0(gsub("\\.1", "", colnames(res_cat[grep("\\.1", colnames(res_cat))])), "..", round(res_cut$cutpoint$cutpoint, 2))

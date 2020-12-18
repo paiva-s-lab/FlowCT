@@ -22,7 +22,7 @@ dr.plotting(
 )
 }
 \arguments{
-\item{data}{A object with DR generated with \code{\link[FlowCT.v2:dim.reduction]{FlowCT.v2::dim.reduction()}} or a \code{data.frame} with DR, expression and metadata information (like the first element list of the object generated with \code{\link[FlowCT.v2:dim.reduction]{FlowCT.v2::dim.reduction()}}).}
+\item{data}{A object with DR generated with \code{\link[FlowCT:dim.reduction]{FlowCT::dim.reduction()}} or a \code{data.frame} with DR, expression and metadata information (like the first element list of the object generated with \code{\link[FlowCT:dim.reduction]{FlowCT::dim.reduction()}}).}
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.}
 
@@ -46,12 +46,12 @@ dr.plotting(
 
 \item{return.df}{Logical indicating if built \code{data.frame} with DR information and metadata must be returned. Default = \code{FALSE}.}
 
-\item{colors}{Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).}
+\item{colors}{Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT:div.colors]{FlowCT::div.colors()}}).}
 
 \item{n.dims}{Vector indicating the two DR components to plot. Default = \code{c(1,2)} (by now, these are the only dims allowed).}
 }
 \description{
-This function plots the indicated dimensional reduction (DR) from a previously calculated \code{\link[FlowCT.v2:dim.reduction]{FlowCT.v2::dim.reduction()}} object.
+This function plots the indicated dimensional reduction (DR) from a previously calculated \code{\link[FlowCT:dim.reduction]{FlowCT::dim.reduction()}} object.
 }
 \examples{
 \dontrun{

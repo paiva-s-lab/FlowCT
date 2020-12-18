@@ -16,7 +16,7 @@ batch.removal(
 )
 }
 \arguments{
-\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.}
+\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.}
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"transformed"}.}
 
@@ -28,7 +28,7 @@ batch.removal(
 
 \item{harmony.params}{List with those options from original \code{\link[harmony:HarmonyMatrix]{harmony::HarmonyMatrix()}} function that user wants to customize. Default, harmony's default ones.}
 
-\item{seurat.params}{List with those options from original \code{\link[Seurat:FindIntegrationAnchors]{Seurat::FindIntegrationAnchors()}} function that user wants to customize. Default, Seurat's default ones except \code{dims = 1:10} and \code{reduction = "rpca"} (the other option is "cca", but slower for typical flow cytometry dataset sizes).}
+\item{seurat.params}{List with those options from original \code{\link[Seurat:FindIntegrationAnchors]{FindIntegrationAnchors()}} function that user wants to customize. Default, Seurat's default ones except \code{dims = 1:10} and \code{reduction = "rpca"} (the other option is "cca", but slower for typical flow cytometry dataset sizes).}
 
 \item{threads}{Number of threads for multithreading. Default = \code{NULL} (i.e., all available cores minus one).}
 }
@@ -39,11 +39,14 @@ It removes posible batch effects present in multiple FCS stored in a \code{FCS.S
 }
 \examples{
 \dontrun{
- 	fcs <- batch.removal(fcs, method = "harmony", batch = "patient_id", new.matrix.name = "harmony")
- 	fcs <- batch.removal(fcs, method = "harmony", batch = "patient_id", new.matrix.name = "harmony",
- 	               harmony.params = list(plot_convergence = T)) #to see optimal number of iterations in harmony
- 	fcs <- batch.removal(fcs, method = "seurat", batch = "patient_id", seurat.params = list(reduction = "cca"))
- 	fcs <- batch.removal(fcs, method = "seurat", batch = "patient_id",
+ fcs <- batch.removal(fcs, method = "harmony", batch = "patient_id", 
+   new.matrix.name = "harmony")
+ fcs <- batch.removal(fcs, method = "harmony", batch = "patient_id", 
+   new.matrix.name = "harmony",
+   harmony.params = list(plot_convergence = T)) #display optimal number of iterations
+ fcs <- batch.removal(fcs, method = "seurat", batch = "patient_id", 
+   seurat.params = list(reduction = "cca"))
+ fcs <- batch.removal(fcs, method = "seurat", batch = "patient_id",
  	              seurat.params = list(reduction = "cca", dims = 1:50))
 }
 }

@@ -1,9 +1,9 @@
 #' Differential expression plot to identify populations within clusters
 #'
 #' It draws dotplot for each cell cluster identified and each marker to facilitate identification of cell populations in each cell cluster.
-#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.
+#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.
-#' @param clusters.named Column name from the \code{initial.fcs.SCE} object which contains renamed clusters (through \code{\link[FlowCT.v2:clusters.rename]{FlowCT.v2::clusters.rename()}}).
+#' @param clusters.named Column name from the \code{initial.fcs.SCE} object which contains renamed clusters (through \code{\link[FlowCT:clusters.rename]{FlowCT::clusters.rename()}}).
 #' @param markers.to.use Vector with markers to use. Default = \code{"all"}.
 #' @param psig.cutoff P-value cutoff. Default = \code{0.05}.
 #' @param return.stats Logical indicating if calculated statistics should be returned in a new variable. Default = \code{FALSE}.
@@ -14,10 +14,12 @@
 #' @export
 #' @import ggplot2
 #' @importFrom stats aggregate median lm
+#' @importFrom SummarizedExperiment assay
 #' @importFrom data.table melt as.data.table
 #' @examples
 #' \dontrun{
-#' dotplot.DE(fcs.SCE = fcs, markers.to.use = c("CD8", "CD27", "CCR4", "CD45RA", "CD4"), clusters.named = "SOM_named")
+#' dotplot.DE(fcs.SCE = fcs, clusters.named = "SOM_named", 
+#'    markers.to.use = c("CD8", "CD27", "CCR4", "CD45RA", "CD4"))
 #' }
 
 dotplot.DE <- function(fcs.SCE, assay.i = "normalized", clusters.named = "SOM_named", markers.to.use = "all", psig.cutoff = 0.05, return.stats = F, scale.size = 9){

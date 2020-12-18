@@ -1,9 +1,9 @@
 #' Boxplots for identified clusters
 #'
-#' It draws a boxplot with cell clusters identified through \code{\link[FlowCT.v2:fsom.clustering]{FlowCT.v2::fsom.clustering()}}.
-#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT.v2:fcs.SCE]{FlowCT.v2::fcs.SCE()}}.
+#' It draws a boxplot with cell clusters identified through \code{\link[FlowCT:fsom.clustering]{FlowCT::fsom.clustering()}}.
+#' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.
-#' @param cell.clusters A vector with clusters identified through \code{\link[FlowCT.v2:fsom.clustering]{FlowCT.v2::fsom.clustering()}} (and, normaly, later renamed).
+#' @param cell.clusters A vector with clusters identified through \code{\link[FlowCT:fsom.clustering]{FlowCT::fsom.clustering()}} (and, normaly, later renamed).
 #' @param condition.column Column name from the \code{colData(fcs.SCE)} object which contains condition information.
 #' @param pvalue.cutoffs List of P-value cutoffs and their symbols for indicante significances within the plot. Default = \code{list(cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, 1), symbols = c("xxxx", "***", "**", "*", "ns"))}.
 #' @param color.by Variable name (from \code{colData(fcs.SCE)}) for lines coloring.
@@ -15,7 +15,7 @@
 #' @param show.stats Significances should be added to boxplots? Default = \code{TRUE}.
 #' @param return.stats Logical indicating if calculated statistics should be returned in a new variable. Default = \code{TRUE}.
 #' @param plot.only.sig Vector indicating if only significant cell clusters should be displayed (logical element) and the P-value cutoff for selecting those ones (numerical element). Default = \code{c(FALSE, 0.05)}.
-#' @param colors Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT.v2:div.colors]{FlowCT.v2::div.colors()}}).
+#' @param colors Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT:div.colors]{FlowCT::div.colors()}}).
 #' @keywords differential boxplot
 #' @keywords cell clusters distributions
 #' @export boxplot.cell.clustering

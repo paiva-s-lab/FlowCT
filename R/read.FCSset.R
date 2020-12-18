@@ -1,6 +1,6 @@
 #' Load multiple FCS files
 #'
-#' It reads multiple FCS files (in a computationaly-distributed way) contained in a specific folder or given through a vector. Important note: all files should have an identicar header (i.e., same name and markers order), if not only those common will be read (you can use \code{\link[FlowCT.v2:unify.FCSheaders]{FlowCT.v2::unify.FCSheaders()}} for doing that).
+#' It reads multiple FCS files (in a computationaly-distributed way) contained in a specific folder or given through a vector. Important note: all files should have an identicar header (i.e., same name and markers order), if not only those common will be read (you can use \code{\link[FlowCT:unify.FCSheaders]{FlowCT::unify.FCSheaders()}} for doing that).
 #' @param filelist A vector with full path of FCS files to be read, commonly generated through \code{\link[base:list.files]{base::list.files()}}. If \code{NULL}, this file list will be generated as indicated below.
 #' @param directory If \code{filelist = NULL}, those files stored in this location will be read. Default = \code{getwd()} (current directory).
 #' @param pattern Pattern for reading files within \code{directory}. Default = \code{"fcs"}.
@@ -12,6 +12,7 @@
 #' @export
 #' @importFrom ncdfFlow as.flowSet read.ncdfFlowSet
 #' @importFrom flowCore fsApply exprs sampleNames
+#' @importFrom stats complete.cases
 #' @examples
 #' \dontrun{
 #' # option 1: trough a vector with filenames (full path)
