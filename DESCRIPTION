@@ -41,7 +41,7 @@ Suggests:
     flowStats (>= 4.0.0),
     harmony (>= 1.0),
     scattermore (>= 0.7),
-    flowAI,
+    flowAI (== 1.12.7),
     ape,
     ConsensusClusterPlus,
     corrplot,
