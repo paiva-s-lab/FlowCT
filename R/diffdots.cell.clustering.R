@@ -35,7 +35,7 @@ diffdots.cell.clustering <- function(fcs.SCE, assay.i = "normalized", cell.clust
 
   ## keep original factor order for plotting
   if(class(fcs.SCE[[condition.column]]) == "factor") dfma$condition <- factor(dfma$condition, levels = levels(fcs.SCE[[condition.column]]))
-  if(class(fcs.SCE[[condition.column]]) == "factor") dfma$variable <- factor(dfma$variable, levels = levels(fcs.SCE[[cell.clusters]]))
+  if(class(fcs.SCE[[cell.clusters]]) == "factor") dfma$variable <- factor(dfma$variable, levels = levels(fcs.SCE[[cell.clusters]]))
 
   conditions <- unique(dfma[,condition.column])
 
@@ -57,9 +57,14 @@ diffdots.cell.clustering <- function(fcs.SCE, assay.i = "normalized", cell.clust
           theme(panel.background = element_blank(), axis.line = element_line(color = "black")) +
           labs(x = "\nCondition", y = "% of cells (log-transf.)\n", color = "", fill = "Cell clusters")
 
-  if(hide.nosig) g <- g + geom_line(aes_string(group = "variable", color = "sig"), size = 1) +
+  if(!hide.nosig){
+     g <- g + geom_line(aes_string(group = "variable", color = "sig"), size = 1) +
                           geom_point(data = subset(dfma, dfma$sig == 0), size = 3, shape = 21, color = "gray63", fill = "gray63") + 
                           geom_point(data = subset(dfma, dfma$sig == 1), size = 3, shape = 21, color = "gray63")
+  }else{
+     g <- g + geom_line(data = subset(dfma, dfma$sig == 1), aes_string(group = "variable", color = "sig"), size = 1) +
+              geom_point(data = subset(dfma, dfma$sig == 1), size = 3, shape = 21, color = "gray63")
+  }
 
   if(sum(dfma$sig == 1) != 0){
     if (!requireNamespace("ggrepel", quietly = TRUE)) stop("Package \"ggrepel\" needed for this function to work. Please install it.", call. = FALSE)
