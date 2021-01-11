@@ -55,7 +55,7 @@ sub.samples <- function (fcs.SCE, subsampling = 1000, index = F, unbalanced = NU
       
       aux <- colnames(fcs.SCE[,fcs.SCE$filename == i])
       if(is.null(aux)) {stop("fcs.SCE object is not correctly generated, missing single-cell indentifiers...")}
-      if(between(subsampling, 0, 1)) subsampling0 <- length(aux)*subsampling
+      if(between(subsampling, 0, 1)) subsampling0 <- length(aux)*subsampling else subsampling0 <- subsampling
       
       if(length(aux) < subsampling0){
         cat("Attention!: file", i, "has a lower number of events, reduction won't be computed.\n")
