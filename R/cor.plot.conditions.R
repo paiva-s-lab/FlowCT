@@ -17,7 +17,7 @@
 corplot.conditions <- function(fcs.SCE, assay.i = "normalized", cell.clusters, condition.column, return.stats = F){
   if (!requireNamespace(c("corrplot", "Hmisc"), quietly = TRUE)) stop("Packages \"corrplot\" and \"Hmisc\" needed for this function to work. Please install it.", call. = FALSE)
 
-  prop_table <- as.data.frame.matrix(t(barplot.cell.pops(fcs.SCE = fcs.SCE, assay.i = assay.i, cell.clusters = cell.clusters, count.by = "filename", plot = F)))
+  prop_table <- as.data.frame.matrix(t(barplot.cell.pops(fcs.SCE = fcs.SCE, assay.i = assay.i, cell.clusters = cell.clusters, count.by = "filename", plot = F, return.mode = "percentage")))
   
   prop_table_md <- merge(fcs.SCE@metadata$reduced_metada, prop_table, by.x = "filename", by.y = "row.names")
   
