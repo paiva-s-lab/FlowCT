@@ -26,6 +26,8 @@
 #' fcs <- clustering.flow(fcs, method = "parc", assay.i = "transformed")
 #' }
 
+## setting colData method from SummarizedExperiment
+setGeneric("colData<-", getGeneric("colData<-", package = "SummarizedExperiment"))
 
 clustering.flow <- function(fcs.SCE, assay.i = "normalized", method, scale = FALSE, markers.to.use = "all", num.k, seurat.res = 0.4, seurat.dims = 1:10){
   set.seed(333)
