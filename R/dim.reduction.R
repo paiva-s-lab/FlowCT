@@ -12,7 +12,7 @@
 #' @keywords tSNE
 #' @keywords PCA
 #' @keywords UMAP
-#' @importFrom SingleCellExperiment colData reducedDims
+#' @importFrom SingleCellExperiment colData reducedDims "reducedDims<-"
 #' @importFrom SummarizedExperiment assay
 #' @importFrom stats prcomp
 #' @importFrom parallel detectCores
