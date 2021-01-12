@@ -17,11 +17,9 @@
 #' }
 
 median.values <- function(fcs.SCE, assay.i = "raw", var = "filename"){
-  med <- list()
-  for(i in unique(fcs.SCE[[var]])){
+  med <- t(sapply(unique(fcs.SCE[[var]]), function(i) {
     aux_se <- fcs.SCE[,fcs.SCE[[var]] == i]
-    med[[i]] <- apply(assay(aux_se, i = assay.i), 1, median)
-  }
-  if(is.null(names(med))) names(med) <- unique(fcs.SCE[[var]])
-  return(t(as.data.frame(med)))
+    rowMedians(assay(aux_se, i = assay.i))}))
+  colnames(med) <- rownames(fcs.SCE)
+  return(med)
 }
