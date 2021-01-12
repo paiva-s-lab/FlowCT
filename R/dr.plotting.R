@@ -95,7 +95,7 @@ dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), co
     })
     g <- do.call(cowplot::plot_grid, glist)
     ## add general title
-    title <- ggdraw() + draw_label(plot.dr, fontface = 'bold', x = 0, hjust = 0) +
+    title <- cowplot::ggdraw() + cowplot::draw_label(plot.dr, fontface = 'bold', x = 0, hjust = 0) +
       theme(plot.margin = margin(0, 0, 0, 7))
     g <- cowplot::plot_grid(title, g, ncol = 1, rel_heights = c(0.1, 1.5))
   }
