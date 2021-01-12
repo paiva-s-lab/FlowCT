@@ -23,13 +23,16 @@
 
 sub.samples <- function (fcs.SCE, subsampling = 1000, index = F, unbalanced = NULL){
   set.seed(333)
-  pb <- progress_bar$new(total = length(unique(fcs.SCE$filename)), format = "Random subsampling [:bar]")
   sub_idx <- vector()
-
+  data <- colData(fcs.SCE)
+  
   if(!is.null(unbalanced)){
-    aux0 <- fcs.SCE[,fcs.SCE[[unbalanced[1]]] == unbalanced[2]]
-    aux_add <- fcs.SCE[,fcs.SCE[[unbalanced[1]]] != unbalanced[2]]
-
+    pb <- progress_bar$new(total = length(unique(fcs.SCE$filename)), 
+              format = paste0("Random subsampling (according", unbalanced[2], ")[:bar]"))
+    
+    aux0 <- data[data[unbalanced[1]] == unbalanced[2],]
+    aux_add <- data[data[unbalanced[1]] != unbalanced[2],]
+    
     for(i in unique(aux0$filename)){
       pb$tick()
       
@@ -43,17 +46,19 @@ sub.samples <- function (fcs.SCE, subsampling = 1000, index = F, unbalanced = NU
       }else{
         sub_idx <- append(sub_idx, aux[sample(length(aux), subsampling0)])    
       }
-        Sys.sleep(1/10)
+      Sys.sleep(1/1000)
     }
     cat("\n")
-
+    
     if(index) return(sub_idx) else return(cbind(aux0[,sub_idx], aux_add))
-
+    
   }else{
+    pb <- progress_bar$new(total = length(unique(fcs.SCE$filename)), format = "Random subsampling [:bar]")
+    
     for(i in unique(fcs.SCE$filename)) {
       pb$tick()
       
-      aux <- colnames(fcs.SCE[,fcs.SCE$filename == i])
+      aux <- data[data$filename == i, "cell_id"]
       if(is.null(aux)) {stop("fcs.SCE object is not correctly generated, missing single-cell indentifiers...")}
       if(between(subsampling, 0, 1)) subsampling0 <- length(aux)*subsampling else subsampling0 <- subsampling
       
@@ -65,8 +70,8 @@ sub.samples <- function (fcs.SCE, subsampling = 1000, index = F, unbalanced = NU
       }
       Sys.sleep(1/1000)
     }
-   cat("\n")
-
-   if(index) return(sub_idx) else return(fcs.SCE[,sub_idx]) 
+    cat("\n")
+    
+    if(index) return(sub_idx) else return(fcs.SCE[,sub_idx]) 
   }
 }
