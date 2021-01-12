@@ -93,11 +93,11 @@ dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), co
       }
       
     })
-    g <- do.call(plot_grid, glist)
+    g <- do.call(cowplot::plot_grid, glist)
     ## add general title
     title <- ggdraw() + draw_label(plot.dr, fontface = 'bold', x = 0, hjust = 0) +
       theme(plot.margin = margin(0, 0, 0, 7))
-    g <- plot_grid(title, g, ncol = 1, rel_heights = c(0.1, 1.5))
+    g <- cowplot::plot_grid(title, g, ncol = 1, rel_heights = c(0.1, 1.5))
   }
   
   if(return.df) return(list(data = drmd, plot = g)) else return(g)
