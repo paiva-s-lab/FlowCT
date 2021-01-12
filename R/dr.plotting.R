@@ -33,65 +33,65 @@
 #' dr <- dr.plotting(fcs, plot.dr = "PCA", color.by = "SOM", facet.by = "condition", return.df = T)
 #' }
 
-dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), color.by = "expression", shape.by = NULL, facet.by = NULL, omit.markers = NULL, title = "", label.by = NULL, size = 1, raster, return.df = F, colors){
+dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), color.by = "expression", shape.by = NULL, facet.by = NULL, omit.markers = NULL, title = "", label.by = NULL, size = 1, raster = F, return.df = F, colors){
   if(class(data)[1] == "SingleCellExperiment"){
     pos <- match(tolower(plot.dr), tolower(names(data@int_colData@listData$reducedDims)))
     if(is.na(pos)) stop('The DR indicated has not been calculated yet or is differently named (please, check the output of reducedDimNames(data) to see the correct DR name).\n', call. = F)
     dr_calculated <- names(data@int_colData@listData$reducedDims)[pos]
     dr <- data@int_colData@listData$reducedDims@listData[[dr_calculated]][,dims]
     colnames(dr) <- paste0("dr", dims) #useless
-
+    
     no.omit.markers <- rownames(data)[!(rownames(data) %in% omit.markers)]
     drmd <- as.data.frame(cbind(colData(data), dr, t(assay(data, i = assay.i))[,no.omit.markers]))
   }else{
     drmd <- data
   }
-
+  
   if(color.by != "expression"){
     if(missing(colors)) colors <- div.colors(length(unique(drmd[,color.by])))
     g <- ggplot(drmd, aes_string(x = paste0("dr", dims[1]), y = paste0("dr", dims[2]), color = color.by)) +
       xlab(paste0(toupper(plot.dr), "-1")) + ylab(paste0(toupper(plot.dr), "-2")) + ggtitle(title) +
       theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
             panel.background = element_blank(), panel.border = element_rect(color = "black", fill = NA))
-
-    if(!missing(raster)){
-      if(!requireNamespace("scattermore", quietly = TRUE)) stop("Package \"scattermore\" (https://github.com/exaexa/scattermore) needed for this function to work. Please install it.", call. = FALSE)
-
-      g <- g + geom_scattermore(pointsize = size, pixels = rep(raster, 2)) #devtools::install_github('exaexa/scattermore')
-    }else{
+    
+    if(!raster){
       g <- g + geom_point(aes_string(color = color.by), size = size)
+    }else{
+      if(!requireNamespace("scattermore", quietly = TRUE)) stop("Package \"scattermore\" (https://github.com/exaexa/scattermore) needed for this function to work. Please install it.", call. = FALSE)
+      
+      g <- g + geom_scattermore(pointsize = size, pixels = rep(raster, 2)) #devtools::install_github('exaexa/scattermore')      
     }
-
+    
     if(is.numeric(drmd[,color.by])){
       g <- g + scale_color_gradientn(colours = colorRampPalette(rev(brewer.pal(n = 11, name = "Spectral")))(50), name = color.by)
     }else{
       g <- g + scale_color_manual(values = colors, name = color.by) +
         guides(color = guide_legend(override.aes = list(size = 4), ncol = 2))
     }
-
+    
     if(!is.null(facet.by)) g <- g + facet_wrap(~ eval(parse(text = facet.by)))
-
+    
     if(!is.null(label.by)){
       g <- g + geom_text(aes_string(label = label.by), nudge_y = 0.05)
     }
   }else{
     if (!requireNamespace("cowplot", quietly = TRUE)) stop("Package \"cowplot\" needed for this function to work. Please install it.", call. = FALSE)
-
+    
     drmd <- as.data.frame(melt(as.data.table(drmd), measure.vars = no.omit.markers, value.name = "expression", variable.name = "antigen"))
     glist <- lapply(unique(drmd$antigen), function(x){
       g <- ggplot(drmd[drmd$antigen == x,], aes_string(x = paste0("dr", dims[1]), y = paste0("dr", dims[2]), color = "expression")) +
         labs(x = NULL, y = NULL) + ggtitle(x) +
         theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
               panel.background = element_blank(), panel.border = element_rect(color = "black", fill = NA))
-
-      if(missing(raster)){
-        g + geom_scattermore(pointsize = size, pixels = rep(raster, 2)) +
-          scale_color_gradientn(colours = colorRampPalette(rev(brewer.pal(n = 11, name = "Spectral")))(50), name = NULL)
-      }else{
+      
+      if(!raster){
         g + geom_point(aes_string(color = color.by), size = size) +
           scale_color_gradientn(colours = colorRampPalette(rev(brewer.pal(n = 11, name = "Spectral")))(50), name = NULL)
+      }else{
+        g + geom_scattermore(pointsize = size, pixels = rep(raster, 2)) +
+          scale_color_gradientn(colours = colorRampPalette(rev(brewer.pal(n = 11, name = "Spectral")))(50), name = NULL)
       }
-
+      
     })
     g <- do.call(plot_grid, glist)
     ## add general title
@@ -99,6 +99,6 @@ dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), co
       theme(plot.margin = margin(0, 0, 0, 7))
     g <- plot_grid(title, g, ncol = 1, rel_heights = c(0.1, 1.5))
   }
-
+  
   if(return.df) return(list(data = drmd, plot = g)) else return(g)
 }
