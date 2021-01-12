@@ -35,7 +35,7 @@
 #'     plot.only.sig = c(T, 0.1))
 #' }
 
-boxplot.cell.clustering2 <- function(fcs.SCE, assay.i = "normalized", cell.clusters, condition.column = "condition",
+boxplot.cell.clustering <- function(fcs.SCE, assay.i = "normalized", cell.clusters, condition.column = "condition",
                                     pvalue.cutoffs = list(cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, 1), symbols = c("xxxx", "***", "**", "*", "ns")),
                                     color.by = condition.column, geom.point = T, facet = F, facet.free.scale = "free_x", shape.by = NULL, y.limits = NULL,
                                     show.stats = T, return.stats = T, plot.only.sig = c(F, 0.05), colors = NULL){
