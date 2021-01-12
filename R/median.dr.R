@@ -28,43 +28,41 @@
 #' }
 
 median.dr <- function(fcs.SCE, assay.i = "normalized", markers.to.use = "all", dr.method = "PCA", num.k = 3, kmeans.frame = T, perplexity.tsne = 15, n.neighbors.umap = 50, color.by = "filename", shape.by = NULL, label.by = NULL, size = 3, return.DR.info = F){
-  data <- t(assay(fcs.SCE, i = assay.i))
-  metadata <- fcs.SCE@metadata$reduced_metadata
-
-  if(length(markers.to.use) == 1 && markers.to.use == "all") markers.to.use <- colnames(data)
-
+  if(length(markers.to.use) == 1 && markers.to.use == "all") markers.to.use <- rownames(fcs)
+  
   ## prepare median tables and k-means
   med <- median.values(fcs.SCE, assay.i = assay.i)
   set.seed(333); k <- kmeans(med, num.k)
-  mdk <- merge(metadata, as.data.frame(as.factor(k$cluster)), by = "row.names")[,-1]
+  mdk <- merge(fcs.SCE@metadata$reduced_metadata, 
+               as.data.frame(as.factor(k$cluster)), by = "row.names")[,-1]
   colnames(mdk)[ncol(mdk)] <- paste0("kmeans", ".k", num.k)
   rownames(mdk) <- mdk$filename
-
+  
   ## dr
   if(grepl("^pca$|^tsne$|^umap$", tolower(dr.method))){
     invisible(capture.output(dr <- dim.reduction(med, dr.method = dr.method, markers.to.use = markers.to.use,
                                                  perplexity.tsne = perplexity.tsne, n.neighbors.umap = n.neighbors.umap)))
     colnames(dr[[1]]) <- paste0("dr", 1:2)
-
+    
     ## plotting
     # drmd <- merge(mdk, dr[[1]], by = "row.names")[-1]
     drmd <- cbind(mdk, dr[[1]])
     if(!kmeans.frame){
       g <- dr.plotting(drmd, plot.dr = dr.method, color.by = color.by, shape.by = shape.by, label.by = label.by,
-                  size = size, raster = F)
+                       size = size)
     }else{
       g <- ggplot(drmd, aes_string("dr1", "dr2", color = paste0("kmeans", ".k", num.k), shape = shape.by)) +
-              geom_point() +
-              stat_ellipse(geom = "polygon", alpha = 1/4, type = "t", level = 0.8,
-                           inherit.aes = F, aes_string("dr1", "dr2", fill = paste0("kmeans", ".k", num.k),
-                                                       color = paste0("kmeans", ".k", num.k))) +
-              theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-                    panel.background = element_blank(), panel.border = element_rect(color = "black", fill = NA))
+        geom_point() +
+        stat_ellipse(geom = "polygon", alpha = 1/4, type = "t", level = 0.8,
+                     inherit.aes = F, aes_string("dr1", "dr2", fill = paste0("kmeans", ".k", num.k),
+                                                 color = paste0("kmeans", ".k", num.k))) +
+        theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+              panel.background = element_blank(), panel.border = element_rect(color = "black", fill = NA))
     }
   }else{
-    stop("Please, specify a valid reduction method: PCA, tSNE, UMAP or kmeans.", call. = F)
+    stop("Please, specify a valid reduction method: PCA, tSNE or UMAP.", call. = F)
   }
-
+  
   if(return.DR.info){
     colnames(drmd)[grepl("dr", colnames(drmd))] <- paste0(dr.method, 1:length(grep("dr", colnames(drmd))))
     return(list(data = drmd, plot = g))
