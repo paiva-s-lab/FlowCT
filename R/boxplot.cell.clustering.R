@@ -23,7 +23,6 @@
 #' @importFrom data.table melt as.data.table
 #' @importFrom matrixTests col_kruskalwallis
 #' @importFrom stats pairwise.wilcox.test
-#' @importFrom ggpubr stat_compare_means
 #' @examples
 #' \dontrun{
 #' # option 1: show all cell clusters and return statistics
@@ -36,58 +35,58 @@
 #'     plot.only.sig = c(T, 0.1))
 #' }
 
-boxplot.cell.clustering <- function(fcs.SCE, assay.i = "normalized", cell.clusters, condition.column = "condition",
+boxplot.cell.clustering2 <- function(fcs.SCE, assay.i = "normalized", cell.clusters, condition.column = "condition",
                                     pvalue.cutoffs = list(cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, 1), symbols = c("xxxx", "***", "**", "*", "ns")),
                                     color.by = condition.column, geom.point = T, facet = F, facet.free.scale = "free_x", shape.by = NULL, y.limits = NULL,
                                     show.stats = T, return.stats = T, plot.only.sig = c(F, 0.05), colors = NULL){
   ## prepare tables
-  prop_table <- as.data.frame.matrix(t(barplot.cell.pops(fcs.SCE = fcs.SCE, assay.i,
+  prop_table <- as.data.frame.matrix(t(barplot.cell.pops(fcs.SCE = fcs.SCE, assay.i, return.mode = "percentage",
                                                          cell.clusters = cell.clusters, count.by = "filename", plot = F)))
-
+  
   prop_table_md <- merge(fcs.SCE@metadata$reduced_metada, prop_table, by.x = "filename", by.y = "row.names")
-
+  
   prop_table_mdm <- melt(as.data.table(prop_table_md), id.vars = colnames(fcs.SCE@metadata$reduced_metada),
                          variable.name = "cell_cluster", value.name = "proportion")
-
+  
   ## statistics table
-  resultskw <- col_kruskalwallis(prop_table_md[,as.character(unique(cell.clusters))], prop_table_md[,condition.column])
+  resultskw <- col_kruskalwallis(prop_table_md[,as.character(unique(fcs.SCE[[cell.clusters]]))], prop_table_md[,condition.column])
   KWsig <- rownames(resultskw[resultskw$pvalue < plot.only.sig[2],])
-
+  
   if(length(unique(prop_table_md[,condition.column])) > 2){
     kw_posthoc <- list()
     for(i in KWsig) kw_posthoc[[i]] <- pairwise.wilcox.test(prop_table_md[,i], prop_table_md[,condition.column])
   }
-
+  
   ## plotting
   if(is.null(colors)) colors <- div.colors(length(unique(prop_table_md[,condition.column])))
-
+  
   if(plot.only.sig[1]){
     prop_table_mdm <- prop_table_mdm[prop_table_mdm$cell_cluster %in% KWsig,]
   }
-
+  
   g <- ggplot(prop_table_mdm, aes_string("cell_cluster", "proportion", color = color.by, fill = color.by)) +
     geom_boxplot(alpha = 0.6) + labs(x = "cell clusters", y = "Proportion") +
     theme_bw()
-
+  
   if(!is.null(y.limits)) g <- g + scale_y_continuous(limits = c(y.limits))
-
+  
   if(geom.point) g <- g + geom_point(aes_string("cell_cluster", "proportion", color = color.by),
                                      alpha = 0.8, position = position_jitterdodge())
-
+  
   if(!is.null(shape.by)) g <- g + geom_point(aes_string("cell_cluster", "proportion", color = color.by,
                                                         shape = shape.by), alpha = 0.8, position = position_jitterdodge())
-
+  
   if(facet){
     g <- g + facet_wrap(~ cell_cluster, scales = facet.free.scale) +
-                  theme(axis.ticks.x = element_blank(), axis.text.x = element_blank())
+      theme(axis.ticks.x = element_blank(), axis.text.x = element_blank())
   }else{
     g <- g + coord_flip()
   }
-
-  if(show.stats) g <- g + stat_compare_means(label = "p.signif", symnum.args = pvalue.cutoffs)
-
+  
+  if(show.stats) g <- g + ggpubr::stat_compare_means(label = "p.signif", symnum.args = pvalue.cutoffs)
+  
   g <- g + scale_fill_manual(values = colors) + scale_color_manual(values = colors)
-
+  
   if(return.stats & length(unique(prop_table_md[,condition.column])) > 2){
     return(list(kruskal_results = resultskw, kw_posthoc_results = kw_posthoc, plot = g))
   }else if(return.stats){
