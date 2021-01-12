@@ -40,7 +40,7 @@ clustering.flow <- function(fcs.SCE, assay.i = "normalized", method, scale = FAL
     fsom <- suppressMessages(FlowSOM::BuildSOM(fsom, colsToUse = markers.to.use)) #build SOM
 
     ## metaclustering
-    mc <- suppressMessages(ConsensusClusterPlus(t(fsom$map$codes), maxK = num.k, reps = 100,
+    mc <- suppressMessages(ConsensusClusterPlus::ConsensusClusterPlus(t(fsom$map$codes), maxK = num.k, reps = 100,
                                                 pItem = 0.9, pFeature = 1, title = "consensus_plots", plot = "pdf",
                                                 clusterAlg = "hc", innerLinkage = "average", finalLinkage = "average",
                                                 distance = "euclidean", seed = 333, verbose = F))
@@ -52,7 +52,7 @@ clustering.flow <- function(fcs.SCE, assay.i = "normalized", method, scale = FAL
     colData(fcs.SCE)[,paste0("SOM.k", num.k)] <- cell_clustering1
     return(fcs.SCE)
   }else if(tolower(method) == "seurat"){
-    if(!requireNamespace("Seurat", quietly = TRUE)) stop("Package \"Seurat\" needed for this function to work. Please install it.", call. = FALSE)
+    if(!requireNamespace("Seurat", quietly = TRUE)) stop("Package \"Seurat\" needed for this function to work. Please install it.", call. = FALSE) else require(Seurat)
 
     data <- as.Seurat(fcs.SCE, counts = assayNames(fcs.SCE)[1], data = assay.i)
     if(length(markers.to.use) == 1 && markers.to.use == "all") markers.to.use <- rownames(data)
@@ -70,11 +70,11 @@ clustering.flow <- function(fcs.SCE, assay.i = "normalized", method, scale = FAL
     data <- as.matrix(t(assay(fcs.SCE, assay.i)))
     if(length(markers.to.use) == 1 && markers.to.use == "all") markers.to.use <- colnames(data)
 
-    Rphenograph_out <- Rphenograph(data[,markers.to.use], k = num.k)
+    Rphenograph_out <- Rphenograph::Rphenograph(data[,markers.to.use], k = num.k)
     colData(fcs.SCE)[,paste0("phenog.k", num.k)] <- factor(Rphenograph_out[[2]]$membership)
     return(fcs.SCE)
   }else if(tolower(method) == "parc"){
-    if(!requireNamespace("reticulate", quietly = TRUE)) stop("Package \"reticulate\" needed for this function to work. Please install it.", call. = FALSE)
+    if(!requireNamespace("reticulate", quietly = TRUE)) stop("Package \"reticulate\" needed for this function to work. Please install it.", call. = FALSE) else require(reticulate)
 
     p <- import("parc")
     pres <- p$PARC(t(assay(fcs.SCE, assay.i)))
