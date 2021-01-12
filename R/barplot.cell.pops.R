@@ -36,7 +36,7 @@ barplot.cell.pops <- function(fcs.SCE, assay.i = "normalized", cell.clusters, pl
 
   ggdf <- as.data.frame(metadata) %>% 
   select(count.by, facet.by, cell.clusters) %>% 
-  add_count(x = .data, eval(parse(text = cell.clusters)), eval(parse(text = count.by)))
+  add_count(x = ., eval(parse(text = cell.clusters)), eval(parse(text = count.by)))
 
   ggdf <- aggregate(n ~ ., ggdf[,-c(ncol(ggdf)-1, ncol(ggdf)-2)], FUN = unique)
 
