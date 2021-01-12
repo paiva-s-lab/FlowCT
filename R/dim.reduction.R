@@ -12,7 +12,7 @@
 #' @keywords tSNE
 #' @keywords PCA
 #' @keywords UMAP
-#' @importFrom SingleCellExperiment colData reducedDims "reducedDims<-"
+#' @importFrom SingleCellExperiment colData reducedDims
 #' @importFrom SummarizedExperiment assay
 #' @importFrom stats prcomp
 #' @importFrom parallel detectCores
@@ -26,6 +26,9 @@
 #' fcs <- dim.reduction(fcs, dr.method = "UMAP", n.neighbors.umap = 10)
 #' fcs <- dim.reduction(fcs, dr.method = c("pca", "Umap"))
 #' }
+
+## SingleCellExperiment method...
+setGeneric("reducedDims<-", getGeneric("reducedDims<-", package = "SingleCellExperiment"))
 
 dim.reduction <- function(data, assay.i = "normalized", markers.to.use = "all", dr.method, num.threads = NULL, perplexity.tsne = 100, n.neighbors.umap = 50){
   if(!all(grepl("^pca$|^tsne$|^umap$", tolower(dr.method)))) stop('The available reduction methods are: PCA, tSNE and/or UMAP.\n', call. = F)
