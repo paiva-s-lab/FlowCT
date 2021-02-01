@@ -16,32 +16,40 @@
 #' }
 
 
-surv.plot <- function(pop.cutoff.obj, time.var, event.var, palette = "jco", variables, curve.type = "survival"){
+surv.plot <- function(pop.cutoff.obj, time.var, event.var, palette, variables, curve.type = "survival", risk.table = F, return.plots = F){
   if (!requireNamespace(c("survminer", "ggpubr", "cowplot"), quietly = TRUE)) stop("Packages \"survminer\", \"cowplot\" and \"ggpubr\" needed for this function to work. Please install them.", call. = FALSE)
-
-  if(missing(variables)) variables <- grep(".ct", colnames(pop.cutoff.obj))
-
+  
+  if(missing(variables)) variables <- grep("\\.\\.", colnames(pop.cutoff.obj), value = T)
+  if(missing(variables)) palette <- "jco"
+  
   if(curve.type == "cumulative"){
     sv_list <- lapply(variables, function(x){
-	    f <- as.formula(paste("Surv(", time.var, ", ", event.var, ") ~ ", x))
-	    survminer::ggsurvplot(survminer::surv_fit(f, data = pop.cutoff.obj[,c(x, time.var, event.var)]),
-	               surv.median.line = "hv", pval = TRUE, fun = "event",
-	               palette = palette, legend.title = "", title = x,
-	               risk.table = TRUE, risk.table.height = 0.25,
-	               legend.labs = levels(pop.cutoff.obj[,x]),
-	               ggtheme = ggpubr::theme_pubclean())})
+      f <- as.formula(paste("Surv(", time.var, ", ", event.var, ") ~ ", x))
+      survminer::ggsurvplot(survminer::surv_fit(f, data = pop.cutoff.obj[,c(x, time.var, event.var)]),
+                            surv.median.line = "hv", pval = TRUE, fun = "event",
+                            palette = palette, legend.title = "", title = x,
+                            risk.table = TRUE, risk.table.height = 0.25,
+                            legend.labs = levels(pop.cutoff.obj[,x]),
+                            ggtheme = ggpubr::theme_pubclean())})
   }else{
     sv_list <- lapply(variables, function(x){
-	    f <- as.formula(paste("Surv(", time.var, ", ", event.var, ") ~ ", x))
-	    survminer::ggsurvplot(survminer::surv_fit(f, data = pop.cutoff.obj[,c(x, time.var, event.var)]),
-	               surv.median.line = "hv", pval = TRUE,
-	               palette = palette, legend.title = "", title = x,
-	               risk.table = TRUE, risk.table.height = 0.25,
-	               legend.labs = levels(pop.cutoff.obj[,x]),
-	               ggtheme = ggpubr::theme_pubclean())})
+      f <- as.formula(paste("Surv(", time.var, ", ", event.var, ") ~ ", x))
+      survminer::ggsurvplot(survminer::surv_fit(f, data = pop.cutoff.obj[,c(x, time.var, event.var)]),
+                            surv.median.line = "hv", pval = TRUE,
+                            palette = palette, legend.title = "", title = x,
+                            risk.table = TRUE, risk.table.height = 0.25,
+                            legend.labs = levels(pop.cutoff.obj[,x]),
+                            ggtheme = ggpubr::theme_pubclean())})
   }
-
-  plotaux <- lapply(1:length(sv_list), function(x){
-    cowplot::plot_grid(sv_list[[x]]$plot, sv_list[[x]]$table, nrow = 2, rel_heights = c(1,.4))})
-  cowplot::plot_grid(plotlist = lapply(plotaux, print))  
+  
+  if(risk.table){
+    plotaux <- lapply(1:length(sv_list), function(x){
+      cowplot::plot_grid(sv_list[[x]]$plot, sv_list[[x]]$table, nrow = 2, rel_heights = c(1,.4))})
+  }else{
+    plotaux <- lapply(1:length(sv_list), function(x) sv_list[[x]]$plot)
+  }
+  print(cowplot::plot_grid(plotlist = plotaux))
+  
+  names(plotaux) <- variables
+  if(return.plots) return(plotaux)
 }
