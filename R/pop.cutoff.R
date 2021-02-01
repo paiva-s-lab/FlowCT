@@ -51,7 +51,7 @@ pop.cutoff <- function(fcs.SCE, cell.clusters, value = "percentage", time.var, e
     cts <- sapply(dataset_surv[,groups], function(x) round(median(x), 2))
     colnames(res_cat)[grep("\\.1", colnames(res_cat))] <- paste0(gsub("\\.1", "", colnames(res_cat[grep("\\.1", colnames(res_cat))])), "..", cts)
    }else{
-    print("Please, specify one valid option: maxstat, quantiles or median.")
+    stop("Please, specify one valid option: maxstat, quantiles or median.", call. = F)
   }
   
   return(res_cat)
