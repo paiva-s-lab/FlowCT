@@ -79,7 +79,7 @@ batch.removal <- function(fcs.SCE, assay.i = "transformed", method, batch, new.m
       diffs <- setdiff(names(harmony.defaults), names(harmony.params))
       harmony.params2 <- c(harmony.params, harmony.defaults[diffs])
     }else{
-      harmony.params2 <- harmony.defaults
+      harmony.params2 <- formals(harmony::HarmonyMatrix)[-(1:4)]
     }
 
     norm_data <- do.call(harmony::HarmonyMatrix, c(list(data_mat = assay(fcs.SCE, assay.i), meta_data = colData(fcs.SCE),
