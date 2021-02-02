@@ -32,11 +32,10 @@
 
 batch.removal <- function(fcs.SCE, assay.i = "transformed", method, batch, new.matrix.name = "normalized", harmony.params = NULL, seurat.params = NULL, threads = NULL){
   if(tolower(method) == "seurat"){
-    if (!requireNamespace(c("future", Seurat), quietly = TRUE)) stop("Packages \"future\" and \"Seurat\" needed for this function to work. Please install them.", call. = FALSE)
-    # require(future)
-    # require(Seurat)
+    if (!requireNamespace(c("future", "Seurat"), quietly = TRUE)) stop("Packages \"future\" and \"Seurat\" needed for this function to work. Please install them.", call. = FALSE) else require(Seurat)
 
     ## setting multithreading
+    require(future)
     if(is.null(threads)) threads <- availableCores()-1
     plan("multiprocess", workers = threads); options(future.globals.maxSize = 1000 * 1024^2) #https://satijalab.org/seurat/v3.0/future_vignette.html
 
@@ -76,14 +75,14 @@ batch.removal <- function(fcs.SCE, assay.i = "transformed", method, batch, new.m
 
     ## prepare internal options
     if(!is.null(harmony.params)){
-      harmony.defaults <- formals(HarmonyMatrix)[-(1:4)]
+      harmony.defaults <- formals(harmony::HarmonyMatrix)[-(1:4)]
       diffs <- setdiff(names(harmony.defaults), names(harmony.params))
       harmony.params2 <- c(harmony.params, harmony.defaults[diffs])
     }else{
       harmony.params2 <- harmony.defaults
     }
 
-    norm_data <- do.call(HarmonyMatrix, c(list(data_mat = assay(fcs.SCE, assay.i), meta_data = colData(fcs.SCE),
+    norm_data <- do.call(harmony::HarmonyMatrix, c(list(data_mat = assay(fcs.SCE, assay.i), meta_data = colData(fcs.SCE),
                                                vars_use = batch, do_pca = F), harmony.params2))
     assay(fcs.SCE, i = new.matrix.name) <- norm_data
     return(fcs.SCE)
