@@ -59,7 +59,7 @@ dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), co
     }else{
       if(!requireNamespace("scattermore", quietly = TRUE)) stop("Package \"scattermore\" (https://github.com/exaexa/scattermore) needed for this function to work. Please install it.", call. = FALSE)
       
-      g <- g + geom_scattermore(pointsize = size, pixels = rep(raster, 2)) #devtools::install_github('exaexa/scattermore')      
+      g <- g + scattermore::geom_scattermore(pointsize = size, pixels = rep(raster, 2)) #devtools::install_github('exaexa/scattermore')      
     }
     
     if(is.numeric(drmd[,color.by])){
@@ -88,7 +88,7 @@ dr.plotting <- function(data, assay.i = "normalized", plot.dr, dims = c(1,2), co
         g + geom_point(aes_string(color = color.by), size = size) +
           scale_color_gradientn(colours = colorRampPalette(rev(brewer.pal(n = 11, name = "Spectral")))(50), name = NULL)
       }else{
-        g + geom_scattermore(pointsize = size, pixels = rep(raster, 2)) +
+        g + scattermore::geom_scattermore(pointsize = size, pixels = rep(raster, 2)) +
           scale_color_gradientn(colours = colorRampPalette(rev(brewer.pal(n = 11, name = "Spectral")))(50), name = NULL)
       }
       
