@@ -12,7 +12,8 @@ rpart.tree(
   time.var,
   event.var,
   xerror,
-  return.data = F
+  rpart.control,
+  return.data = T
 )
 }
 \arguments{
@@ -29,8 +30,10 @@ rpart.tree(
 \item{event.var}{Variable with event censoring.}
 
 \item{xerror}{Numeric value with cross-validation error for pruning the tree. If missing, the minimal error will be automatically selected.}
+  
+\item{rpart.control}{List with parameters for controling \code{rpart}. See \code{?rpart::rpart.control} for more information and defaults values (caution because, in \code{FlowCT} there are some changes: \code{cp = 0} and \code{minsplit = 10}).}
 
-\item{return.data}{Original, pruned and used metadata should be returned?. Default = \code{FALSE}.}
+\item{return.data}{Original, pruned and used metadata should be returned?. Default = \code{TRUE}.}
 }
 \description{
 This function performs a recursive partitioning tree using the percentage (or raw counts) of identified cell populations. Depending if \code{time.var} is present or absent, final tree were a cassification or regression tree, respectively.
@@ -38,7 +41,7 @@ This function performs a recursive partitioning tree using the percentage (or ra
 \examples{
 \dontrun{
 tr <- rpart.tree(fcs.SCE = fcs, cell.clusters = "clusters_named", 
-   time.var = "PFS", event.var = "PFS_c", return.data = t)
+   time.var = "PFS", event.var = "PFS_c")
 }
 }
 \keyword{CART}
