@@ -8,7 +8,7 @@
 #' @param time.var Survival time variable.
 #' @param event.var Variable with event censoring.
 #' @param xerror Numeric value with cross-validation error for pruning the tree. If missing, the minimal error will be automatically selected.
-#' @param return.data Original, pruned and used metadata should be returned?. Default = \code{FALSE}.
+#' @param return.data Original, pruned and used metadata should be returned?. Default = \code{TRUE}.
 #' @keywords recursive partioning
 #' @keywords CART
 #' @keywords classification regression tree
@@ -24,7 +24,7 @@
 #' }
 
 
-rpart.tree <- function(fcs.SCE, cell.clusters, variables, value = "percentage", time.var, event.var, xerror, return.data = F){
+rpart.tree <- function(fcs.SCE, cell.clusters, variables, value = "percentage", time.var, event.var, xerror, return.data = T){
   if (!requireNamespace(c("rpart", "rpart.plot"), quietly = TRUE)) stop("Packages \"rpart\" and \"rpart.plot\" needed for this function to work. Please install them.", call. = FALSE)
   
   cell_props <- as.data.frame.matrix(t(barplot.cell.pops(fcs.SCE, cell.clusters = cell.clusters, plot = F, count.by = "filename", return.mode = value)))
