@@ -28,18 +28,19 @@
 
 median.heatmap <- function(fcs.SCE, assay.i = "normalized", cell.clusters = NULL, markers.to.use = "all", not.metadata = "filename", colors = NULL){
   data <- t(assay(fcs.SCE, i = assay.i))
+  colnames(data) <- make.names(colnames(data)) #avoid R renaming conflicts
   metadata <- dplyr::distinct(as.data.frame(colData(fcs.SCE)), .data$filename, .keep_all = T)
   
-  if(length(markers.to.use) == 1 && markers.to.use == "all") markers.to.use <- colnames(data)
+  if(length(markers.to.use) == 1 && markers.to.use == "all") markers.to.use <- make.names(colnames(data))
   
   ## prepare median tables
   if(is.null(cell.clusters)){
     med <- median.values(fcs.SCE, assay.i = assay.i)
   }else{
-    expr_median <- data.frame(cell_clusters = cell.clusters, data[,markers.to.use]) %>%
+    expr_median <- data.frame(cell_clusters = metadata[,cell.clusters], data[,markers.to.use]) %>%
       group_by(.data$cell_clusters) %>% summarize_all(list(median)) %>% as.data.frame(.data)
     
-    expr_saturated_median <- data.frame(cell_clusters = cell.clusters, scale.exprs(data[,markers.to.use])) %>%
+    expr_saturated_median <- data.frame(cell_clusters = metadata[,cell.clusters], scale.exprs(data[,markers.to.use])) %>%
       group_by(.data$cell_clusters) %>% summarize_all(list(median)) %>% as.data.frame(.data)
   }
   
@@ -48,7 +49,7 @@ median.heatmap <- function(fcs.SCE, assay.i = "normalized", cell.clusters = NULL
     annotation_colors <- col.annot.pheatmap(metadata[,!(colnames(metadata) %in% not.metadata), drop = F], colors = colors)
     color <- colorRampPalette(brewer.pal(n = 9, name = "YlGnBu"))(100)
     
-    print(pheatmap(t(med[,markers.to.use]), color = color, display_numbers = FALSE,
+    print(pheatmap::pheatmap(t(med[,markers.to.use]), color = color, display_numbers = FALSE,
                    number_color = "black", fontsize_number = 5, clustering_method = "average",
                    annotation = metadata[,!(colnames(metadata) %in% not.metadata), drop = F], 
                    annotation_colors = annotation_colors, 
@@ -56,7 +57,7 @@ median.heatmap <- function(fcs.SCE, assay.i = "normalized", cell.clusters = NULL
   }else{
     ## calculate cluster frequencies
     clustering_table <- table(cell.clusters)
-    clustering_prop <- round(clustering_table / sum(clustering_table) * 100, 2)
+    clustering_prop <- round(prop.table(table(metadata[,cell.clusters]))*100, digits = 2)
     labels_row <- paste0(expr_saturated_median$cell_clusters, " (", clustering_prop ,"%)")
     
     d <- dist(expr_median[,markers.to.use], method = "euclidean")
@@ -72,7 +73,7 @@ median.heatmap <- function(fcs.SCE, assay.i = "normalized", cell.clusters = NULL
     color <- colorRampPalette(brewer.pal(n = 9, name = "YlGnBu"))(100)
     legend_breaks <- seq(from = 0, to = 1, by = 0.1)
     
-    print(pheatmap(expr_heat, color = color, annotation_legend = F,
+    print(pheatmap::pheatmap(expr_heat, color = color, annotation_legend = F,
                    cluster_cols = FALSE, cluster_rows = cluster_rows, labels_row = labels_row,
                    display_numbers = FALSE, number_color = "black",
                    fontsize = 8, fontsize_number = 6, legend_breaks = legend_breaks,
