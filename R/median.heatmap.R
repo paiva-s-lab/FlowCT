@@ -28,7 +28,7 @@
 
 median.heatmap <- function(fcs.SCE, assay.i = "normalized", cell.clusters = NULL, markers.to.use = "all", not.metadata = "filename", colors = NULL){
   data <- t(assay(fcs.SCE, i = assay.i))
-  metadata <- fcs.SCE@metadata$reduced_metadata
+  metadata <- dplyr::distinct(as.data.frame(colData(fcs.SCE)), .data$filename, .keep_all = T)
   
   if(length(markers.to.use) == 1 && markers.to.use == "all") markers.to.use <- colnames(data)
   
