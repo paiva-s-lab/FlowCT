@@ -21,7 +21,7 @@
 
 \item{markers.to.use}{Markers to take account in the DR calculus. Default = \code{"all"}.}
 
-\item{dr.method}{DR method to calculate. Possible values are "PCA", "tSNE" and/or "UMAP".}
+\item{dr.method}{DR method to calculate. Possible values are "PCA", "tSNE", "DENSNE", "UMAP" and/or "DENSMAP".}
 
 \item{num.threads}{Number of threads for DR calculus. If \code{NULL} (default), all cores available minus one will be used. If this option is enable, reproducibility could be comprised.}
 
