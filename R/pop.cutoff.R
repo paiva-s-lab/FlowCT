@@ -18,10 +18,10 @@
 #'     event.var = "PFS_c", cutoff.type = "quantiles")
 #' }
 
-pop.cutoff <- function(fcs.SCE, cell.clusters, value = "percentage", time.var, event.var, 
+pop.cutoff <- function(fcs.SCE, assay.i = "normalized", cell.clusters, value = "percentage", time.var, event.var, 
                        cutoff.type = "maxstat", variables){
   ## prepare data
-  prop_table_surv <- barplot.cell.pops(fcs.SCE, cell.clusters, count.by = "filename", return.mode = value, plot = F, assay.i = "normalized")
+  prop_table_surv <- barplot.cell.pops(fcs.SCE, cell.clusters, count.by = "filename", return.mode = value, plot = F, assay.i = assay.i)
   dataset_surv <- merge(distinct(as.data.frame(colData(fcs.SCE)), .data$filename, .keep_all = T), 
                         as.data.frame.matrix(t(prop_table_surv)), by.x = "filename", by.y = "row.names")
   
