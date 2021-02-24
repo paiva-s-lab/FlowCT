@@ -9,15 +9,14 @@
   assay.i = "normalized",
   markers.to.use = "all",
   dr.method = "PCA",
-  num.k = 3,
-  kmeans.frame = T,
+  num.k = NULL,
   perplexity.tsne = 15,
   n.neighbors.umap = 50,
   color.by = "filename",
   shape.by = NULL,
   label.by = NULL,
   size = 3,
-  return.DR.info = F
+  return.DR = F
 )
 }
 \arguments{
@@ -25,13 +24,11 @@
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.}
 
-\item{markers.to.use}{Vector with markers to use. Default = \code{"all"}.}
+\item{markers.to.use}{Vector with markers to use. By default (\code{"all"}), all markers will be used.}
 
-\item{dr.method}{DR method to calculate. Possible values are "PCA", "tSNE" or "UMAP". Take into account the number of samples for this DR, for few samples t-SNE and UMAP are useless. Default = \code{"PCA"}.}
+\item{dr.method}{Possible values are "PCA" (default), "tSNE", "UMAP", "DENSMAP" or "DENSNE". Take into account the number of samples for this DR, for few samples t-SNE and UMAP are useless.}
 
-\item{num.k}{Number of clusters if \code{dr.method = kmeans}. Default = \code{3}.}
-
-\item{kmeans.frame}{Should kmeans cluster be sorrunded by a circular frame within the DR plot?. Default = \code{TRUE}.}
+\item{num.k}{Number of clusters if \code{dr.method = kmeans}. If \code{NULL} (default), a classical plot is drawn, but if a number is indicated, K-means clustering is performed and displayed as ellipse-rounded groups.}
 
 \item{perplexity.tsne}{Value for perplexity parameter in tSNE calculation (\href{https://distill.pub/2016/misread-tsne/}{more information}). For little number of samples this DR (t-SNE) cannot be calculated because preplexity restrictions. Default = \code{15}.}
 
@@ -45,10 +42,10 @@
 
 \item{size}{Point size. Default = \code{3}.}
 
-\item{return.DR.info}{Final data combining metadata, K-means and DR info should be returned?. Default = \code{FALSE}.}
+\item{return.DR}{Final data combining metadata, K-means and DR info should be returned?. Default = \code{FALSE}.}
 }
 \description{
-This function draws a plot from internally calculated K-means and dimensional reduction (DR).
+This function performs a dimensional reduction over median expressino values for each file within the \code{fcs.SCE} object and, if user specifies, calculated K-means clustering.
 }
 \examples{
 \dontrun{
