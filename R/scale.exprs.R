@@ -7,7 +7,6 @@
 #' @param scaled.matrix.name New scaled matrix name (it will stored within the \code{fcs.SCE} object). Default = \code{"scaled"}.
 #' @keywords scale
 #' @export scale.exprs
-#' @importFrom matrixStats colQuantiles
 #' @importFrom SummarizedExperiment assay
 #' @examples
 #' \dontrun{
@@ -20,7 +19,8 @@
 
 scale.exprs <- function(data, assay.i = "normalized", include.FCS.SCE = F, scaled.matrix.name = "scaled"){
 	if(class(data)[1] == "SingleCellExperiment") data <- t(assay(data, i = assay.i))
-	rng <- colQuantiles(data, probs = c(0.01, 0.99))
+	# rng <- colQuantiles(data, probs = c(0.01, 0.99))
+	rng <- t(apply(data,2, quantile, probs = c(0.01, 0.99)))
 	expr01 <- t((t(data) - rng[, 1]) / (rng[, 2] - rng[, 1]))
 	expr01[expr01 < 0] <- 0
 	expr01[expr01 > 1] <- 1
@@ -31,5 +31,4 @@ scale.exprs <- function(data, assay.i = "normalized", include.FCS.SCE = F, scale
 	}else{
 		return(expr01)
 	}
-
 }
