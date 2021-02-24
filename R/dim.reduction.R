@@ -40,13 +40,15 @@ dim.reduction <- function(data, assay.i = "normalized", markers.to.use = "all", 
   if(class(data)[1] == "SingleCellExperiment"){
     if(length(markers.to.use) == 1 && markers.to.use == "all") markers.to.use <- rownames(data)
     data1 <- t(assay(data, i = assay.i))[,markers.to.use]
+
+    if(length(reducedDims(data)) == 0) drs <- list() else drs <- reducedDims(data)
   }else{
     if(length(markers.to.use) == 1 && markers.to.use == "all") markers.to.use <- colnames(data)
     data1 <- data[,markers.to.use]
+
+    drs <- list()
   }
 
-  #drs <- list()
-  drs<-reducedDims(data)
   if("pca" %in% tolower(dr.method)){
     cat(">>> PCA calculation...\n")
     drs[["PCA"]] <- prcomp(data1, center = TRUE, scale. = FALSE)$x[,1:2]
@@ -88,6 +90,7 @@ dim.reduction <- function(data, assay.i = "normalized", markers.to.use = "all", 
     set.seed(333); drs[["DENSNE"]] <- densvis::densne(data1, dens_frac = dens_frac, dens_lambda = dens_lambda)
     colnames(drs[["DENSNE"]]) <- paste0("densne", c(1:2))
   }
+  
   if(class(data)[1] == "SingleCellExperiment"){
     reducedDims(data) <- drs
     return(data)
