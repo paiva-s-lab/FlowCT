@@ -3,7 +3,7 @@
 #' This function calculates cluster proportions (or raw counts) for each identified cluster and plot them on a stacked barplot.
 #' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.
-#' @param cell.clusters A vector with clusters identified through \code{\link[FlowCT:fsom.clustering]{FlowCT::fsom.clustering()}} (and, normaly, later renamed).
+#' @param cell.clusters Name of column containing clusters identified through \code{\link[FlowCT:clustering.flow]{FlowCT::clustering.flow()}}.
 #' @param plot Logical indicating whether plotting stacked barplot. Default = \code{TRUE}.
 #' @param count.by Variable name (from \code{colData(fcs.SCE)}) for calculating proportions (or counts) and drawing the x-axis in the stacked bar plotting.
 #' @param facet.by Variable name (from \code{colData(fcs.SCE)}) for splitting the stacked bar plotting. Default = \code{NULL}.
@@ -18,10 +18,10 @@
 #' @importFrom SummarizedExperiment assay
 #' @examples
 #' \dontrun{
-#' prop_table <- barplot.cell.pops(fcs.SCE = fcs, cell.clusters = fcs$SOM_named, 
+#' prop_table <- barplot.cell.pops(fcs.SCE = fcs, cell.clusters = "SOM_named", 
 #'     count.by = "sample_id", facet.by = "condition", 
 #'     return.mode = "percentage")
-#' counts_table <- barplot.cell.pops(fcs.SCE = fcs, cell.clusters = fcs$SOM_named, 
+#' counts_table <- barplot.cell.pops(fcs.SCE = fcs, cell.clusters = "SOM_named", 
 #'     count.by = "condition", return.mode = "counts")
 #' }
 
