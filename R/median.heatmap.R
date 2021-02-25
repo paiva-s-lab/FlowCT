@@ -3,7 +3,7 @@
 #' This function draws a heatmap with median values for each FCS file or for identified cluster with \code{\link[FlowCT:fsom.clustering]{FlowCT::fsom.clustering()}}
 #' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.
-#' @param cell.clusters A vector with clusters identified through \code{\link[FlowCT:fsom.clustering]{FlowCT::fsom.clustering()}} (and, normaly, later renamed). Default = \code{NULL} (i.e., median values will be calculated for each FCS file).
+#' @param cell.clusters Name of column containing clusters identified through \code{\link[FlowCT:clustering.flow]{FlowCT::clustering.flow()}}.
 #' @param markers.to.use Vector with markers to use. Default = \code{"all"}.
 #' @param not.metadata Vector with variable names (from \code{colData(fcs.SCE)}) for not including in the heatmap annotation. Default = \code{"filename"}.
 #' @param colors Vector with colors for plotting (if provided, it must be as long as the number of unique elements in the longer metadata field). Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT:div.colors]{FlowCT::div.colors()}}).
@@ -23,7 +23,7 @@
 #' median.heatmap(fcs, not.metadata = c("sample_id", "file_name"))
 #' 
 #' # option 2: heatmap by SOM-identified clusters
-#' median.heatmap(fcs.SCE = fcs, assay.i = "normalized", cell.clusters = fcs$SOM)
+#' median.heatmap(fcs.SCE = fcs, assay.i = "normalized", cell.clusters = "SOM")
 #' }
 
 median.heatmap <- function(fcs.SCE, assay.i = "normalized", cell.clusters = NULL, markers.to.use = "all", not.metadata = "filename", colors = NULL){
