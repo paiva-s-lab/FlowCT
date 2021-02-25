@@ -8,19 +8,17 @@ boxplot.cell.clustering(
   fcs.SCE,
   assay.i = "normalized",
   cell.clusters,
-  condition.column = "condition",
-  pvalue.cutoffs = list(cutpoints = c(0, 1e-04, 0.001, 0.01, 0.05, 1), symbols =
-    c("xxxx", "***", "**", "*", "ns")),
-  color.by = condition.column,
-  geom.point = T,
-  facet = F,
+  condition = "condition",
+  return.mode = "percentage",
+  log.trans = FALSE,
+  color.by = condition,
+  facet = FALSE,
   facet.free.scale = "free_x",
-  shape.by = NULL,
-  y.limits = NULL,
-  show.stats = T,
-  return.stats = T,
+  y.limits,
+  return.stats = FALSE,
   plot.only.sig = c(F, 0.05),
-  colors = NULL
+  cond.colors,
+  color.by.colors
 )
 }
 \arguments{
@@ -28,15 +26,15 @@ boxplot.cell.clustering(
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.}
 
-\item{cell.clusters}{A vector with clusters identified through \code{\link[FlowCT:fsom.clustering]{FlowCT::fsom.clustering()}} (and, normaly, later renamed).}
+\item{cell.clusters}{Name of column containing clusters identified through \code{\link[FlowCT:clustering.flow]{FlowCT::clustering.flow()}}.}
 
-\item{condition.column}{Column name from the \code{colData(fcs.SCE)} object which contains condition information.}
+\item{condition}{Column name from the \code{colData(fcs.SCE)} object which contains condition information.}
 
-\item{pvalue.cutoffs}{List of P-value cutoffs and their symbols for indicante significances within the plot. Default = \code{list(cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, 1), symbols = c("xxxx", "***", "**", "*", "ns"))}.}
-
-\item{color.by}{Variable name (from \code{colData(fcs.SCE)}) for lines coloring.}
-
-\item{geom.point}{Logical indicating if adding points to boxplot. Default = \code{TRUE}.}
+\item{return.mode}{String for specifying if final resuls should be proportions ("percentage") or raw counts ("counts"). Default = \code{"percentage"}.}
+  
+\item{log.trans}{Logarithmic transformation of counts/percentage values?. Default = \code{FALSE}.}
+  
+\item{color.by}{Variable name (from \code{colData(fcs.SCE)}) for lines coloring. Default, same as \code{condition}.}
 
 \item{facet}{Logical indicating if splitting boxplots by cell clusters. Default = \code{FALSE}.}
 
@@ -44,15 +42,15 @@ boxplot.cell.clustering(
 
 \item{shape.by}{Variable name (from \code{colData(fcs.SCE)}) for dot shaping. Default = \code{NULL}.}
 
-\item{y.limits}{Numeric vector with limits for y-axis (minimum, maximum). Default = \code{NULL}.}
+\item{y.limits}{Numeric vector with limits for y-axis (minimum, maximum).}
 
-\item{show.stats}{Significances should be added to boxplots? Default = \code{TRUE}.}
-
-\item{return.stats}{Logical indicating if calculated statistics should be returned in a new variable. Default = \code{TRUE}.}
+\item{return.stats}{Logical indicating if calculated statistics should be returned in a new variable. Default = \code{FALSE}.}
 
 \item{plot.only.sig}{Vector indicating if only significant cell clusters should be displayed (logical element) and the P-value cutoff for selecting those ones (numerical element). Default = \code{c(FALSE, 0.05)}.}
 
-\item{colors}{Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT:div.colors]{FlowCT::div.colors()}}).}
+\item{cond.colors}{Vector with colors for plotting option \code{condition}.}
+  
+\item{color.by.colors}{Vector with colors for plotting option \code{color.by}.}
 }
 \description{
 It draws a boxplot with cell clusters identified through \code{\link[FlowCT:fsom.clustering]{FlowCT::fsom.clustering()}}.
@@ -60,12 +58,11 @@ It draws a boxplot with cell clusters identified through \code{\link[FlowCT:fsom
 \examples{
 \dontrun{
 # option 1: show all cell clusters and return statistics
-bx_sig <- boxplot.cell.clustering(fcs.SCE = fcs, cell.clusters = fcs$SOM_named, facet = T,
-    return.stats = T,
-    facet.free.scale = "free")
+bx_sig <- boxplot.cell.clustering(fcs.SCE = fcs, cell.clusters = "SOM_named", facet = T,
+    facet.free.scale = "free", return.stats = T)
 
 # option 2: show only those significant cell clusters
-boxplot.cell.clustering(fcs.SCE = fcs, cell.clusters = fcs$SOM_named, return.stats = F,
+boxplot.cell.clustering(fcs.SCE = fcs, cell.clusters = "SOM_named",
     plot.only.sig = c(T, 0.1))
 }
 }
