@@ -18,7 +18,7 @@
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.}
 
-\item{cell.clusters}{A vector with clusters identified through \code{\link[FlowCT:fsom.clustering]{FlowCT::fsom.clustering()}} (and, normaly, later renamed). Default = \code{NULL} (i.e., median values will be calculated for each FCS file).}
+\item{cell.clusters}{Name of column containing clusters identified through \code{\link[FlowCT:clustering.flow]{FlowCT::clustering.flow()}}.}
 
 \item{markers.to.use}{Vector with markers to use. Default = \code{"all"}.}
 
@@ -35,7 +35,7 @@ This function draws a heatmap with median values for each FCS file or for identi
 median.heatmap(fcs, not.metadata = c("sample_id", "file_name"))
 
 # option 2: heatmap by SOM-identified clusters
-median.heatmap(fcs.SCE = fcs, assay.i = "normalized", cell.clusters = fcs$SOM)
+median.heatmap(fcs.SCE = fcs, assay.i = "normalized", cell.clusters = "SOM")
 }
 }
 \keyword{cell}
