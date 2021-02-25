@@ -20,7 +20,7 @@
 #' }
 
 dumbPlot <- function(fcs.SCE, assay.i = "normalized", cell.clusters, condition, psig.cutoff = 0.05, return.stats = F, colors){
-  if(length(unique(prop_table_ms[,condition]))) stop("Not posible compare only a condition.", call. = F)
+  if(length(unique(fcs.SCE[[condition]])) == 1) stop("Not posible compare only a condition.", call. = F)
   
   ## prepare tables
   prop_table <- as.data.frame.matrix(t(barplot.cell.pops(fcs.SCE, cell.clusters = cell.clusters, count.by = condition, plot = F, assay.i = assay.i, return.mode = "percentage")))
@@ -55,8 +55,10 @@ dumbPlot <- function(fcs.SCE, assay.i = "normalized", cell.clusters, condition, 
           xlab("\n Population % (log10-transformed)") + ylab("Cell clusters\n") + labs(color = "")
 
   if(return.stats & length(colors) > 2){
+    print(g)
     return(list(kruskal = sigs, kw_posthoc = sigs_phoc, plot = g))
   }else if(return.stats){
+    print(g)
     return(list(kruskal_results = sigs, plot = g))
   }else{
     return(g)
