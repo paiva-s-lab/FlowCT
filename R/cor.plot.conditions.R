@@ -4,14 +4,14 @@
 #' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.
 #' @param cell.clusters Name of column containing clusters identified through \code{\link[FlowCT:clustering.flow]{FlowCT::clustering.flow()}}.
-#' @param condition.column Column name from the \code{colData(fcs.SCE)} object which contains condition information.
+#' @param condition Column name from the \code{colData(fcs.SCE)} object which contains condition information.
 #' @param return.stats Logical indicating if calculated statistics should be returned in a new variable. Default = \code{FALSE}.
 #' @keywords correlation plot
 #' @keywords corr
 #' @export
 #' @examples
 #' \dontrun{
-#' corplot.conditions(fcs.SCE = fcs, cell.clusters = fcs$SOM_named, condition.column = "condition")
+#' corplot.conditions(fcs.SCE = fcs, cell.clusters = "SOM_named", condition = "condition")
 #' }
 
 corplot.conditions <- function(fcs.SCE, assay.i = "normalized", cell.clusters, return.mode = "percentage", condition, return.stats = F){
