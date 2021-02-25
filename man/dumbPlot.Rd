@@ -19,7 +19,7 @@ dumbPlot.cell.clustering(
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.}
 
-\item{cell.clusters}{A vector with clusters identified through \code{\link[FlowCT:fsom.clustering]{FlowCT::fsom.clustering()}} (and, normaly, later renamed).}
+\item{cell.clusters}{Name of column containing clusters identified through \code{\link[FlowCT:clustering.flow]{FlowCT::clustering.flow()}}.}
 
 \item{condition}{Column name from the \code{colData(fcs.SCE)} object which contains condition information.}
 
