@@ -22,7 +22,7 @@ circ.tree(
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which drawing the circular tree. Default = \code{"normalized"}.}
 
-\item{cell.clusters}{A vector with clusters identified through \code{\link[FlowCT:fsom.clustering]{FlowCT::fsom.clustering()}} (and, normaly, later renamed).}
+\item{cell.clusters}{Name of column containing clusters identified through \code{\link[FlowCT:clustering.flow]{FlowCT::clustering.flow()}}.}
 
 \item{dist.method}{Distance method measurement to be used. Possible values are "euclidean" (default), "maximum", "manhattan", "canberra", "binary" or "minkowski".}
 
@@ -45,10 +45,10 @@ For additional information go to \href{https://guangchuangyu.github.io/software/
 \examples{
 \dontrun{
 # step 1: display all node numbers to select how to coloring areas
-circ.tree(fcs.SCE = fcsL, cell.clusters = fcsL$SOM_L_named, nodes = "display")
+circ.tree(fcs.SCE = fcsL, cell.clusters = "SOM_L_named", nodes = "display")
 
 # step 2: color areas indicating node numbers
-circ.tree(fcs.SCE = fcsL, cell.clusters = fcsL$SOM_L_named, nodes = c(17, 25))
+circ.tree(fcs.SCE = fcsL, cell.clusters = "SOM_L_named", nodes = c(17, 25))
 }
 }
 \keyword{circular}
