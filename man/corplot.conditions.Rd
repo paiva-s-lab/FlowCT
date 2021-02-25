@@ -17,9 +17,9 @@ corplot.conditions(
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.}
 
-\item{cell.clusters}{A vector with clusters identified through \code{\link[FlowCT:fsom.clustering]{FlowCT::fsom.clustering()}} (and, normaly, later renamed).}
+\item{cell.clusters}{Name of column containing clusters identified through \code{\link[FlowCT:clustering.flow]{FlowCT::clustering.flow()}}.}
 
-\item{condition.column}{Column name from the \code{colData(fcs.SCE)} object which contains condition information.}
+\item{condition}{Column name from the \code{colData(fcs.SCE)} object which contains condition information.}
 
 \item{return.stats}{Logical indicating if calculated statistics should be returned in a new variable. Default = \code{FALSE}.}
 }
@@ -28,7 +28,7 @@ It draws a correlation plot (between two specified conditions within a \code{fcs
 }
 \examples{
 \dontrun{
-corplot.conditions(fcs.SCE = fcs, cell.clusters = fcs$SOM_named, condition.column = "condition")
+corplot.conditions(fcs.SCE = fcs, cell.clusters = "SOM_named", condition = "condition")
 }
 }
 \keyword{corr}
