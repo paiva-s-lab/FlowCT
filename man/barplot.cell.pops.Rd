@@ -20,7 +20,7 @@
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.}
 
-\item{cell.clusters}{A vector with clusters identified through \code{\link[FlowCT:fsom.clustering]{FlowCT::fsom.clustering()}} (and, normaly, later renamed).}
+\item{cell.clusters}{Name of column containing clusters identified through \code{\link[FlowCT:clustering.flow]{FlowCT::clustering.flow()}}.}
 
 \item{plot}{Logical indicating whether plotting stacked barplot. Default = \code{TRUE}.}
 
@@ -37,10 +37,10 @@ This function calculates cluster proportions (or raw counts) for each identified
 }
 \examples{
 \dontrun{
-prop_table <- barplot.cell.pops(fcs.SCE = fcs, cell.clusters = fcs$SOM_named, 
+prop_table <- barplot.cell.pops(fcs.SCE = fcs, cell.clusters = "SOM_named", 
     count.by = "sample_id", facet.by = "condition", 
     return.mode = "percentage")
-counts_table <- barplot.cell.pops(fcs.SCE = fcs, cell.clusters = fcs$SOM_named, 
+counts_table <- barplot.cell.pops(fcs.SCE = fcs, cell.clusters = "SOM_named", 
     count.by = "condition", return.mode = "counts")
 }
 }
