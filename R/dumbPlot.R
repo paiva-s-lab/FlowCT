@@ -4,7 +4,7 @@
 #' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.
 #' @param cell.clusters A vector with clusters identified through \code{\link[FlowCT:fsom.clustering]{FlowCT::fsom.clustering()}} (and, normaly, later renamed).
-#' @param condition.column Column name from the \code{colData(fcs.SCE)} object which contains condition information.
+#' @param condition Column name from the \code{colData(fcs.SCE)} object which contains condition information.
 #' @param psig.cutoff P-value cutoff. Default = \code{0.05}.
 #' @param return.stats Logical indicating if calculated statistics should be returned in a new variable. Default = \code{FALSE}.
 #' @param colors Vector with colors for plotting (same length as different conditions within the experiment).
