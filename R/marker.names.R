@@ -18,15 +18,20 @@ marker.names <- function (fcs.SCE, new.names = NULL){
   raw_names <- rownames(fcs.SCE)
   if(is.null(new.names)){
     if(is.null(fcs.SCE@metadata$raw_channel_names)){
-      print(kable(data.frame(raw_names, "not defined yet!"), col.names = c("raw name", "new name")))
+      df <- data.frame(raw_names, "not defined yet!")
+      colnames(df) <- c("raw name", "new name")
+      asciify(df)
     }else{
-      print(kable(data.frame(fcs.SCE@metadata$raw_channel_names, raw_names), 
-                         col.names = c("raw name", "new name")))
+      df <- data.frame(fcs.SCE@metadata$raw_channel_names, raw_names)
+      colnames(df) <- c("raw name", "new name")
+      asciify(df)
     }
   }else{
     ## add new markers names
     if(length(new.names) != length(raw_names)) stop("New names must to have the same length to the original ones!")
-    print(kable(data.frame(raw_names, new.names), col.names = c("raw name", "new name")))
+    df <- data.frame(raw_names, new.names)
+    colnames(df) <- c("raw name", "new name")
+    asciify(df)
     
     rownames(fcs.SCE) <- new.names
     fcs.SCE@metadata$raw_channel_names <- raw_names
