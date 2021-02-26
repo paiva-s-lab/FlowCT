@@ -6,15 +6,6 @@
 \usage{
 as.flowSet.SE(fcs.SCE, assay.i)
 }
-\arguments{
-\item{fcs.SCE}{A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.}
-
-\item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which obtain a \code{flowset} object.}
-}
 \description{
-It tranforms a \code{fcs.SCE} object into a \href{https://www.rdocumentation.org/packages/flowCore/versions/1.38.2/topics/flowSet-class}{\code{flowset}} object.
+Transform a \code{fcs.SCE} object into a \code{flowset} object
 }
-\keyword{fcs.SCE}
-\keyword{flowset}
-\keyword{generation}
-\keyword{to}
