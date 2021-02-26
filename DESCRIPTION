@@ -15,15 +15,11 @@ Depends:
     R (>= 4.0.0),
     SingleCellExperiment (>= 1.10.1)
 Imports:
-    premessa (>= 0.2.6),
     flowCore (>= 2.0.0),
     data.table,
     dplyr,
     ggplot2,
     ggpubr,
-    knitr,
-    matrixStats,
-    matrixTests,
     methods,
     ncdfFlow,
     pheatmap,
@@ -34,7 +30,6 @@ Imports:
     scales,
     filesstrings
 Remotes: 
-    ParkerICI/premessa,
     immunogenomics/harmony,
     exaexa/scattermore
 Suggests: 
@@ -52,6 +47,7 @@ Suggests:
     ggridges,
     ggtree,
     gridExtra,
+    Hmisc,
     partykit,
     plotly,
     rpart,
