@@ -9,9 +9,8 @@
 #' @param hclust.method Hierarchical clustering method to be used. Possible values are "average" (default), "ward.D", "ward.D2", "single", "complete", "mcquitty", "median" or "centroid".
 #' @param nodes If \code{"display"} (default), nodes will be numered. If contains a numeric vector with node numbers, areas defined from these nodes will be differently colored.
 #' @param open.angle Angle aperture circular layout. Default = \code{100}.
-#' @param dendro.labels Logical whether adding labels to dendrogram. Default = \code{FALSE}.
 #' @param scale.size Numerical value indicating how much scale points in the dendogram terminal nodes. Default = \code{10}.
-#' @param colors Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT:div.colors]{FlowCT::div.colors()}}).
+#' @param colors Vector with colors for plotting.
 #' @keywords circular tree
 #' @keywords dendrogram
 #' @keywords nodes
@@ -19,52 +18,51 @@
 #' @export
 #' @import dplyr
 #' @import ggplot2
-#' @importFrom SummarizedExperiment assay
 #' @importFrom stats dist hclust median
 #' @examples
 #' \dontrun{
 #' # step 1: display all node numbers to select how to coloring areas
-#' circ.tree(fcs.SCE = fcsL, cell.clusters = fcsL$SOM_L_named, nodes = "display")
+#' circ.tree(fcs.SCE = fcsL, cell.clusters = "SOM_L_named", nodes = "display")
 #' 
 #' # step 2: color areas indicating node numbers
-#' circ.tree(fcs.SCE = fcsL, cell.clusters = fcsL$SOM_L_named, nodes = c(17, 25))
+#' circ.tree(fcs.SCE = fcsL, cell.clusters = "SOM_L_named", nodes = c(17, 25))
 #' }
 
 circ.tree <- function(fcs.SCE, assay.i = "normalized", cell.clusters, dist.method = "euclidean", hclust.method = "average", 
-                      nodes = "display", open.angle = 100, dendro.labels = FALSE, scale.size = 10, colors = NULL){
+                      nodes = "display", open.angle = 100, scale.size = 10, colors){
   if(!requireNamespace(c("ape"), quietly = TRUE)) stop("Packages \"ape\", \"ggtree\" needed for this function to work. Please install it.", call. = FALSE)
 
-  exprs <- t(assay(fcs.SCE, i = assay.i))
+  exprs <- t(SummarizedExperiment::assay(fcs.SCE, i = assay.i))
   exprs_01 <- scale.exprs(exprs)
-  if(is.null(colors)) colors <- div.colors(length(unique(cell.clusters)))
+  if(missing(colors)) colors <- div.colors(length(unique(fcs.SCE[[cell.clusters]])))
   
-  ## Circular hyerarchical clustering tree
-  #median expression of each marker for each cell population
-  expr_medianL <- data.frame(exprs, cell_clustering = cell.clusters) %>%
+  ## median expression
+  expr_medianL <- data.frame(exprs, cell_clustering = fcs.SCE[[cell.clusters]]) %>%
     group_by(.data$cell_clustering) %>% summarize_all(list(median)) %>% as.data.frame(.data)
-  expr01_medianL <- data.frame(exprs_01, cell_clustering = cell.clusters) %>%
+  colnames(expr_medianL)[1] <- cell.clusters
+
+  expr01_medianL <- data.frame(exprs_01, cell_clustering = fcs.SCE[[cell.clusters]]) %>%
     group_by(.data$cell_clustering) %>% summarize_all(list(median)) %>% as.data.frame(.data)
-  
-  #calculate cluster frequencies (and annotation for heatmap)
-  clustering_propL <- data.frame(node = 1:length(levels(cell.clusters)), prop.table(table(cell.clusters))*100)
+  colnames(expr01_medianL)[1] <- cell.clusters
+
+  ## calculate cluster frequencies
+  clustering_propL <- data.frame(node = 1:length(unique(fcs.SCE[[cell.clusters]])), prop.table(table(fcs.SCE[[cell.clusters]]))*100)
   colnames(clustering_propL) <- c("node", "cell_cluster", "Freq")
 
-  #hierarchical clustering on clusters
+  ## hierarchical clustering
   dL <- dist(expr_medianL, method = dist.method)
   cluster_rowsL <- hclust(dL, method = hclust.method)
-  expr_heatL <- as.matrix(expr01_medianL)
-  rownames(expr_heatL) <- expr01_medianL$cell_clustering
   
-  #hyerarchical tree building
   hca <- ape::as.phylo(cluster_rowsL)
-  hca$tip.label <- rownames(expr_heatL)
+  hca$tip.label <- expr01_medianL[,cell.clusters]
   
+  ## plotting
   if(length(nodes) == 1 && nodes == "display"){
     print(ggtree::ggtree(hca, layout = "fan", branch.length = 1) + ggtree::geom_text2(aes_string(label = "node"), hjust = -.3) + ggtree::geom_tiplab())
   }else{
     p1 <- ggtree::ggtree(hca, layout = "fan", open.angle = open.angle, branch.length = 1) 
     
-    p1 <- p1 %<+% clustering_propL #add dataframe for geom_point level
+    p1 <- p1 %add% clustering_propL #add dataframe > geom_point
     
     for(i in nodes){
       p1 <- p1 + ggtree::geom_hilight(node = i, fill = sample(colors, 1), alpha = .6) +
@@ -73,15 +71,32 @@ circ.tree <- function(fcs.SCE, assay.i = "normalized", cell.clusters, dist.metho
         theme(legend.position = "right")
     }
     
-    if(dendro.labels){
-      p1 + ggtree::geom_tiplab2(offset=0.1, align = F, size=3)
-    }
-    
     expr_tree_plot <- expr01_medianL[,-1] #add saturated expression to tree heatmap
     rownames(expr_tree_plot) <- rownames(expr_heatL)
-    
+
     print(ggtree::gheatmap(p1, expr_tree_plot, offset = 0.5, width = 1, font.size = 2, colnames_angle = 0, hjust = 0,
                    colnames_position = "top", high = "#b30000", low = "#fff7f3") +
             theme(legend.position = NULL))
   }
+}
+
+## from gtree source...
+`%add%` <- function(p, data) {
+    p$data <- p$data %add2% data
+    return(p)
+}
+
+`%add2%` <- function(d1, d2) {
+    if ("node" %in% colnames(d2)) {
+        cn <- colnames(d2)
+        ii <- which(cn %in% c("node", cn[!cn %in% colnames(d1)]))
+        d2 <- d2[, ii]
+        dd <- dplyr::left_join(d1, d2, by="node")
+    } else {
+        d2[,1] <- as.character(unlist(d2[,1])) ## `unlist` to work with tbl_df
+        d2 <- dplyr::rename(d2, label = 1) ## rename first column name to 'label'
+        dd <- dplyr::left_join(d1, d2, by="label")
+    }
+    dd <- dd[match(d1$node, dd$node),]
+    return(dd)
 }
