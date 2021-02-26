@@ -12,9 +12,8 @@ circ.tree(
   hclust.method = "average",
   nodes = "display",
   open.angle = 100,
-  dendro.labels = FALSE,
   scale.size = 10,
-  colors = NULL
+  colors
 )
 }
 \arguments{
@@ -32,11 +31,9 @@ circ.tree(
 
 \item{open.angle}{Angle aperture circular layout. Default = \code{100}.}
 
-\item{dendro.labels}{Logical whether adding labels to dendrogram. Default = \code{FALSE}.}
-
 \item{scale.size}{Numerical value indicating how much scale points in the dendogram terminal nodes. Default = \code{10}.}
 
-\item{colors}{Vector with colors for plotting. Default = \code{NULL} (i.e., it will choose automatically a vector of colors according to \code{\link[FlowCT:div.colors]{FlowCT::div.colors()}}).}
+\item{colors}{Vector with colors for plotting.}
 }
 \description{
 This function plots a circular dendrogram and a heatmap according a \code{fcs.SCE}. Every leaf has a different colored point size regarding the cell type and the frequency for each cluster.
