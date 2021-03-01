@@ -42,7 +42,7 @@ export.metaFCS <- function(fcs.SCE, assay.i = "raw", output.name = NULL, output.
     if(is.null(output.name)) output.name <- fcs.SCE@metadata$project_name
     extension <- tail(strsplit(fcs.SCE@metadata$input_fcs[1], "\\.")[[1]], 1)
 
-    write.FCS(as_flowFrame(as.matrix(to_export)), paste0(output.folder, "/", output.name, ".", extension))
+    write.FCS(as_flowFrame.me(as.matrix(to_export)), paste0(output.folder, "/", output.name, ".", extension))
   }else{
     for(i in unique(fcs.SCE$filename)){
       aux_fcs.SCE <- fcs.SCE[,fcs.SCE$filename == i]
