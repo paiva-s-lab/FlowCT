@@ -13,7 +13,6 @@
 #' @export
 #' @importFrom SingleCellExperiment colData
 #' @importFrom SummarizedExperiment assay
-#' @importFrom premessa as_flowFrame
 #' @importFrom flowCore write.FCS
 #' @examples
 #' \dontrun{
@@ -60,7 +59,7 @@ export.metaFCS <- function(fcs.SCE, assay.i = "raw", output.name = NULL, output.
       filename <- gsub(paste0(".", extension), "", basename(i))
 
       cat("Saving new: ", filename, ".meta.", extension, "\n", sep = "")
-      write.FCS(as_flowFrame(as.matrix(to_export)), paste0(output.folder, "/", filename, ".", output.suffix, ".", extension))
+      write.FCS(as_flowFrame.me(as.matrix(to_export)), paste0(output.folder, "/", filename, ".", output.suffix, ".", extension))
     }
   }
 }
