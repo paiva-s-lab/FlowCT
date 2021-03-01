@@ -24,7 +24,6 @@
 marker.normalization <- function(fcs.SCE, assay.i = "transformed", method, marker, new.matrix.name = "normalized"){
   if (!requireNamespace("flowStats", quietly = TRUE)) stop("Package \"flowStats\" needed for this function to work. Please install it.", call. = FALSE)
 
-  # markers_order <- rownames(fcs.SCE)
   aux_fcs <- as.flowSet.SE(fcs.SCE, assay.i = assay.i)
   if(method == "gauss"){
     for(i in marker){
@@ -48,7 +47,6 @@ marker.normalization <- function(fcs.SCE, assay.i = "transformed", method, marke
   
   norm_matrix <- t(flowCore::fsApply(aux_fcs, exprs))
 
-  assay(fcs.SCE, i = new.matrix.name) <- norm_matrix
-  # assay(fcs.SCE, i = new.matrix.name) <- norm_matrix[match(markers_order, rownames(norm_matrix)),]
+  assay(fcs.SCE, i = new.matrix.name, withDimnames = F) <- norm_matrix
   return(fcs.SCE)
 }
