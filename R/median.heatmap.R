@@ -30,6 +30,7 @@ median.heatmap <- function(fcs.SCE, assay.i = "normalized", cell.clusters = NULL
   data <- t(assay(fcs.SCE, i = assay.i))
   colnames(data) <- make.names(colnames(data)) #avoid R renaming conflicts
   metadata <- dplyr::distinct(as.data.frame(colData(fcs.SCE)), .data$filename, .keep_all = T)
+  rownames(metadata) <- metadata$filename
   
   if(length(markers.to.use) == 1 && markers.to.use == "all") markers.to.use <- make.names(colnames(data))
   
