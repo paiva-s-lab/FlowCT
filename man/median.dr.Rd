@@ -26,7 +26,7 @@
 
 \item{markers.to.use}{Vector with markers to use. By default (\code{"all"}), all markers will be used.}
 
-\item{dr.method}{Possible values are "PCA" (default), "tSNE", "UMAP", "DENSMAP" or "DENSNE". Take into account the number of samples for this DR, for few samples t-SNE and UMAP are useless.}
+\item{dr.method}{Possible values are "PCA" (default), "tSNE", "UMAP", "DENSMAP" or "DENSNE". Take into account the number of samples for this DR, for few samples t-SNE and UMAP are useless. If `pca.loadings`, the plotting result will show the weight of each marker for each PC (the first two components).}
 
 \item{num.k}{Number of clusters if \code{dr.method = kmeans}. If \code{NULL} (default), a classical plot is drawn, but if a number is indicated, K-means clustering is performed and displayed as ellipse-rounded groups.}
 
