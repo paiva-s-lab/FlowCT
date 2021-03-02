@@ -35,7 +35,7 @@ multidensity <- function(fcs.SCE, assay.i, show.markers = "all", color.by = NULL
 
   # prepare tables: for plotting and with median values for each marker
   median_df <- data.frame(antigen = show.markers, median = apply(data[,show.markers], 2, median))
-  ggdf <- as.data.frame(data.table::melt(data.table::as.data.table(data2), measure.vars = show.markers, value.name = "expression", variable.name = "antigen"))
+  ggdf <- as.data.frame(reshape2::melt(as.data.table(data2), measure.vars = show.markers, value.name = "expression", variable.name = "antigen"))
 
   if(is.null(colors)) colors <- div.colors(unique(length(ggdf[,color.by])))
 
