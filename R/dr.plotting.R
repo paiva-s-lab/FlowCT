@@ -3,7 +3,7 @@
 #' This function plots the indicated dimensional reduction (DR) from a previously calculated \code{\link[FlowCT:dim.reduction]{FlowCT::dim.reduction()}} object.
 #' @param data A object with DR generated with \code{\link[FlowCT:dim.reduction]{FlowCT::dim.reduction()}} or a \code{data.frame} with DR, expression and metadata information (like the first element list of the object generated with \code{\link[FlowCT:dim.reduction]{FlowCT::dim.reduction()}}).
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.
-#' @param plot.dr String indicating the desired DR to plot (this indicated DR should be prevoulsy calculated to being plotted).
+#' @param plot.dr String indicating the desired DR to plot (this indicated DR should be prevoulsy calculated to being plotted). If `pca.loadings`, the plotting result will show the weight of each marker for each PC (the first two components).
 #' @param n.dims Vector indicating the two DR components to plot. Default = \code{c(1,2)} (by now, these are the only dims allowed).
 #' @param color.by Variable from (from \code{colData(fcs.SCE)}) for dots coloring. If \code{color.by = "expression"} (default), plot will be automatically splitted for each marker.
 #' @param shape.by Variable from (from \code{colData(fcs.SCE)}) for dots shaping. Default = \code{NULL}.
@@ -33,9 +33,12 @@
 #' dr <- dr.plotting(fcs, plot.dr = "PCA", color.by = "SOM", facet.by = "condition", return.df = T)
 #' }
 
-dr.plotting <- function(data, assay.i = "normalized", plot.dr, color.by = "expression", shape.by = NULL, facet.by = NULL, omit.markers = NULL, title = "", label.by = NULL, size = 1, raster = F, return.df = F, colors){
+dr.plotting <- function(data, assay.i = "normalized", plot.dr, color.by = "expression", shape.by = NULL, facet.by = NULL, omit.markers = NULL, title = "", label.by = NULL, size = 1, raster = F, return.df = F, colors, num.loadings = 5){
   if(class(data)[1] == "SingleCellExperiment"){
-    pos <- match(tolower(plot.dr), tolower(names(data@int_colData@listData$reducedDims)))
+    if(plot.dr == "pca.loadings"){
+      x <- data@metadata$PCA.rotation
+    }else{
+      pos <- match(tolower(plot.dr), tolower(names(data@int_colData@listData$reducedDims)))
     if(is.na(pos)) stop('The DR indicated has not been calculated yet or is differently named (please, check the output of reducedDimNames(data) to see the correct DR name).\n', call. = F)
     
     dr_calculated <- names(data@int_colData@listData$reducedDims)[pos]
@@ -43,12 +46,35 @@ dr.plotting <- function(data, assay.i = "normalized", plot.dr, color.by = "expre
     
     no.omit.markers <- rownames(data)[!(rownames(data) %in% omit.markers)]
     drmd <- as.data.frame(cbind(colData(data), dr, t(assay(data, i = assay.i))[,no.omit.markers]))
+    }
   }else{
-    drmd <- data
-    dr <- data[,grep(tolower(plot.dr), colnames(data))]
+    if(tolower(plot.dr) != "pca.loadings"){
+      drmd <- data
+      dr <- data[,grep(tolower(plot.dr), names(data))]
+    }else{
+      x <- data$PCA.rotation
+    }
   }
   
-  if(color.by != "expression"){
+  if(tolower(plot.dr) == "pca.loadings"){
+    dims = c(1,2)
+
+    top_markers <- data.table::melt(x) %>% filter(Var2 %in% paste0("PC", dims)) %>%
+      group_by(Var2) %>% arrange(desc(abs(value))) %>% slice(1:num.loadings)
+
+    var_loadings <- x %>% as_tibble(rownames = "marker") %>% filter(marker %in% top_markers$Var1)
+
+    g <- ggplot(var_loadings) + 
+      geom_segment(aes_string(x = 0, y = 0, xend = paste0("PC", dims[1]), yend = paste0("PC", dims[2])), 
+                     arrow = arrow(length = unit(0.1, "in")), colour = "brown") +
+        ggrepel::geom_text_repel(data = var_loadings, aes_string(x = paste0("PC", dims[1]), y = paste0("PC", dims[2]), label = "marker")) +
+        labs(x = "PCA-1", y = "PCA-2") + ggtitle("PCA (loadings)") +
+          theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position = "bottom",
+                panel.background = element_blank(), panel.border = element_rect(color = "black", fill = NA))
+
+    return(g)
+  }else{
+    if(color.by != "expression"){
     if(missing(colors)) colors <- div.colors(length(unique(drmd[,color.by])))
     g <- ggplot(drmd, aes_string(x = colnames(dr)[1], y = colnames(dr)[2], color = color.by)) +
       labs(x = paste0(toupper(substr(colnames(dr)[1], 1, nchar(colnames(dr)[1])-1)), "-1"), 
@@ -104,4 +130,5 @@ dr.plotting <- function(data, assay.i = "normalized", plot.dr, color.by = "expre
   }
   
   if(return.df) return(list(data = drmd, plot = g)) else return(g)
+  }
 }
