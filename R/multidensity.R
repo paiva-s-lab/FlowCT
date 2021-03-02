@@ -26,15 +26,16 @@
 #' }
 
 multidensity <- function(fcs.SCE, assay.i, show.markers = "all", color.by = NULL, subsampling = NULL, interactive = F, ridgeline.lim = 15, colors = NULL){
-  if(show.markers == "all") show.markers <- rownames(fcs.SCE)
+  if(show.markers == "all") show.markers <- make.names(rownames(fcs.SCE)) else show.markers <- make.names(show.markers)
   if(!is.null(subsampling)) suppressMessages(fcs.SCE <- sub.samples(fcs.SCE, subsampling = subsampling))
 
   data <- t(assay(fcs.SCE, i = assay.i))
+  colnames(data) <- make.names(colnames(data))
   data2 <- cbind(data, colData(fcs.SCE))
 
   # prepare tables: for plotting and with median values for each marker
   median_df <- data.frame(antigen = show.markers, median = apply(data[,show.markers], 2, median))
-  ggdf <- as.data.frame(melt(as.data.table(data2), measure.vars = show.markers, value.name = "expression", variable.name = "antigen"))
+  ggdf <- as.data.frame(data.table::melt(data.table::as.data.table(data2), measure.vars = show.markers, value.name = "expression", variable.name = "antigen"))
 
   if(is.null(colors)) colors <- div.colors(unique(length(ggdf[,color.by])))
 
@@ -55,8 +56,8 @@ multidensity <- function(fcs.SCE, assay.i, show.markers = "all", color.by = NULL
     }else return(g)
   }else{
     if(!requireNamespace("ggridges", quietly = TRUE)) stop("Package \"ggridges\" needed for this function to work. Please install it.", call. = FALSE)
-    return(ggplot(ggdf, aes_string(x = "expression", y = "filename")) +
-             ggridges::geom_density_ridges(alpha = 0.7) +
+    return(ggplot(ggdf, aes_string(x = "expression", y = "filename", fill = color.by)) +
+             ggridges::geom_density_ridges(alpha = 0.7, color = "gray25") +
              facet_wrap(~ antigen, scales = "free") +
              geom_vline(data = median_df, aes(xintercept = median), linetype = 2, color = "gray55") +
              theme_minimal() + theme(axis.text.x = element_text(angle = 90, hjust = 1),
