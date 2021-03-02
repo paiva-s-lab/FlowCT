@@ -22,6 +22,7 @@
 #' }
 
 sub.samples <- function (fcs.SCE, subsampling = 1000, index = F, unbalanced = NULL){
+  if(!all(rownames(fcs.SCE) == fcs.SCE$cell_id)) stop("Your fcs.SCE is wrongly built, please check if rownames of colData(fcs.SCE) correspond to cell_id.", call. = F)
   set.seed(333)
   sub_idx <- vector()
   data <- colData(fcs.SCE)
