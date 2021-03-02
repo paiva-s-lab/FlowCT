@@ -81,6 +81,7 @@ div.colors <- function(n){
 col.annot.pheatmap <- function(metadata, colors = NULL){
   annot_col <- list()
   for(i in colnames(metadata)){
+    if(is.numeric(metadata[[i]])) next
     aux <- as.vector(unlist(unique(metadata[i])))
     if(is.null(colors)) colors2 <- div.colors(length(aux)) else colors2 <- colors
     names(colors2) <- aux
