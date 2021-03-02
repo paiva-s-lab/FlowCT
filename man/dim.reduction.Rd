@@ -21,7 +21,7 @@
 
 \item{markers.to.use}{Markers to take account in the DR calculus. Default = \code{"all"}.}
 
-\item{dr.method}{DR method to calculate. Possible values are "PCA", "tSNE", "DENSNE", "UMAP" and/or "DENSMAP".}
+\item{dr.method}{DR method to calculate. Possible values are "PCA", "tSNE", "DENSNE", "UMAP" and/or "DENSMAP". If PCA is calculated, rotation values are also stored in the `fcs.SCE@metadata` (or separatelly if `data` is a `data.frame` instead a `fcs.SCE` object).}
 
 \item{num.threads}{Number of threads for DR calculus. If \code{NULL} (default), all cores available minus one will be used. If this option is enable, reproducibility could be comprised.}
 
