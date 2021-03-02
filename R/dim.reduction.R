@@ -4,7 +4,7 @@
 #' @param data A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}} or a expression table with events in rows and markers in columns.
 #' @param assay.i Name of matrix stored in the \code{fcs.SCE} object from which calculate the DR (this option is useless if input is not a \code{fcs.SCE} object). Default = \code{"normalized"}.
 #' @param markers.to.use Markers to take account in the DR calculus. Default = \code{"all"}.
-#' @param dr.method DR method to calculate. Possible values are "PCA", "tSNE", "DENSNE", "UMAP" and/or "DENSMAP".
+#' @param dr.method DR method to calculate. Possible values are "PCA", "tSNE", "DENSNE", "UMAP" and/or "DENSMAP". If PCA is calculated, rotation values are also stored in the `fcs.SCE@metadata` (or separatelly if `data` is a `data.frame` instead a `fcs.SCE` object).
 #' @param num.threads Number of threads for DR calculus. If \code{NULL} (default), all cores available minus one will be used. If this option is enable, reproducibility could be comprised.
 #' @param perplexity.tsne Value for perplexity parameter in tSNE calculation (\href{https://distill.pub/2016/misread-tsne/}{more information}). Default = \code{100}.
 #' @param n.neighbors.umap Value for neighbors parameter in UMAP calculation (\href{https://www.math.upenn.edu/~jhansen/2018/05/04/UMAP/}{more information}). Default = \code{50}.
@@ -51,8 +51,12 @@ dim.reduction <- function(data, assay.i = "normalized", markers.to.use = "all", 
 
   if("pca" %in% tolower(dr.method)){
     cat(">>> PCA calculation...\n")
-    drs[["PCA"]] <- prcomp(data1, center = TRUE, scale. = FALSE)$x[,1:2]
+    pca <- prcomp(data1, center = TRUE, scale. = FALSE)
+    drs[["PCA"]] <- pca$x[,1:2]
     colnames(drs[["PCA"]]) <- paste0("pca", c(1:2))
+
+    ## add rotation to metadata
+    if(class(data)[1] == "SingleCellExperiment") data@metadata$PCA.rotation <- pca$rotation
   }
   if("tsne" %in% tolower(dr.method)){
     if (!requireNamespace("Rtsne", quietly = TRUE)) {
@@ -95,6 +99,6 @@ dim.reduction <- function(data, assay.i = "normalized", markers.to.use = "all", 
     reducedDims(data) <- drs
     return(data)
   }else{
-    return(drs)
+    if("pca" %in% tolower(dr.method)) return(list(DRs = drs, PCA.rotation = pca$rotation)) else return(drs)
   }
 }
