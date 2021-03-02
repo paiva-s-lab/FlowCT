@@ -18,9 +18,7 @@
 #' @keywords remove low quality events
 #' @export
 #' @importFrom flowCore exprs write.FCS
-#' @importFrom premessa as_flowFrame
 #' @importFrom stats median sd
-#' @importFrom knitr kable
 #' @importFrom utils read.table capture.output tail
 #' @return Final output is a new \code{fcs.SCE} object (if \code{fcs.SCE} input) without these events that do not pass the quality control or new FCS files with the suffix \code{"qc"} with these low quality events removed. If user specifies \code{return.idx = TRUE}, output would be a vector with all low-quality events positions.
 #' @return A table with percentaje of removed events for each FCS will be also shown in the terminal (those files with more than 30% of events removed will have a '!' signal).
@@ -39,6 +37,7 @@
 #'      physical.markers = c("FSC_A", "FSC_H", "SSC_A", "SSC_H"))
 #' }
 
+
 qc.and.removeDoublets <- function(fcs.SCE = NULL, filelist = NULL, directory = getwd(), pattern = "fcs", physical.markers, output.folder = directory, output.suffix = "qc", return.idx = FALSE, return.fcs = FALSE, keep.QCfile = F){
   if (!requireNamespace("flowAI", quietly = TRUE)) stop("Package \"flowAI\" needed for this function to work. Please install it.", call. = FALSE)
 
@@ -46,7 +45,8 @@ qc.and.removeDoublets <- function(fcs.SCE = NULL, filelist = NULL, directory = g
     fcs <- as.flowSet.SE(fcs.SCE, assay.i = "raw")
     filenames <- fcs@phenoData@data$name
     
-    idx <- losses <- c()
+    losses <- c()
+    idx <- list()
     for(file in filenames){
       fcs[[file]]@description$FILENAME <- file #requirements for flow_auto_qc
       
@@ -63,32 +63,35 @@ qc.and.removeDoublets <- function(fcs.SCE = NULL, filelist = NULL, directory = g
       w <- 2*sd(ratio) 
       idx2 <- as.vector(which(ratio > r+w)) #define the region that will be removed
       
-      idx <- append(idx, rownames(exprstmp)[c(idx1, idx2)])
-      losses <- append(losses, round(length(c(idx1, idx2))/nrow(fcs[[file]])*100, digits = 2))
+      idx[[file]] <- unique(c(idx1, idx2))
+      losses <- append(losses, round(length(idx[[file]])/nrow(fcs[[file]])*100, digits = 2))
       names(losses)[length(losses)] <- file
 
       # generate new high QC FCS
       if(return.fcs){
         extension <- tolower(tail(strsplit(filenames[1], split="\\.")[[1]], n = 1))
-        idx_fcs <- unique(rownames(exprstmp)[c(idx1, idx2)])
 
-        exp_matrix <- exprstmp[-match(idx_fcs, rownames(exprstmp)),]
+        exp_matrix <- exprstmp[-idx[[file]],]
         colnames(exp_matrix) <- sapply(fcs.SCE@metadata$raw_channel_names, function(x) strsplit(x, split = ":")[[1]][1])
-        file_return <- as_flowFrame(exp_matrix)
-        # file_return <- flowCore::flowFrame(exp_matrix)
+        file_return <- as_flowFrame.me(exp_matrix)
         file_return@parameters@data$desc <- sapply(fcs.SCE@metadata$raw_channel_names, function(x) strsplit(x, split = ":")[[1]][2])
                                                    
         write.FCS(file_return, paste0(output.folder, "/", gsub(extension, "", file), output.suffix, ".", extension))
       }
     }
+    cat("New generated FCSs without low quality events are stored in:", output.folder, "\n")
 
-    if(return.fcs) cat("New generated FCSs without low quality events are stored in:", output.folder)
-    print(kable(as.data.frame(losses), col.names = "removed events (%)"))
+    df <- data.frame(files = names(losses), losses); colnames(df) <- c("filename", "removed events (%)")
+    asciify(df)
     fcs.SCE@metadata$lowQC_events <- idx
 
     if(!keep.QCfile) invisible(file.remove(list.files(pattern = "miniQC")))
 
-    if(return.idx) return(idx) else return(fcs.SCE[,-match(idx, colnames(fcs.SCE))])
+    ## extract cell IDs
+    idx_cellID <- lapply(names(idx), function(file) fcs.SCE$cell_id[fcs.SCE$filename == file][idx[[file]]])
+    names(idx_cellID) <- filenames
+    
+    if(return.idx) return(idx_cellID) else return(fcs.SCE[,-match(unlist(idx_cellID), colnames(fcs.SCE))])
   }else{
     if(is.null(filelist)) filelist <- list.files(path = directory, pattern = pattern, full.names = T)
     
@@ -114,7 +117,8 @@ qc.and.removeDoublets <- function(fcs.SCE = NULL, filelist = NULL, directory = g
     # notify removed evens
     qct <- read.table("miniQC.txt", header = T, sep = "\t", colClasses = c("character", rep("numeric", 2), rep("NULL", 4)))
     qct$warning <- ifelse(qct$X..anomalies >= 30, "(!)", "")
-    print(kable(qct, col.names = c("filenames", "# initial events", "% deleted events", "Warning!")))
+    colnames(qct) <- c("filenames", "# initial events", "% deleted events", "Warning!")
+    asciify(qct)
 
     if(!keep.QCfile) invisible(file.remove(list.files(pattern = "miniQC")))
   }
