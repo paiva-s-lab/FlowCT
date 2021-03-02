@@ -26,7 +26,7 @@ dr.plotting(
 
 \item{assay.i}{Name of matrix stored in the \code{fcs.SCE} object from which calculate correlation. Default = \code{"normalized"}.}
 
-\item{plot.dr}{String indicating the desired DR to plot (this indicated DR should be prevoulsy calculated to being plotted).}
+\item{plot.dr}{String indicating the desired DR to plot (this indicated DR should be prevoulsy calculated to being plotted). If `pca.loadings`, the plotting result will show the weight of each marker for each PC (the first two components).}
 
 \item{color.by}{Variable from (from \code{colData(fcs.SCE)}) for dots coloring. If \code{color.by = "expression"} (default), plot will be automatically splitted for each marker.}
 
