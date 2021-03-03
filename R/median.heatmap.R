@@ -29,15 +29,18 @@
 median.heatmap <- function(fcs.SCE, assay.i = "normalized", cell.clusters = NULL, markers.to.use = "all", not.metadata = "filename", colors = NULL){
   data <- t(assay(fcs.SCE, i = assay.i))
   colnames(data) <- make.names(colnames(data)) #avoid R renaming conflicts
-  metadata <- dplyr::distinct(as.data.frame(colData(fcs.SCE)), .data$filename, .keep_all = T)
-  rownames(metadata) <- metadata$filename
   
   if(length(markers.to.use) == 1 && markers.to.use == "all") markers.to.use <- make.names(colnames(data))
   
   ## prepare median tables
   if(is.null(cell.clusters)){
+    metadata <- dplyr::distinct(as.data.frame(colData(fcs.SCE)), .data$filename, .keep_all = T)
+    rownames(metadata) <- metadata$filename
+
     med <- median.values(fcs.SCE, assay.i = assay.i)
   }else{
+    metadata <- colData(fcs.SCE)
+
     expr_median <- data.frame(cell_clusters = metadata[,cell.clusters], data[,markers.to.use]) %>%
       group_by(.data$cell_clusters) %>% summarize_all(list(median)) %>% as.data.frame(.data)
     
