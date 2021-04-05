@@ -12,7 +12,7 @@
 #' @examples
 #' \dontrun{
 #'  fcs_final <- combine.subclusterings(global.fcs.SCE = fcs, 
-#'    clusters.named = c("SOM_named_lymhpos", "SOM_named_monos"), 
+#'    clusters.named = c("SOM_named", "SOM_named_lymhpos", "SOM_named_monos"), 
 #'    subclustering.fcs.SCE = list(fcs_lymphos, fcs_monos))
 #' }
 
