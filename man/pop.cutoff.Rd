@@ -2,10 +2,11 @@
 % Please edit documentation in R/pop.cutoff.R
 \name{pop.cutoff}
 \alias{pop.cutoff}
-\title{Immune cutoffs}
+\title{Determine optimal cutoffs for immune populations}
 \usage{
 pop.cutoff(
   fcs.SCE,
+  assay.i = "normalized",
   cell.clusters,
   value = "percentage",
   time.var,
@@ -25,17 +26,30 @@ pop.cutoff(
 
 \item{event.var}{Variable with event censoring.}
 
-\item{cutoff.type}{Method for calculating survival cutoffs. Available methods are "maxstat" (default, based on \href{https://cran.r-project.org/web/packages/maxstat/index.html}{\code{maxstat}}), "quantiles" (i.e., terciles) and "median".}
+\item{cutoff.type}{Method for calculating survival cutoffs. Available methods are "maxstat" (default){\code{maxstat}}), "ROC", "quantiles" (i.e., terciles) and "median".}
 
 \item{variables}{Vector with variables for calculating the cutoff. If nothing is detailed (\code{NULL}, default), all immune populations from \code{cell.clusters} will be considered.}
 }
 \description{
-Once immune cell populations are identified, it calculates a cutoff from the percentage (or raw counts) according survival time.
+Once immune cell populations are identified, this function calculates a cutoff from the percentage (or raw counts).
+}
+\details{
+There four available methods for cytoff calculation:\itemize{
+\item \code{median}
+\item \code{quantiles} is leveraged on quantile categorization.
+\item \code{maxstat} (default), based on \href{https://rpkgs.datanovia.com/survminer/reference/surv_cutpoint.html}{maximally selected ranks statistics}. It takes into account the survival time and censoring event for cutoff calculation.
+\item \code{roc}, the classical ROC-based calculation according Youden's index. It considerates the censoring event for categorizing.
+}
+
+Note: for accessing to cutoff values used for categorization...
+\code{`extract.cutoffs(your_cutoff_object)`}
 }
 \examples{
 \dontrun{
 ct <- pop.cutoff(fcs.SCE = fcs, cell.clusters = "SOM_named", time.var = "PFS",
     event.var = "PFS_c", cutoff.type = "quantiles")
+
+extract.cutoffs(ct)
 }
 }
 \keyword{cutoffs}
