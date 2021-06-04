@@ -50,7 +50,7 @@ pop.cutoff <- function(fcs.SCE, assay.i = "normalized", cell.clusters, value = "
     
     if (!requireNamespace("survminer", quietly = TRUE)) stop("Package \"survminer\" is needed for this function. Please install it.", call. = FALSE)
     
-    res_cut <- survminer::surv_cutpoint(dataset_surv, time = time.var, event = event.var, variables = groups, minprop = 0.2, progressbar = F)
+    res_cut <- survminer::surv_cutpoint(dataset_surv, time = time.var, event = event.var, variables = groups, progressbar = F)
     res_cat <- data.frame(dataset_surv, survminer::surv_categorize(res_cut)[,-c(1:2)]) #not to duplicate time and event cols
     colnames(res_cat)[grep("\\.1", colnames(res_cat))] <- gsub("\\.1", ".c", colnames(res_cat[grep("\\.1", colnames(res_cat))]))
     
