@@ -24,7 +24,6 @@
 #' @param cutoff.type Method for calculating survival cutoffs. Available methods are "maxstat" (default){\code{maxstat}}), "ROC", "quantiles" (i.e., terciles) and "median". 
 #' @keywords survival cutoffs
 #' @export pop.cutoff
-#' @export extract.cutoffs
 #' @import dplyr
 #' @importFrom stats quantile median
 #' @examples
