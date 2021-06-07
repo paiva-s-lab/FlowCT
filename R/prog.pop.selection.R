@@ -80,9 +80,11 @@ prog.pop.selection <- function(fcs.SCE, assay.i = "normalized", cell.clusters, v
     if(cutoff.type != "none" && cutoff.type %in% c("maxstat", "median", "quantiles", "quantile", "terciles", "tercile")){
       dataset_surv <- lapply(fcs, function(x) 
         pop.cutoff(fcs.SCE = x, cell.clusters = cell.clusters, time.var = time.var, event.var = event.var, value = cell.value, cutoff.type = cutoff.type, assay.i = assay.i))
+      cts <- lapply(dataset_surv, function(x) extract.cutoffs(x))
       
       dataset_surv <- lapply(dataset_surv, function(x) x[!(colnames(x) %in% variables)])
       variables <- paste0(variables, ".c")
+      
       
     }else if(cutoff.type == "none"){
       prop_table_surv <- lapply(fcs, function(x) 
@@ -102,17 +104,19 @@ prog.pop.selection <- function(fcs.SCE, assay.i = "normalized", cell.clusters, v
       num <- as.data.frame(apply(x[,c(time.var, event.var, grep(paste0("^", variables, "$", collapse = "|"), colnames(x), value = T))], 2, 
                                  function(y) if(class(y) != "numeric") as.numeric(as.factor(y)) else y))
       rownames(num) <- rownames(x)
-      num$condition <- x[condition.col] #condition.col must be character/factor for biosigner
+      num$condition <- unlist(x[condition.col]) #condition.col must be character/factor for biosigner
       return(num)
     })
     
   }else{ #>> if no train/test
     ## cutoff calculation
-    if(cutoff.type != "none" && cutoff.type %in% c("maxstat", "median", "quantiles", "quantile", "terciles", "tercile")){
+    if(cutoff.type != "none" && cutoff.type %in% c("maxstat", "median", "quantiles", "quantile", "terciles", "tercile", "roc")){
       dataset_surv <- pop.cutoff(fcs.SCE = fcs.SCE, cell.clusters = cell.clusters, time.var = time.var, event.var = event.var, value = cell.value, cutoff.type = cutoff.type, assay.i = assay.i)
+      cts <- extract.cutoffs(dataset_surv)
       
       dataset_surv <- dataset_surv[,!(colnames(dataset_surv) %in% variables)]
       variables <- paste0(variables, ".c")
+      
       
     }else if(cutoff.type == "none"){
       prop_table_surv <- barplot.cell.pops(fcs.SCE = fcs.SCE, cell.clusters = cell.clusters, count.by = "filename", return.mode = cell.value, plot = F, assay.i = "normalized")
@@ -129,10 +133,10 @@ prog.pop.selection <- function(fcs.SCE, assay.i = "normalized", cell.clusters, v
     num <- as.data.frame(apply(dataset_surv[,c(time.var, event.var, grep(paste0("^", variables, "$", collapse = "|"), colnames(dataset_surv), value = T))], 2,
                                function(y) if(class(y) != "numeric") as.numeric(as.factor(y)) else y))
     rownames(num) <- dataset_surv$filename
-    num$condition <- dataset_surv[condition.col] #condition.col must be character/factor for biosigner
+    num$condition <- unlist(dataset_surv[condition.col]) #condition.col must be character/factor for biosigner
     dataset_surv <- list(train = num) #coerce to list for ML downstream (built for train/test)
   }
-  
+   
   ## ML functions  
   if(method == "biosign"){
     if (!requireNamespace("biosigner", quietly = TRUE)) stop("Package \"biosigner\" is needed for this function. Please install it.", call. = FALSE)
@@ -158,15 +162,15 @@ prog.pop.selection <- function(fcs.SCE, assay.i = "normalized", cell.clusters, v
       res <- randomForestSRC::rfsrc(f, data = dataset_surv$train, seed = 333)
     
     features_selection <- merge(as.data.frame(randomForestSRC::vimp(res)$importance), 
-                                randomForestSRC::var.select(res, verbose = F)$varselect[,1, drop = F], 
-                                by = "row.names")
+                         randomForestSRC::var.select(res, verbose = F)$varselect[,1, drop = F], 
+                         by = "row.names")
     colnames(features_selection) <- c("variable", "VIMP", "depth")
     
     if(plot){
       print(ggplot(features_selection, aes(VIMP, reorder(variable, VIMP), fill = depth)) + 
-              geom_bar(stat = "identity") + 
-              ylab("Cell population") + xlab("(-) event related <--- VIMP ---> (+) event related") + 
-              theme_bw())
+        geom_bar(stat = "identity") + 
+        ylab("Cell population") + xlab("(-) event related <--- VIMP ---> (+) event related") + 
+        theme_bw())
     }
     
   }else if(tolower(method) == "survboost"){ ###IMPORTANT: for using SurvBoost, you MUST to library it BEFORE FlowCT
@@ -200,14 +204,14 @@ prog.pop.selection <- function(fcs.SCE, assay.i = "normalized", cell.clusters, v
   if(return.ML.object){
     if(missing(method.params)) 
       return(list(ML.object = res, 
-                  survival.data = dataset_surv)) else
-                    return(list(ML.object = res, 
-                                survival.data = dataset_surv, 
-                                method.params = data.frame(method.params = unlist(method.params))))
+                  survival.data = list(data = dataset_surv, cutoffs = cts))) else
+      return(list(ML.object = res, 
+                  survival.data = list(data = dataset_surv, cutoffs = cts), 
+                  method.params = data.frame(method.params = unlist(method.params))))
   }else{
     if(missing(method.params)) 
       return(features_selection) else
-        return(list(features_selection = features_selection, 
-                    method.params = data.frame(method.params = unlist(method.params))))
+      return(list(features_selection = features_selection, 
+                  method.params = data.frame(method.params = unlist(method.params))))
   }
 }
