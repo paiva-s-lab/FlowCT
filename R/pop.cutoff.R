@@ -204,5 +204,9 @@ setMethod("head", "cutoff.object", function(x) head(x@data.c))
 setMethod("tail", "cutoff.object", function(x) tail(x@data.c))
 setMethod("[", c("cutoff.object", "ANY"), function(x,i,..., drop = T) x@data.c = x@data.c[i])
 
+#' @name extract.cutoffs
+#' @docType methods
+#' @rdname extract-methods
+#'
 setGeneric("extract.cutoffs", function(x) standardGeneric("extract.cutoffs"))
 setMethod("extract.cutoffs", "cutoff.object", function(x) x@cutoffs)
