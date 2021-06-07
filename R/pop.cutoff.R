@@ -24,6 +24,7 @@
 #' @param cutoff.type Method for calculating survival cutoffs. Available methods are "maxstat" (default){\code{maxstat}}), "ROC", "quantiles" (i.e., terciles) and "median". 
 #' @keywords survival cutoffs
 #' @export pop.cutoff
+#' @export extract.cutoffs
 #' @import dplyr
 #' @importFrom stats quantile median
 #' @examples
@@ -34,64 +35,166 @@
 #' extract.cutoffs(ct)     
 #' }
 
-pop.cutoff <- function(fcs.SCE, assay.i = "normalized", cell.clusters, value = "percentage", time.var, event.var,
-                       cutoff.type = "maxstat", variables){
-  ## prepare data
-  prop_table_surv <- barplot.cell.pops(fcs.SCE, cell.clusters, count.by = "filename", return.mode = value, plot = F, assay.i = assay.i)
-  dataset_surv <- merge(distinct(as.data.frame(colData(fcs.SCE)), .data$filename, .keep_all = T), 
-                        as.data.frame.matrix(t(prop_table_surv)), by.x = "filename", by.y = "row.names")
+prog.pop.selection <- function(fcs.SCE, assay.i = "normalized", cell.clusters, variables, cutoff.type = "maxstat", time.var, event.var, condition.col, cell.value = "percentage", method, method.params, plot = T, return.ML.object = F, train.index){
+  require(survival)
   
-  if(missing(variables)) groups <- as.character(unique(fcs.SCE[[cell.clusters]])) else groups <- variables
+  if(class(fcs.SCE[[time.var]]) != "numeric" || class(fcs.SCE[[event.var]]) != "numeric") 
+    stop(call. = F, 
+         "Please, your time and event variables must be in numeric format... IMPORTANT: positive or negative event coded as 1 and 0, respectively.")
   
-  ## cutoffs
-  if(tolower(cutoff.type) == "maxstat"){
-    if(class(dataset_surv[,time.var]) != "numeric") dataset_surv[,time.var] <- as.numeric(dataset_surv[,time.var])
-    if(class(dataset_surv[,event.var]) != "numeric") dataset_surv[,event.var] <- as.numeric(as.factor(dataset_surv[,event.var]))
-    
-    if (!requireNamespace("survminer", quietly = TRUE)) stop("Package \"survminer\" is needed for this function. Please install it.", call. = FALSE)
-    
-    res_cut <- survminer::surv_cutpoint(dataset_surv, time = time.var, event = event.var, variables = groups, progressbar = F)
-    res_cat <- data.frame(dataset_surv, survminer::surv_categorize(res_cut)[,-c(1:2)]) #not to duplicate time and event cols
-    colnames(res_cat)[grep("\\.1", colnames(res_cat))] <- gsub("\\.1", ".c", colnames(res_cat[grep("\\.1", colnames(res_cat))]))
-    
-    cts <- setNames(res_cut$cutpoint$cutpoint, rownames(res_cut$cutpoint))
-    
-  }else if(tolower(cutoff.type) == "roc"){
-    if (!requireNamespace("cutpointr", quietly = TRUE)) stop("Package \"cutpointr\" is needed for this function. Please install it.", call. = FALSE)
-    
-    if(class(dataset_surv[,event.var]) != "numeric") dataset_surv[,event.var] <- as.numeric(as.factor(dataset_surv[,event.var]))
-    
-    ct <- cutpointr::multi_cutpointr(data = dataset_surv, x = groups, class = !!event.var, #shorturl.at/jC057
-                                     na.rm = T, metric = cutpointr::youden, silent = T)
-    
-    res_cat <- sapply(1:length(groups), function(x) factor(ifelse(dataset_surv[,groups[x]] >= ct$optimal_cutpoint[x], "high", "low")))
-    colnames(res_cat) <- paste0(groups, ".c")
-    res_cat <- data.frame(dataset_surv, res_cat)
-    
-    cts <- setNames(ct$optimal_cutpoint, ct$predictor)
-    
-  }else if(cutoff.type %in% c("quantiles", "quantile", "tercile", "terciles")){
-    res_cat <- data.frame(dataset_surv, sapply(dataset_surv[,groups], function(x){
-      aux <- quantile(x, probs = seq(0,1,0.333))
-      factor(ifelse(x > aux[3], "high", ifelse(x < aux[2], "low", "mid")))}))
-    colnames(res_cat)[grep("\\.1", colnames(res_cat))] <- gsub("\\.1", ".c", colnames(res_cat[grep("\\.1", colnames(res_cat))]))
-    
-    cts <- sapply(dataset_surv[,groups], function(x) paste(round(quantile(x, probs = seq(0,1,0.333))[2:3], 2), collapse = " - "))
-    
-  }else if(tolower(cutoff.type) == "median"){
-    res_cat <- data.frame(dataset_surv, sapply(dataset_surv[,groups], function(x) factor(ifelse(x >= median(x), "high", "low"))))
-    colnames(res_cat)[grep("\\.1", colnames(res_cat))] <- gsub("\\.1", ".c", colnames(res_cat[grep("\\.1", colnames(res_cat))]))
-    
-    cts <- sapply(dataset_surv[,groups], function(x) round(median(x), 2))
-    
-  }else{
-    stop("Please, specify one valid option: maxstat, ROC, quantiles or median.", call. = F)
+  if(missing(variables)){
+    variables <- levels(unique(fcs.SCE[[cell.clusters]]))
+    suppressWarnings(if(!is.na(sum(as.numeric(variables)))) variables <- paste0("X", variables) else variables <- variables) #in case variable is not named yet (only cluster number)
   }
   
-  return(new("cutoff.object", data.c = res_cat, cutoffs = cts))
+  if(missing(condition.col)) condition.col <- NULL
+  
+  ## train/test datasets --->>> TODO: extremelly bigger loop, simplify?
+  if(!missing(train.index)){
+    fcs <- list(train = fcs.SCE[,fcs.SCE$filename %in% train.index], 
+                test = fcs.SCE[,!(fcs.SCE$filename %in% train.index)])
+    
+    ## cutoff calculation
+    if(cutoff.type != "none" && cutoff.type %in% c("maxstat", "median", "quantiles", "quantile", "terciles", "tercile")){
+      dataset_surv <- lapply(fcs, function(x) 
+        pop.cutoff(fcs.SCE = x, cell.clusters = cell.clusters, time.var = time.var, event.var = event.var, value = cell.value, cutoff.type = cutoff.type, assay.i = assay.i))
+      cts <- lapply(dataset_surv, function(x) extract.cutoffs(x))
+      
+      dataset_surv <- lapply(dataset_surv, function(x) x[!(colnames(x) %in% variables)])
+      variables <- paste0(variables, ".c")
+      
+      
+    }else if(cutoff.type == "none"){
+      prop_table_surv <- lapply(fcs, function(x) 
+        barplot.cell.pops(fcs.SCE = x, cell.clusters = cell.clusters, count.by = "filename", return.mode = cell.value, plot = F, assay.i = "normalized"))
+      
+      dataset_surv <- lapply(prop_table_surv, function(x) 
+        merge(dplyr::distinct(as.data.frame(colData(fcs.SCE)), .data$filename, .keep_all = T), 
+              data.frame(filename = colnames(x), as.data.frame.matrix(t(x))), 
+              by = "filename"))
+      
+    }else{
+      stop(call. = F, "Please, select a valid method (see ?pop.cutoff): 'mean', 'quantiles' or 'maxstat' (default), or 'none' for not cutoff.type calculation.")
+    }
+    
+    ## recast to numeric
+    dataset_surv <- lapply(dataset_surv, function(x){
+      num <- as.data.frame(apply(x[,c(time.var, event.var, grep(paste0("^", variables, "$", collapse = "|"), colnames(x), value = T))], 2, 
+                                 function(y) if(class(y) != "numeric") as.numeric(as.factor(y)) else y))
+      rownames(num) <- rownames(x)
+      num$condition <- unlist(x[condition.col]) #condition.col must be character/factor for biosigner
+      return(num)
+    })
+    
+  }else{ #>> if no train/test
+    ## cutoff calculation
+    if(cutoff.type != "none" && cutoff.type %in% c("maxstat", "median", "quantiles", "quantile", "terciles", "tercile", "roc")){
+      dataset_surv <- pop.cutoff(fcs.SCE = fcs.SCE, cell.clusters = cell.clusters, time.var = time.var, event.var = event.var, value = cell.value, cutoff.type = cutoff.type, assay.i = assay.i)
+      cts <- extract.cutoffs(dataset_surv)
+      
+      dataset_surv <- dataset_surv[,!(colnames(dataset_surv) %in% variables)]
+      variables <- paste0(variables, ".c")
+      
+      
+    }else if(cutoff.type == "none"){
+      prop_table_surv <- barplot.cell.pops(fcs.SCE = fcs.SCE, cell.clusters = cell.clusters, count.by = "filename", return.mode = cell.value, plot = F, assay.i = "normalized")
+      
+      dataset_surv <- merge(dplyr::distinct(as.data.frame(colData(fcs.SCE)), .data$filename, .keep_all = T), 
+                            data.frame(filename = colnames(prop_table_surv), as.data.frame.matrix(t(prop_table_surv))), 
+                            by = "filename")
+      
+    }else{
+      stop(call. = F, "Please, select a valid method (see ?pop.cutoff): 'mean', 'quantiles' or 'maxstat' (default), or 'none' for not cutoff.type calculation.")
+    }
+    
+    ## recast to numeric
+    num <- as.data.frame(apply(dataset_surv[,c(time.var, event.var, grep(paste0("^", variables, "$", collapse = "|"), colnames(dataset_surv), value = T))], 2,
+                               function(y) if(class(y) != "numeric") as.numeric(as.factor(y)) else y))
+    rownames(num) <- dataset_surv$filename
+    num$condition <- unlist(dataset_surv[condition.col]) #condition.col must be character/factor for biosigner
+    dataset_surv <- list(train = num) #coerce to list for ML downstream (built for train/test)
+  }
+   
+  ## ML functions  
+  if(method == "biosign"){
+    if (!requireNamespace("biosigner", quietly = TRUE)) stop("Package \"biosigner\" is needed for this function. Please install it.", call. = FALSE)
+    
+    if(!missing(method.params)) 
+      res <- do.call(biosigner::biosign, c(list(x = dataset_surv$train[grep(paste0("^", variables, "$", collapse = "|"), colnames(dataset_surv$train))], 
+                                                y = as.vector(unlist(dataset_surv$train[condition.col]))), method.params)) 
+    else
+      res <- biosigner::biosign(x = dataset_surv$train[grep(paste0("^", variables, "$", collapse = "|"), colnames(dataset_surv$train))], 
+                                y = as.vector(unlist(dataset_surv$train[condition.col])))
+    
+    features_selection <- res@signatureLs[-4]
+    
+  }else if(method == "random_forest"){
+    if (!requireNamespace("randomForestSRC", quietly = TRUE)) stop("Package \"randomForestSRC\" is needed for this function. Please install it.", call. = FALSE)
+    
+    f <- as.formula(paste0("Surv(", time.var, ",", event.var, ") ~ ", 
+                           paste(grep(paste0("^", variables, "$", collapse = "|"), colnames(dataset_surv$train), value = T), collapse = " + ")))
+    
+    if(!missing(method.params)) 
+      res <- do.call(randomForestSRC::rfsrc, c(list(formula = f, data = dataset_surv$train, seed = 333), method.params)) 
+    else
+      res <- randomForestSRC::rfsrc(f, data = dataset_surv$train, seed = 333)
+    
+    features_selection <- merge(as.data.frame(randomForestSRC::vimp(res)$importance), 
+                         randomForestSRC::var.select(res, verbose = F)$varselect[,1, drop = F], 
+                         by = "row.names")
+    colnames(features_selection) <- c("variable", "VIMP", "depth")
+    
+    if(plot){
+      print(ggplot(features_selection, aes(VIMP, reorder(variable, VIMP), fill = depth)) + 
+        geom_bar(stat = "identity") + 
+        ylab("Cell population") + xlab("(-) event related <--- VIMP ---> (+) event related") + 
+        theme_bw())
+    }
+    
+  }else if(tolower(method) == "survboost"){ ###IMPORTANT: for using SurvBoost, you MUST to library it BEFORE FlowCT
+    if (!requireNamespace("SurvBoost", quietly = TRUE)) stop("Package \"SurvBoost\" is needed for this function. Please install it ---> devtools::install_github(\"EmilyLMorris/survBoost\"", call. = FALSE)
+    
+    f <- as.formula(paste0("Surv(", time.var, ",", event.var, ") ~ ", paste(grep(paste0("^", variables, "$", collapse = "|"), colnames(dataset_surv$train), value = T), collapse = " + ")))
+    
+    if(!missing(method.params)) 
+      res <- rlang::invoke(SurvBoost::boosting_core, c(list(formula = f, data = as.data.frame(dataset_surv$train)), method.params)) 
+    else
+      res <- SurvBoost::boosting_core(f, data = as.data.frame(dataset_surv$train), rate = 0.1)
+    
+    features_selection <- res$coefficients[res$coefficients != 0]
+    
+    if(plot){
+      selection_df <- rbind(rep(0, ncol(res$selection_df)), res$selection_df)
+      colnames(selection_df) <- names(res$coefficients)
+      plot_data <- reshape::melt(data.frame(x_axis = c(0:res$mstop), selection_df), id.vars = c("x_axis"))
+      
+      print(ggplot(plot_data, aes(x = x_axis, y = value, group = variable)) + geom_line() + theme_bw() + 
+              theme(text = element_text(size = 16)) + 
+              ylab("Coefficient Estimate") + xlab("Number of iterations") + 
+              ggrepel::geom_label_repel(data = plot_data[plot_data$x_axis == res$mstop,], aes(label = variable, x = x_axis, y = value), max.overlaps = length(res$coefficients)))
+    }
+    
+  }else{
+    stop("Please, indicate a valid method: 'biosign', 'random_forest' or 'survboost'.", call. = F)
+  }
+  
+  ## returning
+  if(return.ML.object){
+    if(missing(method.params)) 
+      return(list(ML.object = res, 
+                  survival.data = list(data = dataset_surv, cutoffs = cts))) else
+      return(list(ML.object = res, 
+                  survival.data = list(data = dataset_surv, cutoffs = cts), 
+                  method.params = data.frame(method.params = unlist(method.params))))
+  }else{
+    if(missing(method.params)) 
+      return(features_selection) else
+      return(list(features_selection = features_selection, 
+                  method.params = data.frame(method.params = unlist(method.params))))
+  }
 }
 
-
+                               
 ### class and methods
 setClass("cutoff.object", slots = list(data.c = "data.frame", cutoffs = "vector"))
 
