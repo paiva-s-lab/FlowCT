@@ -196,16 +196,11 @@ prog.pop.selection <- function(fcs.SCE, assay.i = "normalized", cell.clusters, v
                                
 ### class and methods
 setClass("cutoff.object", slots = list(data.c = "data.frame", cutoffs = "vector"))
-
 setMethod("show", "cutoff.object", function(x) print(x@data.c))
 setMethod("colnames", "cutoff.object", function(x) colnames(x@data.c))
 setMethod("head", "cutoff.object", function(x) head(x@data.c))
 setMethod("tail", "cutoff.object", function(x) tail(x@data.c))
 setMethod("[", c("cutoff.object", "ANY"), function(x,i,..., drop = T) x@data.c = x@data.c[i])
 
-#' @name extract.cutoffs
-#' @docType methods
-#' @rdname extract-methods
-#'
 setGeneric("extract.cutoffs", function(x) standardGeneric("extract.cutoffs"))
 setMethod("extract.cutoffs", "cutoff.object", function(x) x@cutoffs)
