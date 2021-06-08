@@ -18,6 +18,7 @@
 #' @export
 #' @import dplyr
 #' @import ggplot2
+#' @import ggtree
 #' @importFrom stats dist hclust median
 #' @examples
 #' \dontrun{
@@ -29,56 +30,55 @@
 #' }
 
 circ.tree <- function(fcs.SCE, assay.i = "normalized", cell.clusters, dist.method = "euclidean", hclust.method = "average", 
-                      nodes = "display", open.angle = 100, scale.size = 10, colors){
-  if(!requireNamespace(c("ape"), quietly = TRUE)) stop("Packages \"ape\", \"ggtree\" needed for this function to work. Please install it.", call. = FALSE)
-
+                      nodes = "display", open.angle = 50, scale.size = 10, colors, labels = c(T, 0.2)){
+  if(!requireNamespace(c("ape"), quietly = TRUE)) stop("Packages \"ape\" and \"ggtree\" are needed for this function Please install them.", call. = FALSE)
+  require(ggtree)
+  
   exprs <- t(SummarizedExperiment::assay(fcs.SCE, i = assay.i))
   exprs_01 <- scale.exprs(exprs)
   if(missing(colors)) colors <- div.colors(length(unique(fcs.SCE[[cell.clusters]])))
   
   ## median expression
   expr_medianL <- data.frame(exprs, cell_clustering = fcs.SCE[[cell.clusters]]) %>%
-    group_by(.data$cell_clustering) %>% summarize_all(list(median)) %>% as.data.frame(.data)
+    group_by(.data$cell_clustering) %>% dplyr::summarize_all(list(median)) %>% as.data.frame(.data)
   colnames(expr_medianL)[1] <- cell.clusters
-
+  
   expr01_medianL <- data.frame(exprs_01, cell_clustering = fcs.SCE[[cell.clusters]]) %>%
-    group_by(.data$cell_clustering) %>% summarize_all(list(median)) %>% as.data.frame(.data)
+    group_by(.data$cell_clustering) %>% dplyr::summarize_all(list(median)) %>% as.data.frame(.data)
   colnames(expr01_medianL)[1] <- cell.clusters
-
+  
   ## calculate cluster frequencies
   clustering_propL <- data.frame(node = 1:length(unique(fcs.SCE[[cell.clusters]])), prop.table(table(fcs.SCE[[cell.clusters]]))*100)
   colnames(clustering_propL) <- c("node", "cell_cluster", "Freq")
-
+  
   ## hierarchical clustering
-  dL <- dist(expr_medianL, method = dist.method)
+  suppressWarnings(dL <- dist(expr_medianL, method = dist.method))
   cluster_rowsL <- hclust(dL, method = hclust.method)
   
   hca <- ape::as.phylo(cluster_rowsL)
-  hca$tip.label <- expr01_medianL[,cell.clusters]
+  # hca <- full_join(hca, data.frame(label = as.character(1:nrow(expr01_medianL)), 
+  #                                  label2 = expr01_medianL[,cell.clusters]), by = "label")
+  hca <- dplyr::full_join(hca, clustering_propL, by.x = "label", by.y = "node")
   
   ## plotting
   if(length(nodes) == 1 && nodes == "display"){
-    print(ggtree::ggtree(hca, layout = "fan", branch.length = 1) + ggtree::geom_text2(aes_string(label = "node"), hjust = -.3) + ggtree::geom_tiplab())
+    print(ggtree::ggtree(hca, layout = "fan") + ggtree::geom_text2(aes(label = node), hjust = -.3) + ggtree::geom_tiplab(aes(label = cell_cluster)))
   }else{
-    p1 <- ggtree::ggtree(hca, layout = "fan", open.angle = open.angle, branch.length = 1) 
-    
-    p1 <- p1 %add% clustering_propL #add dataframe > geom_point
+    p1 <- ggtree::ggtree(hca, layout = "fan", open.angle = open.angle, root.position = 10)
     
     for(i in nodes){
       p1 <- p1 + ggtree::geom_hilight(node = i, fill = sample(colors, 1), alpha = .6) +
         geom_point(aes_string(color = "cell_cluster", size = "Freq")) +
         scale_size_area(max_size = scale.size) + scale_color_manual(values = colors) + 
-        theme(legend.position = "right")
+        theme(legend.position = "bottom")
     }
-    
-    expr_tree_plot <- expr01_medianL[,-1] #add saturated expression to tree heatmap
-    rownames(expr_tree_plot) <- rownames(expr_heatL)
-
-    print(ggtree::gheatmap(p1, expr_tree_plot, offset = 0.5, width = 1, font.size = 2, colnames_angle = 0, hjust = 0,
-                   colnames_position = "top", high = "#b30000", low = "#fff7f3") +
-            theme(legend.position = NULL))
   }
+    
+  g1 <- ggtree::gheatmap(p1, expr01_medianL[,-1], offset = 0.01, width = 1, font.size = 4, colnames_angle = 45, hjust = 0,
+                         colnames_position = "top", high = "#b30000", low = "#fff7f3") + theme(legend.position = "bottom")
+  if(labels[1]) print(g1 + geom_tiplab(aes(label = cell_cluster), offset = labels[2], align = T)) else print(g1)
 }
+
 
 ## from gtree source...
 `%add%` <- function(p, data) {
