@@ -13,7 +13,8 @@ circ.tree(
   nodes = "display",
   open.angle = 100,
   scale.size = 10,
-  colors
+  colors, 
+  labels = c(T, 0.2)
 )
 }
 \arguments{
@@ -34,6 +35,9 @@ circ.tree(
 \item{scale.size}{Numerical value indicating how much scale points in the dendogram terminal nodes. Default = \code{10}.}
 
 \item{colors}{Vector with colors for plotting.}
+
+\item{labels}{Two values indicating if labels should be displayed (default, \code{TRUE}) and the offset value (for separating labels from tree tips, 0.2 as default).}
+  
 }
 \description{
 This function plots a circular dendrogram and a heatmap according a \code{fcs.SCE}. Every leaf has a different colored point size regarding the cell type and the frequency for each cluster.
