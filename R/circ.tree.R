@@ -11,6 +11,7 @@
 #' @param open.angle Angle aperture circular layout. Default = \code{100}.
 #' @param scale.size Numerical value indicating how much scale points in the dendogram terminal nodes. Default = \code{10}.
 #' @param colors Vector with colors for plotting.
+#' @param labels Two values indicating if labels should be displayed (default, \code{TRUE}) and the offset value (for separating labels from tree tips, 0.2 as default).
 #' @keywords circular tree
 #' @keywords dendrogram
 #' @keywords nodes
