@@ -94,6 +94,7 @@ prog.pop.selection <- function(fcs.SCE, assay.i = "normalized", cell.clusters, v
         merge(dplyr::distinct(as.data.frame(colData(fcs.SCE)), .data$filename, .keep_all = T), 
               data.frame(filename = colnames(x), as.data.frame.matrix(t(x))), 
               by = "filename"))
+      cts <- NULL
       
     }else{
       stop(call. = F, "Please, select a valid method (see ?pop.cutoff): 'mean', 'quantiles' or 'maxstat' (default), or 'none' for not cutoff.type calculation.")
@@ -124,6 +125,7 @@ prog.pop.selection <- function(fcs.SCE, assay.i = "normalized", cell.clusters, v
       dataset_surv <- merge(dplyr::distinct(as.data.frame(colData(fcs.SCE)), .data$filename, .keep_all = T), 
                             data.frame(filename = colnames(prop_table_surv), as.data.frame.matrix(t(prop_table_surv))), 
                             by = "filename")
+      cts <- NULL
       
     }else{
       stop(call. = F, "Please, select a valid method (see ?pop.cutoff): 'mean', 'quantiles' or 'maxstat' (default), or 'none' for not cutoff.type calculation.")
