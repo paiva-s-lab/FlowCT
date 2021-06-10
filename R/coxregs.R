@@ -131,13 +131,13 @@ multicox <- function(data, covariates, pval.cutoff = 0.05, timevar, censvar, xli
 #' }
 
 cox.plot <- function(pop.cutoff.obj, time.var, event.var, cox.type, variables, ref.var, xlim = c(0,10), return.stats = T, log.scale = F, hide.nosig = F){
-  if(missing(variables)) variables <- grep(".ct", colnames(pop.cutoff.obj), value = T)
-  if(!missing(ref.var)) pop.cutoff.obj[,variables] <- lapply(pop.cutoff.obj[,variables], function(x) relevel(x, ref = ref.var))
+  if(missing(variables)) variables <- grep(".ct", colnames(pop.cutoff.obj@data.c), value = T)
+  if(!missing(ref.var)) pop.cutoff.obj@data.c[,variables] <- lapply(pop.cutoff.obj@data.c[,variables], function(x) relevel(x, ref = ref.var))
 
   if(tolower(cox.type) == "multicox"){
-    cox <- multicox(pop.cutoff.obj, covariates = variables, timevar = time.var, censvar = event.var, log.scale = log.scale, xlim = xlim, hide.nosig = hide.nosig)
+    cox <- multicox(pop.cutoff.obj@data.c, covariates = variables, timevar = time.var, censvar = event.var, log.scale = log.scale, xlim = xlim, hide.nosig = hide.nosig)
   }else if(tolower(cox.type) == "unicox"){
-    cox <- unicox(pop.cutoff.obj, covariates = variables, timevar = time.var, censvar = event.var, xlim = xlim, log.scale = log.scale, hide.nosig = hide.nosig)
+    cox <- unicox(pop.cutoff.obj@data.c, covariates = variables, timevar = time.var, censvar = event.var, xlim = xlim, log.scale = log.scale, hide.nosig = hide.nosig)
   }else{
     print("Please, specify one valid option: multiCox or uniCox")
   } 
