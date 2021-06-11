@@ -102,9 +102,10 @@ prog.pop.selection <- function(fcs.SCE, assay.i = "normalized", cell.clusters, v
     
     ## recast to numeric
     dataset_surv <- lapply(dataset_surv, function(x){
-      num <- as.data.frame(apply(x[,c(time.var, event.var, grep(paste0("^", variables, "$", collapse = "|"), colnames(x), value = T))], 2, 
+      num <- as.data.frame(apply(x[,grep(paste0("^", variables, "$", collapse = "|"), colnames(x), value = T)], 2, 
                                  function(y) if(class(y) != "numeric") as.numeric(as.factor(y)) else y))
       rownames(num) <- rownames(x)
+      num <- data.frame(num, x[,c(time.var, event.var)])
       num$condition <- unlist(x[condition.col]) #condition.col must be character/factor for biosigner
       return(num)
     })
@@ -117,7 +118,6 @@ prog.pop.selection <- function(fcs.SCE, assay.i = "normalized", cell.clusters, v
       
       dataset_surv <- dataset_surv[,!(colnames(dataset_surv) %in% variables)]
       variables <- paste0(variables, ".c")
-      
       
     }else if(cutoff.type == "none"){
       prop_table_surv <- barplot.cell.pops(fcs.SCE = fcs.SCE, cell.clusters = cell.clusters, count.by = "filename", return.mode = cell.value, plot = F, assay.i = "normalized")
@@ -132,13 +132,14 @@ prog.pop.selection <- function(fcs.SCE, assay.i = "normalized", cell.clusters, v
     }
     
     ## recast to numeric
-    num <- as.data.frame(apply(dataset_surv[,c(time.var, event.var, grep(paste0("^", variables, "$", collapse = "|"), colnames(dataset_surv), value = T))], 2,
+    num <- as.data.frame(apply(dataset_surv[,grep(paste0("^", variables, "$", collapse = "|"), colnames(dataset_surv), value = T)], 2,
                                function(y) if(class(y) != "numeric") as.numeric(as.factor(y)) else y))
     rownames(num) <- dataset_surv$filename
+    num <- data.frame(num, dataset_surv[,c(time.var, event.var)])
     num$condition <- unlist(dataset_surv[condition.col]) #condition.col must be character/factor for biosigner
     dataset_surv <- list(train = num) #coerce to list for ML downstream (built for train/test)
   }
-   
+  
   ## ML functions  
   if(method == "biosign"){
     if (!requireNamespace("biosigner", quietly = TRUE)) stop("Package \"biosigner\" is needed for this function. Please install it.", call. = FALSE)
@@ -164,15 +165,15 @@ prog.pop.selection <- function(fcs.SCE, assay.i = "normalized", cell.clusters, v
       res <- randomForestSRC::rfsrc(f, data = dataset_surv$train, seed = 333)
     
     features_selection <- merge(as.data.frame(randomForestSRC::vimp(res)$importance), 
-                         randomForestSRC::var.select(res, verbose = F)$varselect[,1, drop = F], 
-                         by = "row.names")
+                                randomForestSRC::var.select(res, verbose = F)$varselect[,1, drop = F], 
+                                by = "row.names")
     colnames(features_selection) <- c("variable", "VIMP", "depth")
     
     if(plot){
       print(ggplot(features_selection, aes(VIMP, reorder(variable, VIMP), fill = depth)) + 
-        geom_bar(stat = "identity") + 
-        ylab("Cell population") + xlab("(-) event related <--- VIMP ---> (+) event related") + 
-        theme_bw())
+              geom_bar(stat = "identity") + 
+              ylab("Cell population") + xlab("(-) event related <--- VIMP ---> (+) event related") + 
+              theme_bw())
     }
     
   }else if(tolower(method) == "survboost"){ ###IMPORTANT: for using SurvBoost, you MUST to library it BEFORE FlowCT
@@ -207,13 +208,13 @@ prog.pop.selection <- function(fcs.SCE, assay.i = "normalized", cell.clusters, v
     if(missing(method.params)) 
       return(list(ML.object = res, 
                   survival.data = list(data = dataset_surv, cutoffs = cts))) else
-      return(list(ML.object = res, 
-                  survival.data = list(data = dataset_surv, cutoffs = cts), 
-                  method.params = data.frame(method.params = unlist(method.params))))
+                    return(list(ML.object = res, 
+                                survival.data = list(data = dataset_surv, cutoffs = cts), 
+                                method.params = data.frame(method.params = unlist(method.params))))
   }else{
     if(missing(method.params)) 
       return(features_selection) else
-      return(list(features_selection = features_selection, 
-                  method.params = data.frame(method.params = unlist(method.params))))
+        return(list(features_selection = features_selection, 
+                    method.params = data.frame(method.params = unlist(method.params))))
   }
 }
