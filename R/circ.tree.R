@@ -63,7 +63,7 @@ circ.tree <- function(fcs.SCE, assay.i = "normalized", cell.clusters, dist.metho
   
   ## plotting
   if(length(nodes) == 1 && nodes == "display"){
-    print(ggtree::ggtree(hca, layout = "fan") + ggtree::geom_text2(aes(label = node), hjust = -.3) + ggtree::geom_tiplab(aes(label = cell_cluster)))
+    return(ggtree::ggtree(hca, layout = "fan") + ggtree::geom_text2(aes(label = node), hjust = -.3) + ggtree::geom_tiplab(aes(label = cell_cluster)))
   }else{
     p1 <- ggtree::ggtree(hca, layout = "fan", open.angle = open.angle, root.position = 10)
     
@@ -77,7 +77,7 @@ circ.tree <- function(fcs.SCE, assay.i = "normalized", cell.clusters, dist.metho
     
   g1 <- ggtree::gheatmap(p1, expr01_medianL[,-1], offset = 0.01, width = 1, font.size = 4, colnames_angle = 45, hjust = 0,
                          colnames_position = "top", high = "#b30000", low = "#fff7f3") + theme(legend.position = "bottom")
-  if(labels[1]) print(g1 + geom_tiplab(aes(label = cell_cluster), offset = labels[2], align = T)) else print(g1)
+  if(labels[1]) return(g1 + geom_tiplab(aes(label = cell_cluster), offset = labels[2], align = T)) else return(g1)
 }
 
 
