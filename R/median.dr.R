@@ -49,7 +49,7 @@ median.dr <- function(fcs.SCE, assay.i = "normalized", markers.to.use = "all", d
 
     g <- dr.plotting(drmd, plot.dr = dr.method, color.by = color.by, shape.by = shape.by, label.by = label.by, size = size) + 
               stat_ellipse(geom = "polygon", alpha = 1/4, type = "t", level = 0.8,
-                           inherit.aes = F, aes_string(colnames(dr[[1]])[1], colnames(dr[[1]])[2], 
+                           inherit.aes = F, aes_string(colnames(dr[[1]][[1]])[1], colnames(dr[[1]][[1]])[2], 
                                           fill = paste0("kmeans", ".k", num.k)))
 
 
