@@ -1,9 +1,6 @@
----
-title: '`FlowCT`: A semi-automated workflow for deconvolution of immunophenotypic
-  data and objective reporting on large datasets'
-author: "Cirino Botta, Catarina Maia and Juan-Jose Garces"
-date: "April 16, 2021"
----
+# _FlowCT_: A semi-automated workflow for deconvolution of immunophenotypic data and objective reporting on large datasets'
+(authors: Cirino Botta, Catarina Maia and Juan-Jose Garces)
+(compiled: April 16, 2021)
 
 
 `FlowCT` should be used as an analysis pipeline to retrieve all available information from _FCS_ files. It is scalable, being able to analyze from thousands to millions of cells and from tenth to hundreds of markers (depending on computational power availability). It includes different algorithms for batch removal and for cell clustering. Additionally, by using the `SingleCellExperiment` object class, it has wide compatibility with existing packages designed for single-cell RNAseq analysis. 
