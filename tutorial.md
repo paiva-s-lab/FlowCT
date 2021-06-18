@@ -1,7 +1,6 @@
-# _FlowCT_: A semi-automated workflow for deconvolution of immunophenotypic data and objective reporting on large datasets'
+# _FlowCT_: A semi-automated workflow for deconvolution of immunophenotypic data and objective reporting on large datasets
 (authors: Cirino Botta, Catarina Maia and Juan-Jose Garces)
 (compiled: April 16, 2021)
-
 
 `FlowCT` should be used as an analysis pipeline to retrieve all available information from _FCS_ files. It is scalable, being able to analyze from thousands to millions of cells and from tenth to hundreds of markers (depending on computational power availability). It includes different algorithms for batch removal and for cell clustering. Additionally, by using the `SingleCellExperiment` object class, it has wide compatibility with existing packages designed for single-cell RNAseq analysis. 
 
@@ -10,6 +9,13 @@ Here we propose an ideal pipeline and we will explain, step by step the most imp
 > ***Before starting***: All the _FCS_ files should include compensation before being analyzed with `FlowCT`. This step should be done with commonly available flow cytometry software. Additionally, all the samples should have been stained with the same panel. It is not important that the name of the marker is included within the _FCS_ nor the channels have the same order.
 
 > Our pipeline accepts both unprocessed and pre-processed (i.e., manual doublet removal or population pre-selection) _FCS_ files.
+
+
+## 0. `FlowCT` installation.
+
+```{r}
+devtools::install_github("jgarces02/FlowCT")
+```
 
 ## 1. Metadata and `SingleCellObject` (`SCE`) preparation
 Choose the working directory which include the _FCSs_ to be analyzed: `setwd("your/path/with/fcs")`
