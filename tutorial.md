@@ -3,8 +3,6 @@ title: '`FlowCT`: A semi-automated workflow for deconvolution of immunophenotypi
   data and objective reporting on large datasets'
 author: "Cirino Botta, Catarina Maia and Juan-Jose Garces"
 date: "April 16, 2021"
-output:
-  html_document: default
 ---
 
 
@@ -131,7 +129,7 @@ multidensity(fcs.SCE = fcs, assay.i = "transformed", subsampling = 100)
 ```
 
 
-![](https://i.ibb.co/nzXJ3kk/Slide1.png "Figure 1. Multidensity's output"){width=75%}
+![](https://i.ibb.co/nzXJ3kk/Slide1.png "Figure 1. Multidensity's output")
 
 This function present two additional options that could be useful in certain scenarios:
 
@@ -172,7 +170,7 @@ median.heatmap(fcs, assay.i = "transformed",
 
 Of note, both representations well discriminate PB from BM samples. This could be due to the different cellular composition that could affect median fluorescence values (e.g., PB does not include erythroid precursors which are negatives for all markers). This point will be clarified by performing a quick look at "single-cell level". 
 
-![](https://i.ibb.co/X4D5Gc9/Slide2.png "Figure 2. Initial exploratory analysis"){width=100%}
+![](https://i.ibb.co/X4D5Gc9/Slide2.png "Figure 2. Initial exploratory analysis")
 
 ### PCA and heatmap on single cell expression
 
@@ -191,7 +189,7 @@ dr.plotting(fcs500, plot.dr = "UMAP", color.by = "condition", size = 0.8,
 sc.heatmap(fcs500, markers.to.use = surface_markers, assay.i = "transformed")
 ```
 
-![](https://i.ibb.co/QbzXx9d/Slide3.png "Figure 3. Single-cell functions' outputs"){width=75%}
+![](https://i.ibb.co/QbzXx9d/Slide3.png "Figure 3. Single-cell functions' outputs")
 
 As reported in Figure 3, single-cell PCA (A) demonstrated an almost superimposable distribution between samples irrespective of the grouping according to tissue origin. Even better, the UMAP (B) reports an almost identical distribution of cells derived from PB or BM, with the exception of a specific cluster of cells more abundant in the BM, presenting a complete negativity for the expression of all surface markers (as reported in the heatmap, C)... as we mentioned, they are likely to be erythroblasts, physiologically absent in PB. 
 
@@ -224,7 +222,7 @@ median.heatmap(fcs.SCE = fcs, assay.i = "transformed",
                cell.clusters = "SOM.k15") # heatmap grouped according to FlowSOM clusters
 ```
 
-![](https://i.ibb.co/SmdPKcc/Slide4.png "Figure 4"){width=100%}
+![](https://i.ibb.co/SmdPKcc/Slide4.png "Figure 4")
 
 
 > ***Tips***: the `dr.plotting` function allows for figure faceting according to a selected variable. This could be done by adding the option `facet.by` to the function. 
@@ -237,7 +235,7 @@ Once that all the processes of clustering and dimensional reduction have been co
 
 We can export our down-sampled dataset in a new _FCS_ file containing for each cell: the DR coordinates (e.g., UMAP1, UMAP2, PCA1, PCA2); the number of clusters according to selected method; other metadata variables and the fluorescence intensity value from the <u>untrasformed</u> matrix. This file could be loaded in any flow cytometry software and subsequently analyzed to identify the population to which each cluster belongs. At this point the analysis becomes familiar to researchers with experience in flow cytometry, indeed, what should be done now is to identify for each cluster, by manual gating, the cell population which it belongs. 
 
-![](https://i.ibb.co/BBxrLNV/Slide5.png "Figure 5. Manual annotation on external software"){width=100%}
+![](https://i.ibb.co/BBxrLNV/Slide5.png "Figure 5. Manual annotation on external software")
 
 In Figure 5B, we drawn a gate around the cluster number 1 and by looking at the distribution in bidimensional dot plots (physical parameters and CD8-SSC dot plots are reported as the most useful) we could conclude that these cells belong to the "granulocytes" group. In our dataset, we assigned to 21 out of 40 clusters the name "lymphocytes", and in Figure 5C are reported the reliability of these results. Specifically, by manual gating we were able to identify the 22.76% of total cellularity as lymphocytes, a result almost identical to the one obtained by merging the 10 clusters identified by `FlowSOM` that we recognized as lymphocytes (23.56%). By fusing the XYZ lymphocytes clusters, we observed that the algorithm includes erroneously in these groups about a 3% of cells (0.71% of total cellularity) that are not lymphocytes; on the other side, no CD4+ or CD8+ lymphocytes could be found in the remaining clusters. This error, that could already be considered acceptable, could be eventually reduced in further subclustering analyses focused on lymphocytes group only (see after).   
 
@@ -252,7 +250,7 @@ flowplot(fcs500, x.axis = c("CD62L", "CD4", "CD4"), y.axis = c("CD45RA", "CD8",
 
 > Of note, it is always better to plot expression data from the original, "untouched", matrix as compared to the batch-removed one.  
 
-![](https://i.ibb.co/GxBRGDt/Slide6.png "Figure 6. Flowplot's output"){width=50%}
+![](https://i.ibb.co/GxBRGDt/Slide6.png "Figure 6. Flowplot's output")
 
 
 ### Clusters merging
@@ -278,7 +276,7 @@ median.heatmap(fcs.SCE = fcs500, assay.i = "transformed", cell.clusters = "SOM_n
       colors = color_clusters)
 ```
 
-![](https://i.ibb.co/X2nXJNh/Slide7.png "Figure 7. Clusters merging"){width=75%}
+![](https://i.ibb.co/X2nXJNh/Slide7.png "Figure 7. Clusters merging")
 
 ### Subclustering
 
@@ -295,7 +293,7 @@ cell.count.bx(fcsL, assay.i = "transformed", x.axis = "condition")
 median.heatmap(fcsL, assay.i = "transformed", not.metadata = c("sample_id", "filename"))
 ```
 
-![](https://i.ibb.co/f2G3LDW/Slide8.png "Figure 8. Subsampling a cell population"){width=75%}
+![](https://i.ibb.co/f2G3LDW/Slide8.png "Figure 8. Subsampling a cell population")
 
 ### Batch removal
 
@@ -316,7 +314,7 @@ multidensity(fcs.SCE = fcsL, assay.i = "transformed", subsampling = 100)
 multidensity(fcs.SCE = fcsL, assay.i = "normalized", subsampling = 100)
 ```
 
-![](https://i.ibb.co/SPnhdSt/Slide9.png "Figure 9. Compare normalized data"){width=75%}
+![](https://i.ibb.co/SPnhdSt/Slide9.png "Figure 9. Compare normalized data")
 
 We can further perform a check in a dimensionality reduced plot to observe the presence and eventual disappearance of batch effect after batch.removal function.
 
@@ -330,7 +328,7 @@ dr.plotting(fcsL, plot.dr = "UMAP", assay.i = "normalized", colors = color_clust
    size = 0.3, color.by = "patient_id")
 ```
 
-![](https://i.ibb.co/cvnnJfw/Slide10.png "Figure 10. Compare normalized data (UMAP)"){width=75%}
+![](https://i.ibb.co/cvnnJfw/Slide10.png "Figure 10. Compare normalized data (UMAP)")
 
 > ***Tips***: Due to the low number of dimensions used, in some analysis `Seurat` could produce infinite or NAs values within the expression matrix which could impairs some subsequent functions. If this happens a workaround could be to assign a "0" value to `NA`s (this should be carefully took into account) and  a "-99999" or "99999" to positive or negative infinite values.
 > 
@@ -357,7 +355,7 @@ dr.plotting(fcsL, plot.dr = "UMAP", assay.i = "normalized", colors = color_clust
 export.metaFCS(fcs.SCE = fcsL, output.name = "subclust1")
 ```
 
-![](https://i.ibb.co/hXyBTmW/Slide11.png "Figure 11. Subclustering analysis"){width=75%}
+![](https://i.ibb.co/hXyBTmW/Slide11.png "Figure 11. Subclustering analysis")
 
 ### Identification and representation of different lymphocytes subpopulations
 
@@ -376,7 +374,7 @@ dr.plotting(fcsL, plot.dr = "UMAP", color.by = "PARC_L_named", colors = color_cl
    size = 0.3, facet.by = "condition")
 ```
 
-![](https://i.ibb.co/xYYsNqz/Slide12.png "Figure 12. Subclustering cell asignment"){width=100%}
+![](https://i.ibb.co/xYYsNqz/Slide12.png "Figure 12. Subclustering cell asignment")
 
 Another useful tool for check marker's implication on each cell population: 
 
@@ -386,7 +384,7 @@ dotplot.DE(fcs.SCE = fcsL_rm, markers.to.use = surface_markers,
    clusters.named = "PARC_L_named")
 ```
 
-![](https://i.ibb.co/Q9qLcSL/Slide14.png "Figure 13. Differential dotplot"){width=100%}
+![](https://i.ibb.co/Q9qLcSL/Slide14.png "Figure 13. Differential dotplot")
 
 ## 6. Tools for statistical analysis and representation of the complexity
 ### Phylogenic tree
@@ -398,7 +396,7 @@ circ.tree(fcs.SCE = fcsL, cell.clusters = "PARC_L_named", nodes = "display")
 circ.tree(fcs.SCE = fcsL, cell.clusters = "PARC_L_named", nodes = c(29, 36,31))
 ```
 
-![](https://i.ibb.co/6wTfDty/Slide12.png "Figure 14. Circular clustering"){width=100%}
+![](https://i.ibb.co/6wTfDty/Slide12.png "Figure 14. Circular clustering")
 
 ### Populations abundance visualization and export of table of results 
 
@@ -418,7 +416,7 @@ dataset2 <- data.frame(md, med)
 write.table(dataset2, file = "results_median.txt", sep = "\t")
 ```
 
-![](https://i.ibb.co/PtLkmKc/Slide13.png "Figure 15. Cell percetajes distribution"){width=100%}
+![](https://i.ibb.co/PtLkmKc/Slide13.png "Figure 15. Cell percetajes distribution")
 
 
 > ***Tips***: Often, clusters which include debris or unknown populations are identified. It is important (and useful) to remove these clusters for statistical analysis. Please, be aware of what you are removing.
@@ -438,7 +436,7 @@ corplot.conditions(fcs.SCE = fcsL_rm, cell.clusters = "PARC_L_named",
    condition.column = "condition")
 ```
 
-![](https://i.ibb.co/X30tB9r/Slide15.png "Figure 16. Correlation between two conditions"){width=75%}
+![](https://i.ibb.co/X30tB9r/Slide15.png "Figure 16. Correlation between two conditions")
 
 Lastly, we compared the abundance of each population according to tissue of origin. We provide different methods to visualize comparison results (and respective significance levels) which are available with the following code.
 
@@ -458,7 +456,7 @@ parallel.plot(fcs.SCE = fcsL_rm, cell.clusters = "PARC_L_named", return.stats = 
    condition.column = "condition")
 ```
 
-![](https://i.ibb.co/b35KQCb/Slide16.png "Figure 17. Differential plots"){width=100%}
+![](https://i.ibb.co/b35KQCb/Slide16.png "Figure 17. Differential plots")
 
 ## Appendix A: interaction with other packages for single cell analysis (`scater` or `Seurat`)
 We designed `FlowCT` keeping in mind the possibility to interconnect it with pipelines already available for single cell analysis. Within the _R_ environment, `scater` and `Seurat` represent 2 of the most widely used toolkits and each of them includes tools that could be useful for flow cytometry analysis. By using the `SCE` structure for storing flow cytometry data, we made transition within the different packages easy.
@@ -489,7 +487,7 @@ ggcells(fcsL, mapping=aes(x=UMAP.1, y=UMAP.2, colour=CD4)) +
 	scale_colour_distiller(direction = 1) + theme_minimal()
 ```
 
-![](https://i.ibb.co/jz26n3G/Slide17.png "Figure 18. Scater integration"){width=100%}
+![](https://i.ibb.co/jz26n3G/Slide17.png "Figure 18. Scater integration")
 
 Furthermore, if needed, it is possible to calculate dimensionality reductions from `scater` commands including `runUMAP` or `runPCA`.
 
@@ -523,7 +521,7 @@ FeaturePlot(fcsL_Se, features = c("CCR4"), pt.size=0.1, min.cutoff = "q10",
 FeaturePlot(fcsL_Se, features = c("CD4", "CXCR3"), blend = TRUE, blend.threshold = 0.1)
 ```
 
-![](https://i.ibb.co/ZNg8T2k/Slide18.png "Figure 19. Seurat integration"){width=100%}
+![](https://i.ibb.co/ZNg8T2k/Slide18.png "Figure 19. Seurat integration")
 
 Furthermore, we can identify the markers which are significantly over-represented in each population and plot them in a heatmap:
 
@@ -537,7 +535,7 @@ DoHeatmap(subset(fcsL_Se, downsample = 100), features = top5$gene, size = 3) +
    NoLegend()
 ```
 
-![](https://i.ibb.co/c2JcSpW/Slide19.png "Figure 20. Seurat integration (heatmap)"){width=100%}
+![](https://i.ibb.co/c2JcSpW/Slide19.png "Figure 20. Seurat integration (heatmap)")
 
 Or we can use all others visualization tools present in seurat such as dotplot and ridgeplot
 
@@ -548,7 +546,7 @@ DotPlot(fcsL_Se, features = rownames(fcsL_Se), cols = c("blue", "red"),
 RidgePlot(fcsL_Se, features = c("CD8","CD4"), ncol = 2)+ NoLegend()
 ```
 
-![](https://i.ibb.co/k1wt5ZF/Slide21.png "Figure 20. Seurat integration (misc viz)"){width=100%}
+![](https://i.ibb.co/k1wt5ZF/Slide21.png "Figure 20. Seurat integration (misc viz)")
 
 ## Appendix B: pseudotime analysis (`Slingshot`/`Monocle`)
 The objective of pseudotime analysis is to measure the relative progression of each cell along a specific process (such as maturation or differentiation) allowing us to understand the (pseudo)temporal behaviour without explicit time series. Of note, this analysis is possible when elements within the dataset behave asynchronously and each is at a different stage of "evolution". The algorithm, by creating a relative ordering of the cell, can define a series of "states" that constitute a trajectory for the process of interest. 
@@ -619,4 +617,4 @@ plot_pseudotime_heatmap(cds_subset[sig_gene_names[c(1:5,7:14)],], num_clusters =
    cores = 2, show_rownames = T, return_heatmap = TRUE, norm_method = "vstExprs")
 ```
 
-![](https://i.ibb.co/cY0y4R3/Slide22.png "Figure 21. Pseudotime application"){width=100%}
+![](https://i.ibb.co/cY0y4R3/Slide22.png "Figure 21. Pseudotime application")
