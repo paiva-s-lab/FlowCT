@@ -461,6 +461,74 @@ parallel.plot(fcs.SCE = fcsL_rm, cell.clusters = "PARC_L_named", return.stats = 
 
 ![](https://i.ibb.co/b35KQCb/Slide16.png "Figure 17. Differential plots")
 
+### Machine learning for immune populations selection
+
+Between all machine learning (ML) modeling advantages, feature selection is extremelly useful for identify those populations with a strong implication with our event of interest (for example, disease progression). Thus, we also parepared a (very basic) wrapper including some ML approaches for "playing" with our identified immune populations: 
+
+- [biosigner](https://bioconductor.org/packages/release/bioc/html/biosigner.html), which helps to assess the relevance of variables through different <u>binary</u> (i.e., they don't take into account the survival times).
+- [randomForestSRC](https://kogalur.github.io/randomForestSRC/theory.html)... the classical random forest approach, also being able to use survival times for regression (and not only for classfication, like the previous one).
+- [SurvBoost](https://github.com/EmilyLMorris/survBoost) helps to select more relevant variables (i.e., immune populations) through gradient boosting. Note: for installing this package, please, go to indicated link (it's not available within CRAN repository).
+
+They use either percentages (or absolute number of events) or categorized values (according different cutoffs calculations through `FlowCT::pop.cutoff`) depending of `cutoff.type`'s values. Because each ML method has a lot of internal parameters for tunning them, you can also include them within our function, always as list. Let's see some minimal examples with `SurvBoost`:
+
+```{r}
+# add survival data
+s <- readxl::read_excel("survival_data.xlsx")
+colData(fcsL_rm) <- merge(colData(fcsL_rm), s, by = "patient_id")
+head(colData(fcsL_rm))
+```
+
+```
+# DataFrame with 6 rows and 9 columns
+#    patient_id            filename sample_id condition     cell_id  PARC       PARC_L_named       PFS  censored
+#   <character>         <character> <integer>  <factor> <character>  <factor>   <factor>      <numeric> <numeric>
+# 1           1 BM_1_017294.red.fcs         1        BM         1.4  12   CD8_TM_CXCR3p_CD27p        10         1
+# 2           1 BM_1_017294.red.fcs         1        BM         1.9  12   CD8_TM_CXCR3p_CD27p        10         1
+# 3           1 BM_1_017294.red.fcs         1        BM        1.17  6    CD4_N                      10         1
+# 4           1 BM_1_017294.red.fcs         1        BM        1.30  5    B_cells                    10         1
+# 5           1 BM_1_017294.red.fcs         1        BM        1.32  1    NK_cells                   10         1
+# 6           1 BM_1_017294.red.fcs         1        BM        1.33  10   CD8_EM_CXCR3p_CD27p        10         1
+```
+
+```{r}
+ml1 <- prog.pop.selection(fcs.SCE = fcs, cell.clusters = "PARC_L_named", 
+                          time.var = "PFS", event.var = "censored", 
+                          cutoff.type = "terciles",
+                          # these are internal parameters for controlling survboost
+                          method = "survboost", 
+                          method.params = list(rate = 0.1, 
+                            control_method = "num_selected", 
+                            control_parameter = list(num_select = 5)))
+
+ml1bis <- prog.pop.selection(fcs.SCE = fcs, cell.clusters = "PARC_L_named", 
+                          time.var = "PFS", event.var = "censored", 
+                          cutoff.type = "none", # percentages are used as they are
+                          method = "survboost", 
+                          method.params = list(rate = 0.1, 
+                            control_method = "likelihood"))
+```
+
+![](https://i.ibb.co/KFdbcC2/Slide23-ML.png "Figure 18. ML approaches"){width=75%}
+
+And, of course, you can also use the classical `predict` function when using training and validation datasets (in the case of `SurvBoost` is slightly different, just for knowing):
+
+```{r}
+# select the 70% of your samples for training (set.seed, IMPORTANT!!!)
+set.seed(333)
+train_idx <- sample(unique(fcs$filename), length(unique(fcs$filename))*0.7)
+
+ml2 <- prog.pop.selection(fcs.SCE = fcs, cell.clusters = "PARC_L_named", 
+                          time.var = "PFS", event.var = "censored", train.index = train_idx, 
+                          cutoff.type = "maxstat", method = "survboost", 
+                          method.params = list(rate = 0.1, 
+                            control_method = "num_selected", 
+                            control_parameter = list(num_select = 3)), 
+                          return.ML.object = T) #TRUE, for later predict
+
+SurvBoost::predict.boosting(ml2$ML.object, newdata = ml2$survival.data$data$test)
+```
+
+
 ## Appendix A: interaction with other packages for single cell analysis (`scater` or `Seurat`)
 We designed `FlowCT` keeping in mind the possibility to interconnect it with pipelines already available for single cell analysis. Within the _R_ environment, `scater` and `Seurat` represent 2 of the most widely used toolkits and each of them includes tools that could be useful for flow cytometry analysis. By using the `SCE` structure for storing flow cytometry data, we made transition within the different packages easy.
 
