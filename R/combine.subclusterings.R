@@ -51,7 +51,7 @@ combine.subclusterings <- function(global.fcs.SCE, subclustering.fcs.SCE, cluste
   for(i in setdiff(colnames(mdg), c(colnames(colData(global.fcs.SCE)), clusters.named)))
   	mdg[,i] <- ifelse(is.na(mdg[,i]), 0, mdg[,i]) #replace NAs by 0 to avoid FCS wrong building
  
-  mdg$final_clustering <- factor(do.call(dplyr::coalesce, mdg[,clusters.named[-1]]))
+  mdg$final_clustering <- factor(do.call(dplyr::coalesce, mdg[,clusters.named[-1], drop = F]))
   mdg$final_clustering <- ifelse(is.na(mdg$final_clustering), as.character(mdg[[clusters.named[1]]]), as.character(mdg$final_clustering))
  
   colData(global.fcs.SCE) <- mdg[match(global.fcs.SCE$cell_id, mdg$cell_id),] # same cell_id order than initial fcs.SCE
