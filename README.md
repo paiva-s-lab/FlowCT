@@ -1,4 +1,4 @@
-<img src="extra/logo_FlowCT_hex_gihub.png" height="200" align="right" />
+<img src="https://i.ibb.co/9GGqc8x/logo-Flow-CT-hex-gihub.png" height="200" align="right" />
 
 # FlowCT: A semi-automated workflow for deconvolution of immunophenotypic data and objective reporting on large datasets 
 
