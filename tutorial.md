@@ -1,6 +1,5 @@
-# _FlowCT_: A semi-automated workflow for deconvolution of immunophenotypic data and objective reporting on large datasets
-(authors: Cirino Botta, Catarina Maia and Juan-Jose Garces)
-(compiled: April 16, 2021)
+# `FlowCT`: A semi-automated workflow for deconvolution of immunophenotypic data and objective reporting on large datasets
+#### _(by: Cirino Botta, Catarina Maia and Juan-Jose Garcés)_
 
 `FlowCT` should be used as an analysis pipeline to retrieve all available information from _FCS_ files. It is scalable, being able to analyze from thousands to millions of cells and from tenth to hundreds of markers (depending on computational power availability). It includes different algorithms for batch removal and for cell clustering. Additionally, by using the `SingleCellExperiment` object class, it has wide compatibility with existing packages designed for single-cell RNAseq analysis. 
 
@@ -9,13 +8,6 @@ Here we propose an ideal pipeline and we will explain, step by step the most imp
 > ***Before starting***: All the _FCS_ files should include compensation before being analyzed with `FlowCT`. This step should be done with commonly available flow cytometry software. Additionally, all the samples should have been stained with the same panel. It is not important that the name of the marker is included within the _FCS_ nor the channels have the same order.
 
 > Our pipeline accepts both unprocessed and pre-processed (i.e., manual doublet removal or population pre-selection) _FCS_ files.
-
-
-## 0. `FlowCT` installation.
-
-```{r}
-devtools::install_github("jgarces02/FlowCT")
-```
 
 ## 1. Metadata and `SingleCellObject` (`SCE`) preparation
 Choose the working directory which include the _FCSs_ to be analyzed: `setwd("your/path/with/fcs")`
@@ -331,7 +323,7 @@ dr.plotting(fcsL, plot.dr = "UMAP", assay.i = "normalized", colors = color_clust
    size = 0.3, color.by = "patient_id")
 ```
 
-![](https://i.ibb.co/cvnnJfw/Slide10.png "Figure 10. Compare normalized data (UMAP)")
+![](https://i.ibb.co/cvnnJfw/Slide10.png "Figure 10. Compare normalized data (UMAP)"){width=75%}
 
 > ***Tips***: Due to the low number of dimensions used, in some analysis `Seurat` could produce infinite or NAs values within the expression matrix which could impairs some subsequent functions. If this happens a workaround could be to assign a "0" value to `NA`s (this should be carefully took into account) and  a "-99999" or "99999" to positive or negative infinite values.
 > 
@@ -377,7 +369,7 @@ dr.plotting(fcsL, plot.dr = "UMAP", color.by = "PARC_L_named", colors = color_cl
    size = 0.3, facet.by = "condition")
 ```
 
-![](https://i.ibb.co/xYYsNqz/Slide12.png "Figure 12. Subclustering cell asignment")
+![](https://i.ibb.co/xYYsNqz/Slide12.png "Figure 12. Subclustering cell asignment"){width=100%}
 
 Another useful tool for check marker's implication on each cell population: 
 
@@ -461,6 +453,7 @@ parallel.plot(fcs.SCE = fcsL_rm, cell.clusters = "PARC_L_named", return.stats = 
 
 ![](https://i.ibb.co/b35KQCb/Slide16.png "Figure 17. Differential plots")
 
+
 ### Machine learning for immune populations selection
 
 Between all machine learning (ML) modeling advantages, feature selection is extremelly useful for identify those populations with a strong implication with our event of interest (for example, disease progression). Thus, we also parepared a (very basic) wrapper including some ML approaches for "playing" with our identified immune populations: 
@@ -508,7 +501,7 @@ ml1bis <- prog.pop.selection(fcs.SCE = fcs, cell.clusters = "PARC_L_named",
                             control_method = "likelihood"))
 ```
 
-![](https://i.ibb.co/KFdbcC2/Slide23-ML.png "Figure 18. ML approaches"){width=75%}
+![](https://i.ibb.co/KFdbcC2/Slide23-ML.png "Figure 18. ML approaches")
 
 And, of course, you can also use the classical `predict` function when using training and validation datasets (in the case of `SurvBoost` is slightly different, just for knowing):
 
@@ -558,7 +551,7 @@ ggcells(fcsL, mapping=aes(x=UMAP.1, y=UMAP.2, colour=CD4)) +
 	scale_colour_distiller(direction = 1) + theme_minimal()
 ```
 
-![](https://i.ibb.co/jz26n3G/Slide17.png "Figure 18. Scater integration")
+![](https://i.ibb.co/jz26n3G/Slide17.png "Figure 19. Scater integration")
 
 Furthermore, if needed, it is possible to calculate dimensionality reductions from `scater` commands including `runUMAP` or `runPCA`.
 
@@ -592,7 +585,7 @@ FeaturePlot(fcsL_Se, features = c("CCR4"), pt.size=0.1, min.cutoff = "q10",
 FeaturePlot(fcsL_Se, features = c("CD4", "CXCR3"), blend = TRUE, blend.threshold = 0.1)
 ```
 
-![](https://i.ibb.co/ZNg8T2k/Slide18.png "Figure 19. Seurat integration")
+![](https://i.ibb.co/ZNg8T2k/Slide18.png "Figure 20. Seurat integration")
 
 Furthermore, we can identify the markers which are significantly over-represented in each population and plot them in a heatmap:
 
@@ -606,7 +599,7 @@ DoHeatmap(subset(fcsL_Se, downsample = 100), features = top5$gene, size = 3) +
    NoLegend()
 ```
 
-![](https://i.ibb.co/c2JcSpW/Slide19.png "Figure 20. Seurat integration (heatmap)")
+![](https://i.ibb.co/c2JcSpW/Slide19.png "Figure 21. Seurat integration (heatmap)"){width=100%}
 
 Or we can use all others visualization tools present in seurat such as dotplot and ridgeplot
 
@@ -617,7 +610,7 @@ DotPlot(fcsL_Se, features = rownames(fcsL_Se), cols = c("blue", "red"),
 RidgePlot(fcsL_Se, features = c("CD8","CD4"), ncol = 2)+ NoLegend()
 ```
 
-![](https://i.ibb.co/k1wt5ZF/Slide21.png "Figure 20. Seurat integration (misc viz)")
+![](https://i.ibb.co/k1wt5ZF/Slide21.png "Figure 22. Seurat integration (misc viz)")
 
 ## Appendix B: pseudotime analysis (`Slingshot`/`Monocle`)
 The objective of pseudotime analysis is to measure the relative progression of each cell along a specific process (such as maturation or differentiation) allowing us to understand the (pseudo)temporal behaviour without explicit time series. Of note, this analysis is possible when elements within the dataset behave asynchronously and each is at a different stage of "evolution". The algorithm, by creating a relative ordering of the cell, can define a series of "states" that constitute a trajectory for the process of interest. 
@@ -688,4 +681,4 @@ plot_pseudotime_heatmap(cds_subset[sig_gene_names[c(1:5,7:14)],], num_clusters =
    cores = 2, show_rownames = T, return_heatmap = TRUE, norm_method = "vstExprs")
 ```
 
-![](https://i.ibb.co/cY0y4R3/Slide22.png "Figure 21. Pseudotime application")
+![](https://i.ibb.co/cY0y4R3/Slide22.png "Figure 23. Pseudotime application")
