@@ -12,11 +12,11 @@ devtools::install_github("paiva-s-lab/FlowCT")
 ```
 
 ## Tutorial
-Here
+[Here](https://github.com/paiva-s-lab/FlowCT/blob/v1/tutorial.md)
 
 ## Issue reporting
 
-In this repo for official version.
+In [this repo](https://github.com/paiva-s-lab/FlowCT/issues) for official version.
 
 In [jgarces02/FlowCT](https://github.com/jgarces02/FlowCT) for version under development (also for new suggestions!)
 
