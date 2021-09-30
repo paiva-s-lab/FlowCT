@@ -21,6 +21,6 @@ In [this repo](https://github.com/paiva-s-lab/FlowCT/issues) for official versio
 In [jgarces02/FlowCT](https://github.com/jgarces02/FlowCT) for version under development (also for new suggestions!)
 
 ## Citation
-Cirino Botta, Catarina Da Silva Maia, Juan-José Garcés _et al._; FlowCT for the analysis of large immunophenotypic datasets and biomarker discovery in cancer immunology. _Blood Advances_ 2021. 
+Cirino Botta, Catarina Da Silva Maia, Juan-José Garcés _et al._. **FlowCT for the analysis of large immunophenotypic datasets and biomarker discovery in cancer immunology**. _Blood Advances_ 2021. 
 
 https://doi.org/10.1182/bloodadvances.2021005198
