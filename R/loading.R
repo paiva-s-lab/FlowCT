@@ -1,7 +1,8 @@
 .onAttach <- function(libname, pkgname) {
-  packageStartupMessage("\t --- --- --- 
+  packageStartupMessage("\n --- --- --- \n
           Please, if you use FlowCT package you can cite it as:\n
-          Botta, xxxxxx\n\n
-          And for any issue you have, go to our GitHub page: xxx
-          \t --- --- --- \n")
+          Cirino Botta, Catarina Da Silva Maia, Juan-José Garcés et al.\n
+          FlowCT for the analysis of large immunophenotypic datasets and biomarker discovery in cancer immunology.\n
+          Blood Advances 2021.\n
+          \n --- --- --- \n")
 }
