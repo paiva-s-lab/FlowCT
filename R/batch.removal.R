@@ -37,7 +37,7 @@ batch.removal <- function(fcs.SCE, assay.i = "transformed", method, batch, new.m
     ## setting multithreading
     require(future)
     if(is.null(threads)) threads <- availableCores()-1
-    plan("multiprocess", workers = threads); options(future.globals.maxSize = 1000 * 1024^2) #https://satijalab.org/seurat/v3.0/future_vignette.html
+    plan("multisession", workers = threads); options(future.globals.maxSize = 1000 * 1024^2) #https://satijalab.org/seurat/v3.0/future_vignette.html
 
     ## prepare internal options
     seurat.defaults <- list(dims = 1:10, reduction = "rpca", k.anchor = 5, k.filter = 200,
