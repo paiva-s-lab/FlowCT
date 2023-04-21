@@ -13,8 +13,8 @@ LazyData: true
 RoxygenNote: 7.1.1
 Depends:
     R >= (4.0.0),
-    SingleCellExperiment >= (1.10.1),
-    flowCore >= (2.0.0),
+    SingleCellExperiment,
+    flowCore,
     data.table,
     dplyr,
     ggplot2,
@@ -32,10 +32,10 @@ Remotes:
     immunogenomics/harmony,
     exaexa/scattermore
 Suggests: 
-    flowStats >= (4.0.0),
-    harmony >= (1.0),
-    scattermore >= (0.7),
-    flowAI == (1.12.7),
+    flowStats,
+    harmony,
+    scattermore,
+    flowAI == (1.12.7), #this is the only version working (in our case)
     ape,
     ConsensusClusterPlus,
     corrplot,
