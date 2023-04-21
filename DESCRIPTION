@@ -35,7 +35,7 @@ Suggests:
     flowStats,
     harmony,
     scattermore,
-    flowAI == (1.12.7), #this is the only version working (in our case)
+    flowAI (== 1.12.7), #this is the only version working (in our case)
     ape,
     ConsensusClusterPlus,
     corrplot,
