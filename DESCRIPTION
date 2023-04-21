@@ -13,7 +13,7 @@ LazyData: true
 RoxygenNote: 7.1.1
 Depends:
     R >= (4.0.0),
-    SingleCellExperiment >= (1.10.1)
+    SingleCellExperiment >= (1.10.1),
     flowCore >= (2.0.0),
     data.table,
     dplyr,
