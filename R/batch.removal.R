@@ -58,12 +58,12 @@ batch.removal <- function(fcs.SCE, assay.i = "transformed", method, batch, new.m
     features <- SelectIntegrationFeatures(object.list = batches)
     batches <- lapply(batches, function(x) {
       x <- ScaleData(x, features = features, verbose = FALSE)
-      x <- RunPCA(x, features = features, verbose = FALSE, npcs = length(seurat.defaults$dims))
+      x <- RunPCA(x, features = features, verbose = FALSE, npcs = length(seurat.params2$dims))
     })
 
 
     anchors <- do.call(FindIntegrationAnchors, c(list(object.list = batches), seurat.params2))
-    seurat_intg <- IntegrateData(anchorset = anchors, dims = seurat.defaults$dims)
+    seurat_intg <- IntegrateData(anchorset = anchors, dims = seurat.params2$dims)
 
     seurat_intg2 <- as.matrix(seurat_intg@assays$integrated@data)
     rownames(seurat_intg2) <- gsub("-", "_", rownames(seurat_intg2))
