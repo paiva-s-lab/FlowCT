@@ -593,7 +593,7 @@ Furthermore, we can identify the markers which are significantly over-represente
 Idents(object = fcsL_Se) <- "PARC_L_named"
 fcsL.markers <- FindAllMarkers(fcsL_Se, only.pos = TRUE, min.pct = 0.25, 
    logfc.threshold = 0.25)
-top5 <- fcsL.markers %>% group_by(cluster) %>% top_n(n = 5, wt = avg_logFC)
+top5 <- fcsL.markers %>% group_by(cluster) %>% top_n(n = 5, wt = avg_log2FC)
 
 DoHeatmap(subset(fcsL_Se, downsample = 100), features = top5$gene, size = 3) + 
    NoLegend()
