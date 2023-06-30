@@ -428,7 +428,7 @@ Subsequently, we performed a correlation analysis between PB and BM to investiga
 
 ```{r}
 corplot.conditions(fcs.SCE = fcsL_rm, cell.clusters = "PARC_L_named", 
-   condition.column = "condition")
+   condition = "condition")
 ```
 
 ![](https://i.ibb.co/X30tB9r/Slide15.png "Figure 16. Correlation between two conditions")
