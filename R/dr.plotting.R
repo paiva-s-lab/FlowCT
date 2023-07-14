@@ -46,6 +46,7 @@ dr.plotting <- function(data, assay.i = "normalized", plot.dr, color.by = "expre
     
     no.omit.markers <- rownames(data)[!(rownames(data) %in% omit.markers)]
     drmd <- as.data.frame(cbind(colData(data), dr, t(assay(data, i = assay.i))[,no.omit.markers]))
+    names(drmd) <- c(colnames(colData(data)), colnames(dr), colnames(t(assay(data, i = assay.i))[, no.omit.markers]))  
     }
   }else{
     if(tolower(plot.dr) != "pca.loadings"){
