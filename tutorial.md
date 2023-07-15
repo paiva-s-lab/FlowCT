@@ -124,7 +124,7 @@ multidensity(fcs.SCE = fcs, assay.i = "transformed", subsampling = 100)
 ```
 
 
-![](https://i.ibb.co/nzXJ3kk/Slide1.png "Figure 1. Multidensity's output")
+![Figure 1. Multidensity's output](https://i.ibb.co/nzXJ3kk/Slide1.png)
 
 This function present two additional options that could be useful in certain scenarios:
 
@@ -165,7 +165,7 @@ median.heatmap(fcs, assay.i = "transformed",
 
 Of note, both representations well discriminate PB from BM samples. This could be due to the different cellular composition that could affect median fluorescence values (e.g., PB does not include erythroid precursors which are negatives for all markers). This point will be clarified by performing a quick look at "single-cell level". 
 
-![](https://i.ibb.co/X4D5Gc9/Slide2.png "Figure 2. Initial exploratory analysis")
+![Figure 2. Initial exploratory analysis](https://i.ibb.co/X4D5Gc9/Slide2.png)
 
 ### PCA and heatmap on single cell expression
 
@@ -184,7 +184,9 @@ dr.plotting(fcs500, plot.dr = "UMAP", color.by = "condition", size = 0.8,
 sc.heatmap(fcs500, markers.to.use = surface_markers, assay.i = "transformed")
 ```
 
-![](https://i.ibb.co/QbzXx9d/Slide3.png "Figure 3. Single-cell functions' outputs")
+![Figure 3. Single-cell functions' outputs](https://i.ibb.co/qsWHmrp/Slide3.png)
+
+
 
 As reported in Figure 3, single-cell PCA (A) demonstrated an almost superimposable distribution between samples irrespective of the grouping according to tissue origin. Even better, the UMAP (B) reports an almost identical distribution of cells derived from PB or BM, with the exception of a specific cluster of cells more abundant in the BM, presenting a complete negativity for the expression of all surface markers (as reported in the heatmap, C)... as we mentioned, they are likely to be erythroblasts, physiologically absent in PB. 
 
@@ -245,7 +247,7 @@ flowplot(fcs500, x.axis = c("CD62L", "CD4", "CD4"), y.axis = c("CD45RA", "CD8",
 
 > Of note, it is always better to plot expression data from the original, "untouched", matrix as compared to the batch-removed one.  
 
-![](https://i.ibb.co/GxBRGDt/Slide6.png "Figure 6. Flowplot's output")
+![](https://i.ibb.co/v355h33/Slide6.png "Figure 6. Flowplot's output")
 
 
 ### Clusters merging
@@ -309,7 +311,7 @@ multidensity(fcs.SCE = fcsL, assay.i = "transformed", subsampling = 100)
 multidensity(fcs.SCE = fcsL, assay.i = "normalized", subsampling = 100)
 ```
 
-![](https://i.ibb.co/SPnhdSt/Slide9.png "Figure 9. Compare normalized data")
+![](https://i.ibb.co/f24bxsS/Slide9.png "Figure 9. Compare normalized data")
 
 We can further perform a check in a dimensionality reduced plot to observe the presence and eventual disappearance of batch effect after batch.removal function.
 
@@ -323,7 +325,7 @@ dr.plotting(fcsL, plot.dr = "UMAP", assay.i = "normalized", colors = color_clust
    size = 0.3, color.by = "patient_id")
 ```
 
-![](https://i.ibb.co/cvnnJfw/Slide10.png "Figure 10. Compare normalized data (UMAP)"){width=75%}
+![](https://i.ibb.co/PC1vTdH/Slide10.png "Figure 10. Compare normalized data (UMAP)")
 
 > ***Tips***: Due to the low number of dimensions used, in some analysis `Seurat` could produce infinite or NAs values within the expression matrix which could impairs some subsequent functions. If this happens a workaround could be to assign a "0" value to `NA`s (this should be carefully took into account) and  a "-99999" or "99999" to positive or negative infinite values.
 > 
@@ -350,7 +352,7 @@ dr.plotting(fcsL, plot.dr = "UMAP", assay.i = "normalized", colors = color_clust
 export.metaFCS(fcs.SCE = fcsL, output.name = "subclust1")
 ```
 
-![](https://i.ibb.co/hXyBTmW/Slide11.png "Figure 11. Subclustering analysis")
+![](https://i.ibb.co/vwyDYLn/Slide11.png "Figure 11. Subclustering analysis")
 
 ### Identification and representation of different lymphocytes subpopulations
 
@@ -369,7 +371,7 @@ dr.plotting(fcsL, plot.dr = "UMAP", color.by = "PARC_L_named", colors = color_cl
    size = 0.3, facet.by = "condition")
 ```
 
-![](https://i.ibb.co/xYYsNqz/Slide12.png "Figure 12. Subclustering cell asignment"){width=100%}
+![](https://i.ibb.co/m4Q79nm/Slide12.png "Figure 12. Subclustering cell asignment")
 
 Another useful tool for check marker's implication on each cell population: 
 
@@ -428,7 +430,7 @@ Subsequently, we performed a correlation analysis between PB and BM to investiga
 
 ```{r}
 corplot.conditions(fcs.SCE = fcsL_rm, cell.clusters = "PARC_L_named", 
-   condition.column = "condition")
+   condition = "condition")
 ```
 
 ![](https://i.ibb.co/X30tB9r/Slide15.png "Figure 16. Correlation between two conditions")
@@ -593,13 +595,13 @@ Furthermore, we can identify the markers which are significantly over-represente
 Idents(object = fcsL_Se) <- "PARC_L_named"
 fcsL.markers <- FindAllMarkers(fcsL_Se, only.pos = TRUE, min.pct = 0.25, 
    logfc.threshold = 0.25)
-top5 <- fcsL.markers %>% group_by(cluster) %>% top_n(n = 5, wt = avg_logFC)
+top5 <- fcsL.markers %>% group_by(cluster) %>% top_n(n = 5, wt = avg_log2FC)
 
 DoHeatmap(subset(fcsL_Se, downsample = 100), features = top5$gene, size = 3) + 
    NoLegend()
 ```
 
-![](https://i.ibb.co/c2JcSpW/Slide19.png "Figure 21. Seurat integration (heatmap)"){width=100%}
+![](https://i.ibb.co/c2JcSpW/Slide19.png "Figure 21. Seurat integration (heatmap)")
 
 Or we can use all others visualization tools present in seurat such as dotplot and ridgeplot
 
