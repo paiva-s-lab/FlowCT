@@ -205,6 +205,9 @@ The application of dimensionality reduction algorithms (already described previo
 
 For our example, taking into account that our aim is to identify blood and BM macro-populations, we decided to perform dimensionality reduction (PCA and UMAP) on 500 cells per sample. By side, our `dim.reduction` function offer the possibility to calculate the t-stochastic neighbour embedding (t-SNE), currently less used due to its limitations such as the high computational demand, long computational times and difficulty to effectively reduce large datasets or a very large number of dimensions (usually in single-cell -omics, where dimensions for each cell are thousands, t-SNE is calculated on PCA-reduced dimensions to reduce the computational load). The obtained reduced dimensions could be plotted in a `ggplot2` graph by using the function `dr.plotting as` showed below.
 
+> In order to generate a palette of colors, a possible option is (check [another color schemas](https://www.datanovia.com/en/wp-content/uploads/dn-tutorials/ggplot2/figures/0101-rcolorbrewer-palette-rcolorbrewer-palettes-colorblind-friendly-1.png)): 
+> `color_clusters <- RColorBrewer::brewer.pal(n = 12, name = "Set1")`
+
 ```{r}
 fcs500 <- sub.samples(fcs.SCE = fcs, subsampling = 500)
 fcs500 <- dim.reduction(fcs500, dr.method = c("UMAP", "pca"), assay.i = "transformed")
