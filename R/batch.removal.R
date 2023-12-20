@@ -32,8 +32,9 @@
 
 batch.removal <- function(fcs.SCE, assay.i = "transformed", method, batch, new.matrix.name = "normalized", harmony.params = NULL, seurat.params = NULL, threads = NULL){
   if(tolower(method) == "seurat"){
-    if (!requireNamespace(c("future", "Seurat"), quietly = TRUE)) stop("Packages \"future\" and \"Seurat\" needed for this function to work. Please install them.", call. = FALSE) else require(Seurat)
-
+    if (!requireNamespace(c("future", "Seurat"), quietly = TRUE)) cat("Packages \"future\" and \"Seurat\" are needed for this, installing them...\n\n") else require(Seurat)
+    install.packages(c("future", "Seurat")); require(Seurat)
+  
     ## setting multithreading
     require(future)
     if(is.null(threads)) threads <- availableCores()-1
@@ -71,8 +72,9 @@ batch.removal <- function(fcs.SCE, assay.i = "transformed", method, batch, new.m
                                                         match(colnames(fcs.SCE), colnames(seurat_intg2))]
     return(fcs.SCE)
   }else if(tolower(method) == "harmony"){
-    if (!requireNamespace("harmony", quietly = TRUE)) stop("Package \"harmony\" (https://github.com/immunogenomics/harmony) needed for this function to work. Please install it.", call. = FALSE)
-
+    if (!requireNamespace("harmony", quietly = TRUE)) cat("Package \"harmony\" is needed for this function, installing it...\n\n")
+    install.packages("harmony")
+  
     ## prepare internal options
     if(!is.null(harmony.params)){
       harmony.defaults <- formals(harmony::HarmonyMatrix)[-(1:4)]
