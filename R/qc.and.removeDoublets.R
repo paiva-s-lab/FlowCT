@@ -77,9 +77,9 @@ qc.and.removeDoublets <- function(fcs.SCE = NULL, filelist = NULL, directory = g
         file_return@parameters@data$desc <- sapply(fcs.SCE@metadata$raw_channel_names, function(x) strsplit(x, split = ":")[[1]][2])
                                                    
         write.FCS(file_return, paste0(output.folder, "/", gsub(extension, "", file), output.suffix, ".", extension))
+        cat("New FCSs in:", paste0(output.folder, "/", gsub(extension, "", file), output.suffix, ".", extension), "\n")                                                   
       }
     }
-    cat("New generated FCSs without low quality events are stored in:", output.folder, "\n")
 
     df <- data.frame(files = names(losses), losses); colnames(df) <- c("filename", "removed events (%)")
     asciify(df)
