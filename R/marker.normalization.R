@@ -22,8 +22,9 @@
 #' }
 
 marker.normalization <- function(fcs.SCE, assay.i = "transformed", method, marker, new.matrix.name = "normalized"){
-  if (!requireNamespace("flowStats", quietly = TRUE)) stop("Package \"flowStats\" needed for this function to work. Please install it.", call. = FALSE)
-
+  if (!requireNamespace("flowStats", quietly = TRUE)) cat("Package \"flowStats\" is needed for this function to work. Installing it...\n\n")
+  BiocManager::install("flowStats")
+  
   aux_fcs <- as.flowSet.SE(fcs.SCE, assay.i = assay.i)
   if(method == "gauss"){
     for(i in marker){
