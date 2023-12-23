@@ -104,8 +104,7 @@ Despite the great efforts in the standardization of flow cytometry protocols, bi
 - The first two, `gaussNorm` and `warp` methods (included within the [`flowStats`](https://www.bioconductor.org/packages/release/bioc/html/flowStats.html) package), intent to reduce the technical variation by "shifting" and aligning the area of high local density (landmarks) in each channel. This is a per <u>channel modification</u> and could be applied with the function `marker.normalization`.
 
 ```{r}
-fcs <- marker.normalization(fcs.SCE = fcs, marker.to.norm = c("CCR6", "CCR4"), 
-      norm.method = "warp")
+fcs <- marker.normalization(fcs.SCE = fcs, marker = c("CCR6", "CCR4"), method = "warp")
 ```
 
 - The second approach, more holistic, relies on the possibility of "aligning" clusters of cells and modify the expression matrix accordingly to the new position. This wrapper function (`batch.removal`) includes the single-cell (RNAseq) methods `Seurat` and `harmony` (please, refer to the original development sites, [[1]](https://satijalab.org/seurat/v3.0/integration.html) and [[2]](https://github.com/immunogenomics/harmony]), for additional information). 
