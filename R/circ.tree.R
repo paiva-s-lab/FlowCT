@@ -32,8 +32,10 @@
 
 circ.tree <- function(fcs.SCE, assay.i = "normalized", cell.clusters, dist.method = "euclidean", hclust.method = "average", 
                       nodes = "display", open.angle = 50, scale.size = 10, colors, labels = c(T, 0.2)){
-  if(!requireNamespace(c("ape"), quietly = TRUE)) stop("Packages \"ape\" and \"ggtree\" are needed for this function Please install them.", call. = FALSE)
-  require(ggtree)
+  if (!requireNamespace(c("ape", "ggtree"), quietly = TRUE)){
+    cat("Package \"ggtree\" is needed for this function, installing it...\n\n")
+    BiocManager::install(c("ape", "ggtree")); require(ggtree)
+  } else require(ggtree)
   
   exprs <- t(SummarizedExperiment::assay(fcs.SCE, i = assay.i))
   exprs_01 <- scale.exprs(exprs)
@@ -49,8 +51,8 @@ circ.tree <- function(fcs.SCE, assay.i = "normalized", cell.clusters, dist.metho
   colnames(expr01_medianL)[1] <- cell.clusters
   
   ## calculate cluster frequencies
-  clustering_propL <- data.frame(node = 1:length(unique(fcs.SCE[[cell.clusters]])), prop.table(table(fcs.SCE[[cell.clusters]]))*100)
-  colnames(clustering_propL) <- c("node", "cell_cluster", "Freq")
+  clustering_propL <- data.frame(node = factor(1:length(unique(fcs.SCE[[cell.clusters]]))), prop.table(table(fcs.SCE[[cell.clusters]]))*100)
+  colnames(clustering_propL) <- c("label", "cell_cluster", "Freq")
   
   ## hierarchical clustering
   suppressWarnings(dL <- dist(expr_medianL, method = dist.method))
@@ -59,7 +61,7 @@ circ.tree <- function(fcs.SCE, assay.i = "normalized", cell.clusters, dist.metho
   hca <- ape::as.phylo(cluster_rowsL)
   # hca <- full_join(hca, data.frame(label = as.character(1:nrow(expr01_medianL)), 
   #                                  label2 = expr01_medianL[,cell.clusters]), by = "label")
-  hca <- dplyr::full_join(hca, clustering_propL, by.x = "label", by.y = "node")
+  hca <- dplyr::full_join(hca, clustering_propL, by = "label")
   
   ## plotting
   if(length(nodes) == 1 && nodes == "display"){
@@ -74,7 +76,7 @@ circ.tree <- function(fcs.SCE, assay.i = "normalized", cell.clusters, dist.metho
         theme(legend.position = "bottom")
     }
   }
-    
+  
   g1 <- ggtree::gheatmap(p1, expr01_medianL[,-1], offset = 0.01, width = 1, font.size = 4, colnames_angle = 45, hjust = 0,
                          colnames_position = "top", high = "#b30000", low = "#fff7f3") + theme(legend.position = "bottom")
   if(labels[1]) return(g1 + geom_tiplab(aes(label = cell_cluster), offset = labels[2], align = T)) else return(g1)
@@ -83,21 +85,21 @@ circ.tree <- function(fcs.SCE, assay.i = "normalized", cell.clusters, dist.metho
 
 ## from gtree source...
 `%add%` <- function(p, data) {
-    p$data <- p$data %add2% data
-    return(p)
+  p$data <- p$data %add2% data
+  return(p)
 }
 
 `%add2%` <- function(d1, d2) {
-    if ("node" %in% colnames(d2)) {
-        cn <- colnames(d2)
-        ii <- which(cn %in% c("node", cn[!cn %in% colnames(d1)]))
-        d2 <- d2[, ii]
-        dd <- dplyr::left_join(d1, d2, by="node")
-    } else {
-        d2[,1] <- as.character(unlist(d2[,1])) ## `unlist` to work with tbl_df
-        d2 <- dplyr::rename(d2, label = 1) ## rename first column name to 'label'
-        dd <- dplyr::left_join(d1, d2, by="label")
-    }
-    dd <- dd[match(d1$node, dd$node),]
-    return(dd)
+  if ("node" %in% colnames(d2)) {
+    cn <- colnames(d2)
+    ii <- which(cn %in% c("node", cn[!cn %in% colnames(d1)]))
+    d2 <- d2[, ii]
+    dd <- dplyr::left_join(d1, d2, by="node")
+  } else {
+    d2[,1] <- as.character(unlist(d2[,1])) ## `unlist` to work with tbl_df
+    d2 <- dplyr::rename(d2, label = 1) ## rename first column name to 'label'
+    dd <- dplyr::left_join(d1, d2, by="label")
+  }
+  dd <- dd[match(d1$node, dd$node),]
+  return(dd)
 }
