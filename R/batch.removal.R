@@ -30,65 +30,68 @@
 #'  	              seurat.params = list(reduction = "cca", dims = 1:50))
 #' }
 
-batch.removal <- function(fcs.SCE, assay.i = "transformed", method, batch, new.matrix.name = "normalized", harmony.params = NULL, seurat.params = NULL, threads = NULL){
-  if(tolower(method) == "seurat"){
-    if (!requireNamespace(c("future", "Seurat"), quietly = TRUE)) cat("Packages \"future\" and \"Seurat\" are needed for this, installing them...\n\n") else require(Seurat)
-    install.packages(c("future", "Seurat")); require(Seurat)
-  
-    ## setting multithreading
-    require(future)
-    if(is.null(threads)) threads <- availableCores()-1
-    plan("multisession", workers = threads); options(future.globals.maxSize = 1000 * 1024^2) #https://satijalab.org/seurat/v3.0/future_vignette.html
-
-    ## prepare internal options
-    seurat.defaults <- list(dims = 1:10, reduction = "rpca", k.anchor = 5, k.filter = 200,
-                            k.score = 20, max.features = 200, nn.method = "rann", eps = 0)
-    if(!is.null(seurat.params)){
+batch.removal <- function (fcs.SCE, assay.i = "transformed", method, batch, new.matrix.name = "normalized", 
+                           harmony.params = NULL, seurat.params = NULL, threads = NULL){
+  if (tolower(method) == "seurat") {
+    if (!requireNamespace(c("future", "Seurat"), quietly = TRUE)){
+      cat("Packages \"future\" and \"Seurat\" are needed for this, installing them...\n\n")
+      install.packages(c("future", "Seurat")); require(Seurat); require(future)
+    } else require(Seurat); require(future)
+    
+    if (is.null(threads)) 
+      threads <- availableCores() - 1
+    plan("multisession", workers = threads)
+    options(future.globals.maxSize = 1000 * 1024^2)
+    seurat.defaults <- list(dims = 1:10, reduction = "rpca", 
+                            k.anchor = 5, k.filter = 200, k.score = 20, max.features = 200, 
+                            nn.method = "rann", eps = 0)
+    if (!is.null(seurat.params)) {
       diffs <- setdiff(names(seurat.defaults), names(seurat.params))
       seurat.params2 <- c(seurat.params, seurat.defaults[diffs])
-    }else{
+    } else {
       seurat.params2 <- seurat.defaults
     }
-
-    ## processing...
-    data <- as.Seurat(fcs.SCE, counts = assayNames(fcs.SCE)[1], data = assay.i)
+    data <- as.Seurat(fcs.SCE, counts = assayNames(fcs.SCE)[1], 
+                      data = assay.i)
     batches <- SplitObject(data, split.by = batch)
-    batches <- lapply(batches, function(x) FindVariableFeatures(x, selection.method = "vst",
-                                                                nfeatures = length(fcs), verbose = FALSE))
-
+    batches <- lapply(batches, function(x) FindVariableFeatures(x, 
+                                                                selection.method = "vst", nfeatures = length(fcs), 
+                                                                verbose = FALSE))
     features <- SelectIntegrationFeatures(object.list = batches)
     batches <- lapply(batches, function(x) {
       x <- ScaleData(x, features = features, verbose = FALSE)
-      x <- RunPCA(x, features = features, verbose = FALSE, npcs = length(seurat.params2$dims))
+      x <- RunPCA(x, features = features, verbose = FALSE, 
+                  npcs = length(seurat.params2$dims))
     })
-
-
-    anchors <- do.call(FindIntegrationAnchors, c(list(object.list = batches), seurat.params2))
+    anchors <- do.call(FindIntegrationAnchors, c(list(object.list = batches), 
+                                                 seurat.params2))
     seurat_intg <- IntegrateData(anchorset = anchors, dims = seurat.params2$dims)
-
     seurat_intg2 <- as.matrix(seurat_intg@assays$integrated@data)
     rownames(seurat_intg2) <- gsub("-", "_", rownames(seurat_intg2))
-    assay(fcs.SCE, i = new.matrix.name) <- seurat_intg2[match(rownames(fcs.SCE), rownames(seurat_intg2)),
-                                                        match(colnames(fcs.SCE), colnames(seurat_intg2))]
+    assay(fcs.SCE, i = new.matrix.name) <- seurat_intg2[match(rownames(fcs.SCE), 
+                                                              rownames(seurat_intg2)), match(colnames(fcs.SCE), 
+                                                                                             colnames(seurat_intg2))]
     return(fcs.SCE)
-  }else if(tolower(method) == "harmony"){
-    if (!requireNamespace("harmony", quietly = TRUE)) cat("Package \"harmony\" is needed for this function, installing it...\n\n")
-    install.packages("harmony")
-  
-    ## prepare internal options
-    if(!is.null(harmony.params)){
+  } else if (tolower(method) == "harmony") {
+    if (!requireNamespace("harmony", quietly = TRUE)){
+      cat("Package \"harmony\" is needed for this function, installing it...\n\n")
+      install.packages("harmony")
+    }
+    
+    if (!is.null(harmony.params)) {
       harmony.defaults <- formals(harmony::HarmonyMatrix)[-(1:4)]
       diffs <- setdiff(names(harmony.defaults), names(harmony.params))
       harmony.params2 <- c(harmony.params, harmony.defaults[diffs])
-    }else{
+    } else {
       harmony.params2 <- formals(harmony::HarmonyMatrix)[-(1:4)]
     }
-
-    norm_data <- do.call(harmony::HarmonyMatrix, c(list(data_mat = assay(fcs.SCE, assay.i), meta_data = colData(fcs.SCE),
-                                               vars_use = batch, do_pca = F), harmony.params2))
-    assay(fcs.SCE, i = new.matrix.name) <- norm_data
+    norm_data <- do.call(harmony::HarmonyMatrix, c(list(data_mat = assay(fcs.SCE, 
+                                                                         assay.i), meta_data = colData(fcs.SCE), vars_use = batch, 
+                                                        do_pca = F), harmony.params2))
+    assay(fcs.SCE, i = new.matrix.name) <- t(norm_data)
     return(fcs.SCE)
-  }else{
-    stop("Please, indicate a valid method: Seurat or harmony.", call. = F)
+  } else {
+    stop("Please, indicate a valid method: Seurat or harmony.", 
+         call. = FALSE)
   }
 }
